@@ -68,6 +68,14 @@ class Hierarchy:
         return os.path.join(self.base_dir, date.replace(":", "-"))
 
     @property
+    def boot_dir(self):
+        """Retrieve the /boot backup directory of this hierarchy.
+
+        :rtype: str
+        """
+        return os.path.join(self.curr_snapshot, "boot")
+
+    @property
     def etc_dir(self):
         """Retrieve the /etc backup directory of this hierarchy.
 
@@ -82,14 +90,6 @@ class Hierarchy:
         :rtype: str
         """
         return os.path.join(self.curr_snapshot, "home")
-
-    @property
-    def snapshot_dir(self):
-        """Retrieve the snapshot directory of this hierarchy.
-
-        :rtype: str
-        """
-        return os.path.join(self.curr_snapshot, "snapshots")
 
     @property
     def root_home_dir(self):
