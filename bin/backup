@@ -1,1 +1,49 @@
 #!/usr/bin/python3
+"""
+Run a backup.
+
+Command-Line Arguments
+======================
+"""
+import argparse
+import logging
+import os.path
+import rbackup.rsync as rsync
+
+from rbackup.hierarchy import Hierarchy
+
+# ========== Constants ==========
+RSYNC_DEFAULT_OPTS = [
+    "--archive",
+    "--hard-links",
+    "--prune-dirs",
+    "--backup",
+    "--ignore-missing-args",
+]
+EXTRA_RSYNC_OPTS = {"dry_run": "--dry-run"}
+
+# ========== Logging Setup ==========
+
+# ========== Main Script ==========
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-d",
+        "--dry-run",
+        action="append_const",
+        dest="extra_rsync_opts",
+        const=EXTRA_RSYNC_OPTS["dry_run"],
+        help="pass --dry-run to rsync",
+    )
+    parser.add_argument("dest", help="destination directory", metavar="destination")
+
+    args = parser.parser_args()
+
+    hier = Hierarchy(args.dest)
+    link_dest = hier.prev_snapshot
+
+    # Backup to hier.curr_snapshot
+
+    # Relink 'prev' to point to current snapshot
+    os.remove(hier.prev_snapshot_link)
+    os.symlink(curr_snapshot, hier.prev_snapshot_link, target_is_directory=True)
