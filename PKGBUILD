@@ -19,6 +19,11 @@ build() {
     python setup.py build
 }
 
+check() {
+    cd "$srcdir/${pkgname}"
+    python -m unittest tests
+}
+
 package() {
 	cd "$srcdir/${pkgname}"
 
