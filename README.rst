@@ -10,8 +10,21 @@ Features
 * Snapshot-based backup management
 * Backups of deleted and modified files
 
+Target Directories
+------------------
+* /boot
+* /etc
+* /home
+* /root
+* /var
+  * /var/lib
+  * /var/log
+* Extras
+  * Installed packages
+  * Package manager databases
+
 Implementation Notes
 --------------------
-* os.path is used for path-handling
+* os.path is used for path handling
 * Use --link-dest=
 * Use --suffix=, --backup, and --backup-dir=
