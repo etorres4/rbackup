@@ -3,6 +3,7 @@
 
 rbackup - An rsync-based backup tool
 ====================================
+A tool that automates backup, file list parsing, snapshot creation, and hard-linking of files.
 
 Features
 --------
@@ -14,9 +15,3 @@ Implementation Notes
 * os.path is used for path-handling
 * Use --link-dest=
 * Use --suffix=, --backup, and --backup-dir=
-
-To-Do
------
-* rsync reads paths with a ':' as a remote host, do not do that
-
-rsync --archive --prune-dirs --hard-links --verbose --link-dest='current_snapshot_dir' --recursive --ignore-missing-args --files-from /etc /backup_dir/etc
