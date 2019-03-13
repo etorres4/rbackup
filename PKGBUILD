@@ -36,4 +36,8 @@ package() {
     # Install AppArmor profile
     install -Dm644 rbackup/config/usr.bin.backup \
         "${pkgdir}/etc/apparmor.d/usr.bin.backup"
+
+    # Install documetation
+    install -Dm644 README.rst \
+        "${pkgdir}/usr/share/doc/${pkgname}/README.rst"
 }
