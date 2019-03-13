@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="rbackup",
-    version="0.0.1",
+    version="0.1",
     author="Eric Torres",
     author_email="erictorres4@protonmail.com",
     description="An rsync-based tool for creating backups",
