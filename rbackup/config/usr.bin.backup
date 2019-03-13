@@ -1,0 +1,12 @@
+#include <tunables/global>
+
+/usr/bin/backup {
+    #include <abstractions/python>
+
+    /etc/rbackup/ r,
+    /etc/rbackup/** rw,
+
+    # binaries
+    /usr/bin/ r,
+    /usr/bin/rsync Uix,
+}
