@@ -1,4 +1,8 @@
-"""This module contains a class for creating a backup hierarchy."""
+"""
+.. author:: Eric Torres
+.. module:: hierarchy
+    :synopsis: Classes for creating the backup hierarchy.
+"""
 
 import os.path
 import datetime
@@ -22,11 +26,11 @@ class Hierarchy:
         self.dest = dest
 
     @property
-    def base_dir(self):
+    def base_path(self):
         """Return the base directory of this hierarchy.
 
         >>> h = Hierarchy('backup')
-        >>> h.base_dir
+        >>> h.base_path
         >>> 'backup'
 
         :rtype: str
@@ -35,11 +39,22 @@ class Hierarchy:
 
 
 class Repository(Hierarchy):
+    """A class for interacting with a backup repository.
+
+    Attributes
+    ----------
+    * "data" directory for storing snapshots
+      * Each snapshot is its own directory with its own sub-hierarchy
+      * Each snapshot has an "old" directory for storing deleted data
+      * rsync hardlinks unchanged files between snapshots
+    * A symlink in the root of the repository symlinking to the
+      most recent snapshot
+    """
     def __init__(self, dest):
         """Default constructor for the Repository class."""
         super().__init__(dest)
 
-        self._snapshot_dir = os.path.join(self.base_dir, "data")
+        self._snapshot_dir = os.path.join(self.base_path, "data")
         self._snapshots = [
             Snapshot(s)
             for s in glob.glob(f"{self._snapshot_dir}/*")
@@ -48,7 +63,7 @@ class Repository(Hierarchy):
 
     @property
     def snapshots(self):
-        """Return a list of snapshot names stored in this Repository.
+        """Return a list of snapshots stored in this Repository.
 
         Example
         -------
@@ -57,25 +72,28 @@ class Repository(Hierarchy):
           * snapshot-two
         >>> repo = Repository('backup')
         >>> repo.snapshots
-        >>> ['snapshot-one', 'snapshot-two']
+        >>> ['backup/data/snapshot-one', 'backup/data/snapshot-two']
 
         :returns: the names of all snapshots in this repository sorted by
             date
         :rtype: list
-        """
-        return self._snapshots
-
-    @property
-    def prev_snapshot(self):
-        """Return the canonical path of the previous snapshot stored in
-        this hierarchy.
-
-        :rtype: str
+        :rtype: None if there are no snapshots in this Repository
         """
         if self._snapshots == []:
             return None
         else:
-            return os.path.realpath(self.snapshot_dir, self.snapshots[-1])
+            return self._snapshots
+
+    @property
+    def prev_snapshot(self):
+        """Return the instance of the previous Snapshot.
+
+        :rtype: Snapshot object
+        """
+        if self._snapshots == []:
+            return None
+        else:
+            return self.snapshots[-1]
 
     @property
     def curr_snapshot(self):
@@ -114,9 +132,22 @@ class Snapshot(Hierarchy):
     >>> 'backup/data/snapshot-{utcnow}/home'
     """
 
-    def __init__(self, dest):
+    def __init__(self, path):
         """Default constructor for the Snapshot class."""
-        super().__init__(dest)
+        super().__init__(path)
+
+    @property
+    def path(self):
+        """Return the canonical path of this snapshot.
+        Example
+        -------
+        >>> s = Snapshot('backup/data/snapshot-{utcprev}')
+        >>> s.name
+        >>> 'backup/data/snapshot-{utcprev}'
+
+        :rtype: str
+        """
+        return self.base_path
 
     @property
     def name(self):
@@ -130,7 +161,7 @@ class Snapshot(Hierarchy):
 
         :rtype: str
         """
-        return os.path.basename(self.base_dir)
+        return os.path.basename(self.base_path)
 
     @property
     def boot_dir(self):
@@ -144,7 +175,7 @@ class Snapshot(Hierarchy):
 
         :rtype: str
         """
-        return os.path.join(self.curr_snapshot, "boot")
+        return os.path.join(self.base_path, "boot")
 
     @property
     def etc_dir(self):
@@ -158,7 +189,7 @@ class Snapshot(Hierarchy):
 
         :rtype: str
         """
-        return os.path.join(self.curr_snapshot, "etc")
+        return os.path.join(self.base_path, "etc")
 
     @property
     def home_dir(self):
@@ -172,7 +203,7 @@ class Snapshot(Hierarchy):
 
         :rtype: str
         """
-        return os.path.join(self.curr_snapshot, "home")
+        return os.path.join(self.base_path, "home")
 
     @property
     def root_home_dir(self):
@@ -186,4 +217,4 @@ class Snapshot(Hierarchy):
 
         :rtype: str
         """
-        return os.path.join(self.curr_snapshot, "root")
+        return os.path.join(self.base_path, "root")
