@@ -10,7 +10,7 @@ import logging
 import os.path
 import rbackup.rsync as rsync
 
-from rbackup.hierarchy import Hierarchy
+from rbackup.hierarchy import Repository, Snapshot
 
 # ========== Constants ==========
 RSYNC_DEFAULT_OPTS = [
@@ -18,15 +18,44 @@ RSYNC_DEFAULT_OPTS = [
     "--hard-links",
     "--prune-dirs",
     "--backup",
+    "--xattrs",
     "--ignore-missing-args",
 ]
-EXTRA_RSYNC_OPTS = {"dry_run": "--dry-run"}
+EXTRA_RSYNC_OPTS = {
+    "dry_run": "--dry-run",
+    "delete": "--delete-after",
+    "checksum": "--checksum",
+    "update": "--update",
+}
 
 # ========== Logging Setup ==========
+console_formatter = logging.Formatter(LOGFORMAT)
+syslog = logging.getLogger("packaging_scripts")
+syslog.setLevel(logging.DEBUG)
+
+stdout_handler = logging.StreamHandler(sys.stdout)
+stdout_handler.setLevel(logging.INFO)
+stdout_handler.setFormatter(console_formatter)
+stdout_handler.addFilter(lambda record: record.levelno <= logging.INFO)
+
+stderr_handler = logging.StreamHandler(sys.stderr)
+stderr_handler.setLevel(logging.WARNING)
+stderr_handler.setFormatter(console_formatter)
+
+syslog.addHandler(stdout_handler)
+syslog.addHandler(stderr_handler)
 
 # ========== Main Script ==========
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-c",
+        "--use-checksums",
+        action="store_const",
+        dest="extra_rsync_opts",
+        const=EXTRA_RSYNC_OPTS["checksum"],
+        help="use rsync's checksumming feature to look for changed files"
+    )
     parser.add_argument(
         "-d",
         "--dry-run",
@@ -35,15 +64,26 @@ if __name__ == "__main__":
         const=EXTRA_RSYNC_OPTS["dry_run"],
         help="pass --dry-run to rsync",
     )
-    parser.add_argument("dest", help="destination directory", metavar="destination")
+    parser.add_argument(
+        "-v", "--verbose", action="store_true", help="increase script verbosity"
+    )
+    parser.add_argument("operation", help="the operation to perform", metavar="op")
+    parser.add_argument("repository", help="repository to back up to", metavar="repo")
 
     args = parser.parser_args()
+    repo = Repository(args.repository)
 
-    hier = Hierarchy(args.dest)
     link_dest = hier.prev_snapshot
+
+    if args.verbose:
+        stdout_handler.setLevel(logging.DEBUG)
+
+    # Handle empty repository
+
+    # else handle regular repository
 
     # Backup to hier.curr_snapshot
 
-    # Relink 'prev' to point to current snapshot
+    # Relink 'prev' to point to latest snapshot
     os.remove(hier.prev_snapshot_link)
     os.symlink(curr_snapshot, hier.prev_snapshot_link, target_is_directory=True)
