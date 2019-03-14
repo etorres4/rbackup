@@ -1,6 +1,6 @@
 """
 .. author:: Eric Torres
-.. module:: hierarchy
+.. module:: rbackup.hierarchy
     :synopsis: Classes for creating the backup hierarchy.
 """
 
@@ -50,6 +50,7 @@ class Repository(Hierarchy):
     * A symlink in the root of the repository symlinking to the
       most recent snapshot
     """
+
     def __init__(self, dest):
         """Default constructor for the Repository class."""
         super().__init__(dest)
@@ -122,7 +123,7 @@ class Snapshot(Hierarchy):
     >>> snapshots = repo.snapshots
     >>> prev = snapshots[-1]
     >>> prev.name
-    >>> 'backup/data/snapshot-{prevtime}'
+    >>> 'snapshot-{prevtime}'
     >>> prev.home_dir
     >>> 'backup/data/snapshot-{prevtime}/home'
     >>> curr = repo.curr_snapshot

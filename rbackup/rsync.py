@@ -1,8 +1,13 @@
+"""
+.. author:: Eric Torres
+.. module:: rbackup.rsync
+    :synopsis: helper functions for running the rsync backend
+"""
 import subprocess
 
 
 # ========== Constants ==========
-_RSYNC_BIN = '/usr/bin/rsync'
+_RSYNC_BIN = "/usr/bin/rsync"
 
 
 # ========== Functions ==========
