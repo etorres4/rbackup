@@ -23,8 +23,30 @@ Target Directories
   * Installed packages
   * Package manager databases
 
+Backup Directory Hierarchy
+--------------------------
+* basedir
+  | - data *directory containing all snapshots*
+  |   | - snapshot1 *first snapshot*
+  |     | - boot
+  |     | - home
+  |     | - etc
+  |   | - snapshot2
+  |     | - boot
+  |     | - home
+  |     | - etc
+  | - prev *link to previous snapshot*
+* Assuming snapshot2 was the previous backup and snapshot1 was the backup before that:
+  * prev would link to snapshot2
+  * Unchanged files files from snapshot1 backed up to snapshot2 are hardlinked to snapshot1
+
+
 Implementation Notes
 --------------------
 * os.path is used for path handling
 * Use --link-dest=
+* Use --suffix=, --backup, and --backup-dir=
+
+To-do
+-----
 * Use --suffix=, --backup, and --backup-dir=
