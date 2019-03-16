@@ -80,6 +80,20 @@ class Repository(Hierarchy):
         return self._snapshots
 
     @property
+    def empty(self):
+        """Determine whether or not this Repository is empty.
+
+        Example
+        -------
+        >>> repo = Repository('/tmp')
+        >>> repo.empty
+        True
+
+        :rtype: bool
+        """
+        return self._snapshots == []
+
+    @property
     def curr_snapshot(self):
         """Return this Repository's current snapshot.
 
@@ -119,7 +133,6 @@ class Repository(Hierarchy):
         <...Snapshot ... at 0x...>
 
         :return: a new Snapshot object
-        :rtype: Snapshot object
         """
         path = os.path.join(self._snapshot_dir, f"snapshot-{name}")
 
