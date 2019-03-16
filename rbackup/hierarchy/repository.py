@@ -66,16 +66,16 @@ class Repository(Hierarchy):
 
         Example
         -------
-        * Assuming that backup/data has the snapshot dirs:
-          * snapshot-one
-          * snapshot-two
-        >>> repo = Repository('backup')
+        >>> repo = Repository('/tmp')
         >>> repo.snapshots
-        >>> ['backup/data/snapshot-one', 'backup/data/snapshot-two']
+        []
+        >>> repo.create_snapshot()
+        >>> repo.snapshots # doctest: +ELLIPSIS
+        [<...Snapshot ... at 0x...>]
 
         :returns: the names of all snapshots in this repository sorted by
             date
-        :rtype: list
+        :rtype: list of Snapshot objects
         """
         return self._snapshots
 
@@ -85,11 +85,15 @@ class Repository(Hierarchy):
 
         Example
         -------
-        >>> repo = Repository('backup')
-        >>> repo.snapshots
-        >>> ['snapshot-one', 'snapshot-two']
+        >>> repo = Repository('/tmp')
         >>> repo.curr_snapshot
-        >>> Snapshot('backup/data/snapshot-two')
+        >>> repo.snapshots
+        []
+        >>> repo.create_snapshot()
+        >>> repo.snapshots # doctest: +ELLIPSIS
+        [<...Snapshot ... at 0x...>]
+        >>> repo.curr_snapshot # doctest: +ELLIPSIS
+        <...Snapshot ... at 0x...>
 
         :rtype: Snapshot object
         """
@@ -100,16 +104,19 @@ class Repository(Hierarchy):
     ):
         """Create a new snapshot in this repository.
 
+        This method is non-intrusive in that it will not
+        make any changes in the filesystem when called.
+
         Example
         -------
-        >>> repo = Repository('backup')
+        directive   ::= "#" "doctest":" ELLIPSIS
+        >>> repo = Repository('/tmp')
         >>> repo.snapshots
-        >>> ['backup/data/snapshot-one', 'backup/data/snapshot-two']
+        []
         >>> repo.curr_snapshot
-        >>> Snapshot('backup/data/snapshot-two')
-        >>> repo.create_snapshot('three')
-        >>> repo.curr_snapshot
-        >>> Snapshot('backup/data/snapshot-three')
+        >>> repo.create_snapshot()
+        >>> repo.curr_snapshot # doctest: +ELLIPSIS
+        <...Snapshot ... at 0x...>
 
         :return: a new Snapshot object
         :rtype: Snapshot object
@@ -126,3 +133,10 @@ class Repository(Hierarchy):
             for s in glob.glob(f"{self._snapshot_dir}/*")
             if os.path.isdir(s)
         ]
+
+
+# ========== Functions ==========
+if __name__ == "__main__":
+    import doctest
+
+    doctest.testmod()

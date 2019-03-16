@@ -1,29 +1,23 @@
 """
 .. author:: Eric Torres
-.. module:: rbackup.hierarchy
-    :synopsis: Classes for creating the backup hierarchy.
+.. module:: r/tmp.hierarchy.snapshot
+    :synopsis: Classes for creating the /tmp hierarchy.
 """
-
 import os.path
+
+from rbackup.hierarchy.hierarchy import Hierarchy
 
 
 class Snapshot(Hierarchy):
     """Hierarchy for a single snapshot.
-
-    Example
-    -------
-    >>> repo = Repository('backup')
-    >>> snapshots = repo.snapshots
-    >>> prev = snapshots[-1]
-    >>> prev.name
-    >>> 'snapshot-{prevtime}'
-    >>> prev.home_dir
-    >>> 'backup/data/snapshot-{prevtime}/home'
-    >>> curr = repo.curr_snapshot
-    >>> curr.name
-    >>> 'snapshot-{utcnow}'
-    >>> curr.home_dir
-    >>> 'backup/data/snapshot-{utcnow}/home'
+    Attributes
+    ----------
+    * path (inherited from Hierarchy)
+    * name
+    * boot_dir
+    * etc_dir
+    * home_dir
+    * root_home_dir
     """
 
     def __init__(self, path):
@@ -31,73 +25,60 @@ class Snapshot(Hierarchy):
         super().__init__(path)
 
     @property
-    def path(self):
-        """Return the canonical path of this snapshot.
-        Example
-        -------
-        >>> s = Snapshot('backup/data/snapshot-{utcprev}')
-        >>> s.name
-        >>> 'backup/data/snapshot-{utcprev}'
-
-        :rtype: str
-        """
-        return self.base_path
-
-    @property
     def name(self):
         """Return the name of this snapshot.
 
         Example
         -------
-        >>> s = Snapshot('backup/data/snapshot-{utcprev}')
+        >>> s = Snapshot('/tmp/data/snapshot-new')
         >>> s.name
-        >>> 'snapshot-{utcprev}'
+        'snapshot-new'
 
         :rtype: str
         """
-        return os.path.basename(self.base_path)
+        return os.path.basename(self.path)
 
     @property
     def boot_dir(self):
-        """Retrieve the /boot backup directory of this snapshot.
+        """Retrieve the /boot /tmp directory of this snapshot.
 
         Example
         -------
-        >>> s = Snapshot('backup/data/snapshot-{utcnow}')
+        >>> s = Snapshot('/tmp/data/snapshot-new')
         >>> s.boot_dir
-        >>> 'backup/data/snapshot-{utcnow}/boot'
+        '/tmp/data/snapshot-new/boot'
 
         :rtype: str
         """
-        return os.path.join(self.base_path, "boot")
+        return os.path.join(self.path, "boot")
 
     @property
     def etc_dir(self):
-        """Retrieve the /etc backup directory of this snapshot.
+        """Retrieve the /etc /tmp directory of this snapshot.
 
         Example
         -------
-        >>> s = Snapshot('backup/data/snapshot-{utcnow}')
+        >>> s = Snapshot('/tmp/data/snapshot-new')
         >>> s.etc_dir
-        >>> 'backup/data/snapshot-{utcnow}/etc'
+        '/tmp/data/snapshot-new/etc'
 
         :rtype: str
         """
-        return os.path.join(self.base_path, "etc")
+        return os.path.join(self.path, "etc")
 
     @property
     def home_dir(self):
-        """Retrieve the /home backup directory of this snapshot.
+        """Retrieve the /home /tmp directory of this snapshot.
 
         Example
         -------
-        >>> s = Snapshot('backup/data/snapshot-{utcnow}')
+        >>> s = Snapshot('/tmp/data/snapshot-new')
         >>> s.home_dir
-        >>> 'backup/data/snapshot-{utcnow}/home'
+        '/tmp/data/snapshot-new/home'
 
         :rtype: str
         """
-        return os.path.join(self.base_path, "home")
+        return os.path.join(self.path, "home")
 
     @property
     def root_home_dir(self):
@@ -105,10 +86,17 @@ class Snapshot(Hierarchy):
 
         Example
         -------
-        >>> s = Snapshot('backup/data/snapshot-{utcnow}')
+        >>> s = Snapshot('/tmp/data/snapshot-new')
         >>> s.root_home_dir
-        >>> 'backup/data/snapshot-{utcnow}/root'
+        '/tmp/data/snapshot-new/root'
 
         :rtype: str
         """
-        return os.path.join(self.base_path, "root")
+        return os.path.join(self.path, "root")
+
+
+# ========== Functions ==========
+if __name__ == "__main__":
+    import doctest
+
+    doctest.testmod()
