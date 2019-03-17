@@ -11,21 +11,22 @@ makedepends=('git' 'python-setuptools')
 checkdepends=('python-pytest')
 backup=(etc/$pkgname/backup.conf
         etc/$pkgname/etc-include.conf
-        etc/$pkgname/home-include.conf)
-source=("file:///${HOME}/Projects/rbackup")
+        etc/$pkgname/home-exclude.conf)
+source=("${pkgname}-${pkgver}.tar.gz")
+sha512sums=('SKIP')
 
 build() {
-	cd "$srcdir/${pkgname}"
+	cd "${srcdir}/${pkgname}-${pkgver}"
     python setup.py build
 }
 
 check() {
-    cd "$srcdir/${pkgname}"
-    python -m unittest tests
+    cd "${srcdir}/${pkgname}-${pkgver}"
+    python -m unittest
 }
 
 package() {
-	cd "$srcdir/${pkgname}"
+	cd "${srcdir}/${pkgname}-${pkgver}"
 
     python setup.py install \
         --prefix='/usr' \
@@ -34,7 +35,7 @@ package() {
         --skip-build
 
     # Install config files
-    for config in rbackup/config/*; do
+    for config in rbackup/config/*.conf; do
         install -Dm644 "${config}" "${pkgdir}/etc/${pkgname}/${config##*/}"
     done
 
