@@ -3,12 +3,17 @@
 
 rbackup - An rsync-based backup tool
 ====================================
-A tool that automates backup, file list parsing, snapshot creation, and hard-linking of files.
+A tool that automates the use of rsync and extra features for package manager backups.
 
 Features
 --------
 * Snapshot-based backup management
 * Backups of deleted and modified files
+* Creation of installed package lists and backup of package manager databases
+
+Advanced Features
+^^^^^^^^^^^^^^^^^
+* rbackup depends on the filesystem that stores the repository to provide features such as checksumming, advanced deduplication, and data integrity verification
 
 Target Directories
 ------------------
