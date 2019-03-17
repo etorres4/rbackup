@@ -3,7 +3,7 @@
 .. module:: rbackup.hierarchy.repository
     :synopsis: Class for structuring a backup repository.
 """
-
+import logging
 import os.path
 import datetime
 import glob
@@ -12,6 +12,11 @@ from rbackup.hierarchy.hierarchy import Hierarchy
 from rbackup.hierarchy.snapshot import Snapshot
 
 
+# ========== Logging Setup ===========
+syslog = logging.getLogger(__name__)
+
+
+# ========== Classes ==========
 class Repository(Hierarchy):
     """A class for interacting with a backup repository.
 
@@ -134,10 +139,14 @@ class Repository(Hierarchy):
 
         :return: a new Snapshot object
         """
+        syslog.debug("Creating snapshot")
         path = os.path.join(self._snapshot_dir, f"snapshot-{name}")
 
         self._curr_snapshot = Snapshot(path)
         self._snapshots.append(self._curr_snapshot)
+
+        syslog.debug("Snapshot created")
+        syslog.debug(f"Snapshot name: {self.curr_snapshot.name}")
 
     def update_snapshots(self):
         """Update the list of snapshots in this repository."""
