@@ -1,13 +1,19 @@
 """
 .. author:: Eric Torres
-.. module:: r/tmp.hierarchy.snapshot
+.. module:: rbackup.hierarchy.snapshot
     :synopsis: Classes for creating the /tmp hierarchy.
 """
+import logging
 import os.path
 
 from rbackup.hierarchy.hierarchy import Hierarchy
 
 
+# ========== Logging Setup ===========
+syslog = logging.getLogger(__name__)
+
+
+# ========== Classes ==========
 class Snapshot(Hierarchy):
     """Hierarchy for a single snapshot.
     Attributes
@@ -23,6 +29,11 @@ class Snapshot(Hierarchy):
     def __init__(self, path):
         """Default constructor for the Snapshot class."""
         super().__init__(path)
+
+        self._boot_dir = os.path.join(self.path, "boot")
+        self._etc_dir = os.path.join(self.path, "etc")
+        self._home_dir = os.path.join(self.path, "home")
+        self._root_home_dir = os.path.join(self.path, "root")
 
     @property
     def name(self):
@@ -50,7 +61,7 @@ class Snapshot(Hierarchy):
 
         :rtype: str
         """
-        return os.path.join(self.path, "boot")
+        return self._boot_dir
 
     @property
     def etc_dir(self):
@@ -64,7 +75,7 @@ class Snapshot(Hierarchy):
 
         :rtype: str
         """
-        return os.path.join(self.path, "etc")
+        return self._etc_dir
 
     @property
     def home_dir(self):
@@ -78,7 +89,7 @@ class Snapshot(Hierarchy):
 
         :rtype: str
         """
-        return os.path.join(self.path, "home")
+        return self._home_dir
 
     @property
     def root_home_dir(self):
@@ -92,7 +103,7 @@ class Snapshot(Hierarchy):
 
         :rtype: str
         """
-        return os.path.join(self.path, "root")
+        return self._root_home_dir
 
 
 # ========== Functions ==========
