@@ -3,11 +3,14 @@
 .. module:: rbackup.hierarchy.hierarchy
     :synopsis: Classes for creating the backup hierarchy.
 """
-
-
 # ========== Classes ==========
 class Hierarchy:
-    """A class for organizing the backup root hierarchy."""
+    """A class for organizing the backup root hierarchy.
+    
+    Upon creation of a Hierarchy object, it is up to the caller
+    to call either shutil.mkdir() or a related method to create
+    the directory structure it emulates.
+    """
 
     def __init__(self, dest):
         """Default constructor for the Hierarchy class.
@@ -21,7 +24,7 @@ class Hierarchy:
         :param dest: the root directory of the backup hierarchy
         :type dest: str, bytes
         """
-        self.dest = dest
+        self._dest = dest
 
     @property
     def path(self):
@@ -35,7 +38,7 @@ class Hierarchy:
 
         :rtype: str
         """
-        return self.dest
+        return self._dest
 
 
 # ========== Functions ==========
