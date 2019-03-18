@@ -40,8 +40,11 @@ EXTRA_RSYNC_OPTS = {
     "update": "--update",
 }
 
-ETC_INCLUDE_FILE = "/etc/rbackup/etc-include.conf"
+CONFIG_DIR = "/etc/rbackup"
+ETC_INCLUDE_FILE = f"{CONFIG_DIR}/etc-include.conf"
+HOME_EXCLUDE_FILE = f"{CONFIG_DIR}/home-exclude.conf"
 
+# ----- Error Codes -----
 E_FAILED_PROCESS = 1
 
 # ========== Logging Setup ==========
@@ -64,11 +67,20 @@ syslog.addHandler(stderr_handler)
 
 # ========== Functions ==========
 def backup_all(s, prev, rsync_opts):
+    """Run all backup functions.
+
+    :param s: snapshot to back up to
+    :type s: Snapshot object
+    :param prev: previous snapshot for hardlinking
+    :type prev: Snapshot object or None
+    :param opts: options to pass to rsync
+    :type opts: list
+    """
     raise NotImplementedError
 
 
 def backup_etc(s, prev, rsync_opts):
-    """Create a backup of /etc
+    """Create a backup of /etc.
 
     :param s: snapshot to back up to
     :type s: Snapshot object
@@ -88,15 +100,71 @@ def backup_etc(s, prev, rsync_opts):
     rsync(*local_opts, "/etc/", str(s.etc_dir))
 
 
-def backup_home():
+def backup_home(s, prev, rsync_opts):
+    """Create a backup of /home.
+
+    :param s: snapshot to back up to
+    :type s: Snapshot object
+    :param prev: previous snapshot for hardlinking
+    :type prev: Snapshot object or None
+    :param opts: options to pass to rsync
+    :type opts: list
+    """
+    local_opts = rsync_opts
+    local_opts.append(f"--exclude-from={HOME_EXCLUDE_FILE}")
+
+    if prev is not None:
+        rsync_opts.append(f"--link-dest={prev_snapshot.home_dir}")
+
+    syslog.debug("Creating directory {s.home_dir}")
+    s.home_dir.mkdir(parents=True, exist_ok=False)
+    rsync(*local_opts, "/home/", str(s.home_dir))
+
+
+def backup_pkgmanager(s, prev, rsync_opts):
+    """Create a backup of package manager files.
+
+    :param s: snapshot to back up to
+    :type s: Snapshot object
+    :param prev: previous snapshot for hardlinking
+    :type prev: Snapshot object or None
+    :param opts: options to pass to rsync
+    :type opts: list
+    """
     raise NotImplementedError
 
 
-def backup_pkgmanager():
-    raise NotImplementedError
+def backup_root_home(s, prev, rsync_opts):
+    """Create a backup of /root.
+
+    :param s: snapshot to back up to
+    :type s: Snapshot object
+    :param prev: previous snapshot for hardlinking
+    :type prev: Snapshot object or None
+    :param opts: options to pass to rsync
+    :type opts: list
+    """
+    local_opts = rsync_opts
+    local_opts.append(f"--exclude-from={HOME_EXCLUDE_FILE}")
+
+    if prev is not None:
+        rsync_opts.append(f"--link-dest={prev_snapshot.root_home_dir}")
+
+    syslog.debug("Creating directory {s.root_home_dir}")
+    s.root_home_dir.mkdir(parents=True, exist_ok=False)
+    rsync(*local_opts, "/root/", str(s.root_home_dir))
 
 
 def backup_system():
+    """Create a backup of system directories.
+
+    :param s: snapshot to back up to
+    :type s: Snapshot object
+    :param prev: previous snapshot for hardlinking
+    :type prev: Snapshot object or None
+    :param opts: options to pass to rsync
+    :type opts: list
+    """
     raise NotImplementedError
 
 
