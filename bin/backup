@@ -19,6 +19,7 @@ import sys
 
 from rbackup.hierarchy.repository import Repository
 from rbackup.rsync import rsync
+from subprocess import CalledProcessError
 
 # ========== Constants ==========
 LOGFORMAT = "==> %(levelname)s %(message)s"
@@ -28,7 +29,7 @@ RSYNC_DEFAULT_OPTS = [
     "--backup",
     "--hard-links",
     "--ignore-missing-args",
-    "--prune-dirs",
+    "--prune-empty-dirs",
     "--suffix=.old",
     "--xattrs",
 ]
@@ -40,6 +41,8 @@ EXTRA_RSYNC_OPTS = {
 }
 
 ETC_INCLUDE_FILE = "/etc/rbackup/etc-include.conf"
+
+E_FAILED_PROCESS = 1
 
 # ========== Logging Setup ==========
 console_formatter = logging.Formatter(LOGFORMAT)
@@ -60,20 +63,25 @@ syslog.addHandler(stderr_handler)
 
 
 # ========== Functions ==========
-def backup_all(s, rsync_opts):
+def backup_all(s, prev, rsync_opts):
     raise NotImplementedError
 
 
-def backup_etc(s, rsync_opts):
+def backup_etc(s, prev, rsync_opts):
     """Create a backup of /etc
 
     :param s: snapshot to back up to
     :type s: Snapshot object
+    :param prev: previous snapshot for hardlinking
+    :type prev: Snapshot object or None
     :param opts: options to pass to rsync
     :type opts: list
     """
     local_opts = rsync_opts
     local_opts.append(f"--files-from={ETC_INCLUDE_FILE}")
+
+    if prev is not None:
+        rsync_opts.append(f"--link-dest={prev_snapshot.etc_dir}")
 
     syslog.debug("Creating directory {s.etc_dir}")
     s.etc_dir.mkdir(parents=True, exist_ok=False)
@@ -161,10 +169,14 @@ if __name__ == "__main__":
     repo.create_snapshot()
     curr_snapshot = repo.curr_snapshot
 
-    rsync_opts.append(f"--link-dest={prev_snapshot.path}")
     rsync_opts.append("--backup-dir=backup")
 
-    DISPATCHER[args.operation](curr_snapshot, rsync_opts)
+    try:
+        DISPATCHER[args.operation](curr_snapshot, prev_snapshot, rsync_opts)
+    except CalledProcessError as e:
+        syslog.error("Backup process failed")
+        syslog.info(f"Failing command: {e.cmd}")
+        exit(E_FAILED_PROCESS)
 
     snapshot_symlink = repo.path / "current"
 
@@ -173,7 +185,7 @@ if __name__ == "__main__":
     except FileNotFoundError:
         pass
 
-    snapshot_symlink.symlink_to(curr_snapshot, target_is_directory=True)
+    snapshot_symlink.symlink_to(curr_snapshot.path, target_is_directory=True)
 
     if args.run_post_sync:
         os.sync()
