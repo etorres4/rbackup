@@ -48,6 +48,11 @@ class Repository(Hierarchy):
       * rsync hardlinks unchanged files between snapshots
     * A symlink in the root of the repository symlinking to the
       most recent snapshot
+
+    Iteration
+    ---------
+    To support checking all snapshots for hardlinking, the Repository class
+    can be iterated through.
     """
 
     def __init__(self, dest):
@@ -65,10 +70,25 @@ class Repository(Hierarchy):
             self._curr_snapshot = self._snapshots[-1]
 
     def __len__(self):
-        return len(self._snapshots)
+        """Return the number of snapshots in this Repository."""
+        return len(self.snapshots)
 
     def __getitem__(self, position):
-        return self._snapshots[position]
+        """Retrieve a Snapshot at a certain index."""
+        return self.snapshots[position]
+
+    def __iter__(self):
+        self.snapshot_index = 0
+        return self
+
+    def __next__(self):
+        """Return the next Snapshot in this Repository."""
+        try:
+            result = self.snapshots[self.snapshot_index]
+            self.snapshot_index += 1
+            return result
+        except IndexError:
+            raise StopIteration
 
     @property
     def snapshots(self):
@@ -98,6 +118,9 @@ class Repository(Hierarchy):
         >>> repo = Repository('/tmp')
         >>> repo.empty
         True
+        >>> repo.create_snapshot()
+        >>> repo.empty
+        False
 
         :rtype: bool
         """
