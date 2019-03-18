@@ -1,2 +1,6 @@
 __pycache__
+pkg
+src
 tags
+*.tar.gz
+*.tar.xz
