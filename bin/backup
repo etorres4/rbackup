@@ -75,9 +75,9 @@ def backup_etc(s, rsync_opts):
     local_opts = rsync_opts
     local_opts.append(f"--files-from={ETC_INCLUDE_FILE}")
 
-    syslog.debug("Creating directory {s.etc_path}")
+    syslog.debug("Creating directory {s.etc_dir}")
     s.etc_dir.mkdir(parents=True, exist_ok=False)
-    rsync(*local_opts, "/etc/", str(s.etc_path))
+    rsync(*local_opts, "/etc/", str(s.etc_dir))
 
 
 def backup_home():
@@ -143,7 +143,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    rsync_opts = []
+    rsync_opts = RSYNC_DEFAULT_OPTS
     if args.extra_rsync_opts is not None:
         rsync_opts.extend(args.extra_rsync_opts)
 
@@ -161,7 +161,7 @@ if __name__ == "__main__":
     repo.create_snapshot()
     curr_snapshot = repo.curr_snapshot
 
-    rsync_opts.append(f"--link-dest={prev_snapshot}")
+    rsync_opts.append(f"--link-dest={prev_snapshot.path}")
     rsync_opts.append("--backup-dir=backup")
 
     DISPATCHER[args.operation](curr_snapshot, rsync_opts)
