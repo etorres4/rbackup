@@ -31,6 +31,8 @@ def rsync(*args):
     try:
         process = subprocess.run(cmd, capture_output=True, check=True)
     except subprocess.CalledProcessError as e:
+        syslog.error(e.stderr)
+        syslog.debug(e.stdout)
         raise e
 
     syslog.debug(process.stdout)
