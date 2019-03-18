@@ -77,6 +77,8 @@ class Snapshot(Hierarchy):
         >>> s = Snapshot('backup/data/snapshot-new')
         >>> s.pkg_dir
         PosixPath('backup/data/snapshot-new/pkg')
+
+        :rtype: path-like object
         """
         return self.path / "pkg"
 
