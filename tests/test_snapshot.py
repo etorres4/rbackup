@@ -6,11 +6,12 @@ Unit tests for the Snapshot class.
 import doctest
 import unittest
 
+from pathlib import Path
 from rbackup.hierarchy.snapshot import Snapshot
-from unittest.mock import patch
 
 # ========== Constants ==========
 TESTING_MODULE = "rbackup.hierarchy.repository"
+
 
 # ========== Functions ==========
 def load_tests(loader, tests, ignore):
@@ -21,33 +22,31 @@ def load_tests(loader, tests, ignore):
 # ========== Test Cases ==========
 class TestSnapshot(unittest.TestCase):
     def setUp(self):
-        self.patched_isdir = patch("rbackup.hierarchy.snapshot.os.path.isdir")
-        self.mocked_isdir = self.patched_isdir.start()
+        self.snapshot_fullpath = Path("backup/data/snapshot-new")
+        self.test_snapshot = Snapshot(self.snapshot_fullpath)
 
-        self.mocked_isdir.return_value = True
-
-        self.snapshot_fullpath = "backup/data/snapshot-new"
-        self.snapshot_name = "snapshot-new"
-
-        self.snapshot = Snapshot(self.snapshot_fullpath)
-
-    def test_path(self):
-        self.assertEqual(self.snapshot.path, self.snapshot_fullpath)
+    def test_fullpath(self):
+        self.assertEqual(self.test_snapshot.path, self.snapshot_fullpath)
 
     def test_name(self):
-        self.assertEqual(self.snapshot.name, self.snapshot_name)
+        self.assertEqual(self.test_snapshot.name, "snapshot-new")
 
     def test_boot_dir(self):
-        self.assertEqual(self.snapshot.boot_dir, f"{self.snapshot_fullpath}/boot")
+        self.assertEqual(
+            self.test_snapshot.boot_dir, self.snapshot_fullpath / "boot"
+        )
 
     def test_etc_dir(self):
-        self.assertEqual(self.snapshot.etc_dir, f"{self.snapshot_fullpath}/etc")
+        self.assertEqual(
+            self.test_snapshot.etc_dir, self.snapshot_fullpath / "etc"
+        )
 
     def test_home_dir(self):
-        self.assertEqual(self.snapshot.home_dir, f"{self.snapshot_fullpath}/home")
+        self.assertEqual(
+            self.test_snapshot.home_dir, self.snapshot_fullpath / "home"
+        )
 
     def test_root_home_dir(self):
-        self.assertEqual(self.snapshot.root_home_dir, f"{self.snapshot_fullpath}/root")
-
-    def tearDown(self):
-        self.patched_isdir.stop()
+        self.assertEqual(
+            self.test_snapshot.root_home_dir, self.snapshot_fullpath / "root"
+        )

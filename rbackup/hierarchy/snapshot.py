@@ -4,7 +4,6 @@
     :synopsis: Classes for creating the /tmp hierarchy.
 """
 import logging
-import os.path
 
 from rbackup.hierarchy.hierarchy import Hierarchy
 
@@ -19,7 +18,7 @@ class Snapshot(Hierarchy):
     Attributes
     ----------
     * path (inherited from Hierarchy)
-    * name
+    * name (inherited from Hierarchy)
     * boot_dir
     * etc_dir
     * home_dir
@@ -30,24 +29,10 @@ class Snapshot(Hierarchy):
         """Default constructor for the Snapshot class."""
         super().__init__(path)
 
-        self._boot_dir = os.path.join(self.path, "boot")
-        self._etc_dir = os.path.join(self.path, "etc")
-        self._home_dir = os.path.join(self.path, "home")
-        self._root_home_dir = os.path.join(self.path, "root")
-
-    @property
-    def name(self):
-        """Return the name of this snapshot.
-
-        Example
-        -------
-        >>> s = Snapshot('/tmp/data/snapshot-new')
-        >>> s.name
-        'snapshot-new'
-
-        :rtype: str
-        """
-        return os.path.basename(self.path)
+        self._boot_dir = self.path / "boot"
+        self._etc_dir = self.path / "etc"
+        self._home_dir = self.path / "home"
+        self._root_home_dir = self.path / "root"
 
     @property
     def boot_dir(self):
@@ -57,9 +42,9 @@ class Snapshot(Hierarchy):
         -------
         >>> s = Snapshot('/tmp/data/snapshot-new')
         >>> s.boot_dir
-        '/tmp/data/snapshot-new/boot'
+        PosixPath('/tmp/data/snapshot-new/boot')
 
-        :rtype: str
+        :rtype: path-like object
         """
         return self._boot_dir
 
@@ -71,9 +56,9 @@ class Snapshot(Hierarchy):
         -------
         >>> s = Snapshot('/tmp/data/snapshot-new')
         >>> s.etc_dir
-        '/tmp/data/snapshot-new/etc'
+        PosixPath('/tmp/data/snapshot-new/etc')
 
-        :rtype: str
+        :rtype: path-like object
         """
         return self._etc_dir
 
@@ -85,9 +70,9 @@ class Snapshot(Hierarchy):
         -------
         >>> s = Snapshot('/tmp/data/snapshot-new')
         >>> s.home_dir
-        '/tmp/data/snapshot-new/home'
+        PosixPath('/tmp/data/snapshot-new/home')
 
-        :rtype: str
+        :rtype: path-like object
         """
         return self._home_dir
 
@@ -99,9 +84,9 @@ class Snapshot(Hierarchy):
         -------
         >>> s = Snapshot('/tmp/data/snapshot-new')
         >>> s.root_home_dir
-        '/tmp/data/snapshot-new/root'
+        PosixPath('/tmp/data/snapshot-new/root')
 
-        :rtype: str
+        :rtype: path-like object
         """
         return self._root_home_dir
 

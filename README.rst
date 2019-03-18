@@ -48,7 +48,7 @@ Backup Directory Hierarchy
 
 Implementation Notes
 --------------------
-* os.path is used for path handling
+* pathlib is used for path handling
 * Use --link-dest=
 * Use --suffix=, --backup, and --backup-dir=
 

@@ -4,9 +4,7 @@
     :synopsis: Class for structuring a backup repository.
 """
 import logging
-import os.path
 import datetime
-import glob
 
 from rbackup.hierarchy.hierarchy import Hierarchy
 from rbackup.hierarchy.snapshot import Snapshot
@@ -32,6 +30,7 @@ class Repository(Hierarchy):
     Attributes
     ----------
     * path (inherited from Hierarchy)
+    * name (inherited from Hierarchy)
     * curr_snapshot - return either the most recent snapshot
         before running create_snapshot() or the new snapshot
         created after running create_snapshot()
@@ -40,8 +39,6 @@ class Repository(Hierarchy):
     Methods
     -------
     * create_snapshot() - create a new snapshot, then update curr_snapshot
-    * update_snapshots() - update the list of snapshots this repository
-        contains
 
     Directory Structure
     -------------------
@@ -57,13 +54,21 @@ class Repository(Hierarchy):
         """Default constructor for the Repository class."""
         super().__init__(dest)
 
-        self._snapshot_dir = os.path.join(self.path, "data")
-        self.update_snapshots()
+        self._snapshot_dir = self.path / "data"
+        self._snapshots = [
+            Snapshot(s) for s in self._snapshot_dir.glob("*") if s.is_dir()
+        ]
 
         if self._snapshots == []:
             self._curr_snapshot = None
         else:
             self._curr_snapshot = self._snapshots[-1]
+
+    def __len__(self):
+        return len(self._snapshots)
+
+    def __getitem__(self, position):
+        return self._snapshots[position]
 
     @property
     def snapshots(self):
@@ -96,7 +101,7 @@ class Repository(Hierarchy):
 
         :rtype: bool
         """
-        return self._snapshots == []
+        return self.snapshots == []
 
     @property
     def curr_snapshot(self):
@@ -116,7 +121,10 @@ class Repository(Hierarchy):
 
         :rtype: Snapshot object
         """
-        return self._curr_snapshot
+        try:
+            return self.snapshots[-1]
+        except IndexError:
+            return None
 
     def create_snapshot(
         self, name=datetime.datetime.utcnow().isoformat().replace(":", "-")
@@ -128,7 +136,6 @@ class Repository(Hierarchy):
 
         Example
         -------
-        directive   ::= "#" "doctest":" ELLIPSIS
         >>> repo = Repository('/tmp')
         >>> repo.snapshots
         []
@@ -140,21 +147,13 @@ class Repository(Hierarchy):
         :return: a new Snapshot object
         """
         syslog.debug("Creating snapshot")
-        path = os.path.join(self._snapshot_dir, f"snapshot-{name}")
+        path = self._snapshot_dir / f"snapshot-{name}"
 
         self._curr_snapshot = Snapshot(path)
-        self._snapshots.append(self._curr_snapshot)
+        self.snapshots.append(self._curr_snapshot)
 
         syslog.debug("Snapshot created")
         syslog.debug(f"Snapshot name: {self.curr_snapshot.name}")
-
-    def update_snapshots(self):
-        """Update the list of snapshots in this repository."""
-        self._snapshots = [
-            Snapshot(s)
-            for s in glob.glob(f"{self._snapshot_dir}/*")
-            if os.path.isdir(s)
-        ]
 
 
 # ========== Functions ==========
