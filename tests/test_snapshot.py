@@ -10,7 +10,7 @@ from pathlib import Path
 from rbackup.hierarchy.snapshot import Snapshot
 
 # ========== Constants ==========
-TESTING_MODULE = "rbackup.hierarchy.repository"
+TESTING_MODULE = "rbackup.hierarchy.snapshot"
 
 
 # ========== Functions ==========
@@ -33,7 +33,8 @@ class TestSnapshot(unittest.TestCase):
 
     def test_boot_dir(self):
         self.assertEqual(
-            self.test_snapshot.boot_dir, self.snapshot_fullpath / "boot"
+            self.test_snapshot.boot_dir,
+            self.snapshot_fullpath / "boot" / "loader",
         )
 
     def test_etc_dir(self):
@@ -44,6 +45,11 @@ class TestSnapshot(unittest.TestCase):
     def test_home_dir(self):
         self.assertEqual(
             self.test_snapshot.home_dir, self.snapshot_fullpath / "home"
+        )
+
+    def test_pkg_dir(self):
+        self.assertEqual(
+            self.test_snapshot.pkg_dir, self.snapshot_fullpath / "pkg"
         )
 
     def test_root_home_dir(self):

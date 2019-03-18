@@ -1,7 +1,7 @@
 """
 .. author:: Eric Torres
 .. module:: rbackup.hierarchy.snapshot
-    :synopsis: Classes for creating the /tmp hierarchy.
+    :synopsis: Classes for creating the backup hierarchy.
 """
 import logging
 
@@ -29,52 +29,56 @@ class Snapshot(Hierarchy):
         """Default constructor for the Snapshot class."""
         super().__init__(path)
 
-        self._boot_dir = self.path / "boot"
-        self._etc_dir = self.path / "etc"
-        self._home_dir = self.path / "home"
-        self._root_home_dir = self.path / "root"
-
     @property
     def boot_dir(self):
-        """Retrieve the /boot /tmp directory of this snapshot.
+        """Retrieve the /boot backup directory of this snapshot.
 
         Example
         -------
-        >>> s = Snapshot('/tmp/data/snapshot-new')
+        >>> s = Snapshot('backup/data/snapshot-new')
         >>> s.boot_dir
-        PosixPath('/tmp/data/snapshot-new/boot')
+        PosixPath('backup/data/snapshot-new/boot/loader')
 
         :rtype: path-like object
         """
-        return self._boot_dir
+        return self.path / "boot" / "loader"
 
     @property
     def etc_dir(self):
-        """Retrieve the /etc /tmp directory of this snapshot.
+        """Retrieve the /etc backup directory of this snapshot.
 
         Example
         -------
-        >>> s = Snapshot('/tmp/data/snapshot-new')
+        >>> s = Snapshot('backup/data/snapshot-new')
         >>> s.etc_dir
-        PosixPath('/tmp/data/snapshot-new/etc')
+        PosixPath('backup/data/snapshot-new/etc')
 
         :rtype: path-like object
         """
-        return self._etc_dir
+        return self.path / "etc"
 
     @property
     def home_dir(self):
-        """Retrieve the /home /tmp directory of this snapshot.
+        """Retrieve the /home backup directory of this snapshot.
 
         Example
         -------
-        >>> s = Snapshot('/tmp/data/snapshot-new')
+        >>> s = Snapshot('backup/data/snapshot-new')
         >>> s.home_dir
-        PosixPath('/tmp/data/snapshot-new/home')
+        PosixPath('backup/data/snapshot-new/home')
 
         :rtype: path-like object
         """
-        return self._home_dir
+        return self.path / "home"
+
+    @property
+    def pkg_dir(self):
+        """Retrieve the package manager backup directory of this snapshot.
+        >>> s = Snapshot('backup/data/snapshot-new')
+        >>> s.pkg_dir
+        PosixPath('backup/data/snapshot-new/pkg')
+        """
+        return self.path / "pkg"
 
     @property
     def root_home_dir(self):
@@ -82,13 +86,13 @@ class Snapshot(Hierarchy):
 
         Example
         -------
-        >>> s = Snapshot('/tmp/data/snapshot-new')
+        >>> s = Snapshot('backup/data/snapshot-new')
         >>> s.root_home_dir
-        PosixPath('/tmp/data/snapshot-new/root')
+        PosixPath('backup/data/snapshot-new/root')
 
         :rtype: path-like object
         """
-        return self._root_home_dir
+        return self.path / "root"
 
 
 # ========== Functions ==========
