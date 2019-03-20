@@ -59,15 +59,16 @@ class Repository(Hierarchy):
         """Default constructor for the Repository class."""
         super().__init__(dest)
 
-        self._snapshot_dir = self.path / "data"
+        self._snapshot_index = 0
         self._snapshots = [
-            Snapshot(s) for s in self._snapshot_dir.glob("*") if s.is_dir()
+            Snapshot(s) for s in self.snapshot_dir.glob("*") if s.is_dir()
         ]
+        self._snapshots.sort()
 
-        if self._snapshots == []:
-            self._curr_snapshot = None
-        else:
+        try:
             self._curr_snapshot = self._snapshots[-1]
+        except IndexError:
+            self._curr_snapshot = None
 
     def __len__(self):
         """Return the number of snapshots in this Repository."""
@@ -78,17 +79,31 @@ class Repository(Hierarchy):
         return self.snapshots[position]
 
     def __iter__(self):
-        self.snapshot_index = 0
         return self
 
     def __next__(self):
         """Return the next Snapshot in this Repository."""
         try:
-            result = self.snapshots[self.snapshot_index]
-            self.snapshot_index += 1
+            result = self.snapshots[self._snapshot_index]
+            self._snapshot_index += 1
             return result
         except IndexError:
             raise StopIteration
+
+    @property
+    def snapshot_dir(self):
+        """Return the directory in this Repository in which snapshots
+        are stored.
+
+        Example
+        -------
+        >>> repo = Repository('/tmp')
+        >>> repo.snapshot_dir # doctest: +ELLIPSIS
+        PosixPath('/tmp/data')
+
+        :rtype: path-like object
+        """
+        return self.path / "data"
 
     @property
     def snapshots(self):
@@ -144,10 +159,7 @@ class Repository(Hierarchy):
 
         :rtype: Snapshot object
         """
-        try:
-            return self.snapshots[-1]
-        except IndexError:
-            return None
+        return self._curr_snapshot
 
     def create_snapshot(
         self, name=datetime.datetime.utcnow().isoformat().replace(":", "-")
@@ -170,7 +182,7 @@ class Repository(Hierarchy):
         :return: a new Snapshot object
         """
         syslog.debug("Creating snapshot")
-        path = self._snapshot_dir / f"snapshot-{name}"
+        path = self.snapshot_dir / f"snapshot-{name}"
 
         self._curr_snapshot = Snapshot(path)
         self.snapshots.append(self._curr_snapshot)
