@@ -1,153 +1,121 @@
 import doctest
 import unittest
 
-from pathlib import PosixPath
+from hypothesis import given
+from hypothesis.strategies import builds, lists, text
+from pathlib import Path, PosixPath
 from rbackup.hierarchy.repository import Repository
 from rbackup.hierarchy.snapshot import Snapshot
-from unittest.mock import patch, PropertyMock
+from unittest.mock import patch, MagicMock, PropertyMock
 
 # ========== Constants  ==========
-TESTING_MODULE = "rbackup.hierarchy.repository"
+TESTING_PACKAGE = "rbackup.hierarchy"
+REPO_MODULE = f"{TESTING_PACKAGE}.repository"
+SS_MODULE = f"{TESTING_PACKAGE}.snapshot"
 
 
 # ========== Functions ==========
 def load_tests(loader, tests, ignore):
-    tests.addTests(doctest.DocTestSuite(TESTING_MODULE))
+    tests.addTests(doctest.DocTestSuite(REPO_MODULE))
     return tests
 
 
 # ========== Integration Tests ==========
-@patch.object(Repository, "snapshots", new_callable=PropertyMock)
-class TestEmptyRepository(unittest.TestCase):
-    """Test a repository that has no snapshots."""
-
+class TestRepositoryPreCreate(unittest.TestCase):
+    """Test properties of the Repository before running create_snapshot()."""
     def setUp(self):
-        self.repo_basepath = "backup"
-        self.repo = Repository(self.repo_basepath)
-        self.new_snapshot_path = self.repo.snapshot_dir / "snapshot-new"
-        self.created_snapshot = Snapshot(self.new_snapshot_path)
+        self.patched_snapshot = patch(
+            f"{TESTING_PACKAGE}.repository.Snapshot", spec_set=Snapshot
+        )
+        self.patched_snapshots = patch.object(
+            Repository, "snapshots", new_callable=PropertyMock
+        )
+        self.patched_pickle = patch(f"{TESTING_PACKAGE}.repository.pickle")
 
-    def test_len_pre_create(self, repo_snapshots):
-        repo_snapshots.return_value = []
+        self.repo_snapshots = self.patched_snapshots.start()
+        self.mocked_snapshot = self.patched_snapshot.start()
+        self.mocked_pickle = self.patched_pickle.start()
 
-        self.assertEqual(len(self.repo), 0)
-        self.assertEqual(len(self.repo), len(repo_snapshots.return_value))
+    @given(lists(builds(Snapshot, text()), unique=True))
+    def test_empty(self, l):
+        repo = Repository('backup')
+        self.repo_snapshots.return_value = l
 
-    def test_iteration_pre_create(self, repo_snapshots):
-        repo_snapshots.return_value = []
+        if l == []:
+            self.assertTrue(repo.empty)
+        else:
+            self.assertFalse(repo.empty)
 
-        with self.assertRaises(StopIteration):
-            self.repo.__next__()
+    @given(lists(builds(Snapshot, text()), unique=True))
+    def test_len(self, l):
+        repo = Repository('backup')
+        self.repo_snapshots.return_value = l
 
-    def test_subscript_pre_create(self, repo_snapshots):
-        repo_snapshots.return_value = []
+        self.assertEqual(len(repo.snapshots), len(l))
 
-        with self.assertRaises(IndexError):
-            self.repo[0]
+    @given(lists(builds(Snapshot, text()), unique=True))
+    def test_current_snapshot(self, l):
+        self.repo_snapshots.return_value = l
+        repo = Repository('backup')
 
-    def test_curr_snapshot_pre_create(self, repo_snapshots):
-        repo_snapshots.return_value = []
+        if l == []:
+            self.assertIsNone(repo.current_snapshot)
+        else:
+            self.assertIsNotNone(repo.current_snapshot)
+            self.assertIsInstance(repo.current_snapshot, Snapshot)
 
-        self.assertIsNone(self.repo.curr_snapshot)
-
-    def test_curr_snapshot_post_create(self, repo_snapshots):
-        repo_snapshots.return_value = []
-
-        snapshot_name = "new"
-
-        self.repo.create_snapshot(snapshot_name)
-
-        self.assertEqual(self.repo.curr_snapshot.path, self.created_snapshot.path)
-
-    def test_len_post_create(self, repo_snapshots):
-        repo_snapshots.return_value = [self.created_snapshot.path]
-        self.assertEqual(len(self.repo), len(repo_snapshots.return_value))
-
-    def test_iteration_post_create(self, repo_snapshots):
-        repo_snapshots.return_value = [self.created_snapshot]
-
-        result = []
-        for snapshot in self.repo:
-            result.append(snapshot)
-
-        self.assertListEqual(result, [self.created_snapshot])
-
-    def test_subscript_post_create(self, repo_snapshots):
-        repo_snapshots.return_value = [self.created_snapshot]
-
-        self.assertEqual(self.repo[0].path, self.new_snapshot_path)
+    def tearDown(self):
+        self.patched_snapshots.stop()
+        self.patched_snapshot.stop()
+        self.patched_pickle.stop()
 
 
-@patch.object(Repository, "snapshots", new_callable=PropertyMock)
-class TestPopulatedRepository(unittest.TestCase):
-    """Test a repository that has no snapshots."""
-
+class TestRepositoryPostCreate(unittest.TestCase):
+    """Test properties of the Repository before running create_snapshot()."""
     def setUp(self):
-        self.repo_basepath = "backup"
-        self.repo = Repository(self.repo_basepath)
+        self.patched_snapshot = patch(
+            f"{TESTING_PACKAGE}.repository.Snapshot", spec_set=Snapshot
+        )
+        self.patched_snapshots = patch.object(
+            Repository, "snapshots", new_callable=PropertyMock
+        )
+        self.patched_pickle = patch(f"{TESTING_PACKAGE}.repository.pickle")
 
-        self.new_snapshot_path_1 = self.repo.snapshot_dir / "snapshot-one"
-        self.new_snapshot_path_2 = self.repo.snapshot_dir / "snapshot-two"
+        self.repo_snapshots = self.patched_snapshots.start()
+        self.mocked_snapshot = self.patched_snapshot.start()
+        self.mocked_pickle = self.patched_pickle.start()
 
-        self.existing_snapshots = [
-            Snapshot(self.new_snapshot_path_1),
-            Snapshot(self.new_snapshot_path_2),
-        ]
+    @given(lists(builds(Snapshot, text()), unique=True))
+    def test_empty(self, l):
+        self.repo_snapshots.return_value = l
+        repo = Repository('backup')
 
-    def test_len_pre_create(self, repo_snapshots):
-        repo_snapshots.return_value = self.existing_snapshots
-        self.assertEqual(len(self.repo), len(repo_snapshots.return_value))
+        repo.create_snapshot()
 
-    def test_iteration_pre_create(self, repo_snapshots):
-        repo_snapshots.return_value = self.existing_snapshots
+        self.assertFalse(repo.empty)
 
-        # Exhaust the iterator first
-        for iteration in range(0, len(self.existing_snapshots)):
-            self.repo.__next__()
+    @given(lists(builds(Snapshot, text()), unique=True))
+    def test_len(self, l):
+        self.repo_snapshots.return_value = l
+        repo = Repository('backup')
 
-        with self.assertRaises(StopIteration):
-            self.repo.__next__()
+        repo.create_snapshot()
 
-    def test_subscript_pre_create(self, repo_snapshots):
-        repo_snapshots.return_value = self.existing_snapshots
+        # Did the repository add the snapshot to its internal list?
+        self.assertEqual(len(repo.snapshots), len(l))
 
-        with self.assertRaises(IndexError):
-            self.repo[len(self.repo) + 1]
+    @given(lists(builds(Snapshot, text()), unique=True))
+    def test_current_snapshot(self, l):
+        self.repo_snapshots.return_value = l
+        repo = Repository('backup')
 
-        with self.assertRaises(IndexError):
-            self.repo[-1 * len(self.repo) - 1]
+        new_snapshot = repo.create_snapshot()
 
-    def test_curr_snapshot_pre_create(self, repo_snapshots):
-        repo_snapshots.return_value = self.existing_snapshots
+        self.assertIs(new_snapshot, l[-1])
+        self.assertIs(repo.current_snapshot, l[-1])
+        self.assertIsInstance(new_snapshot, Snapshot)
 
-        self.assertListEqual(self.repo.snapshots, self.existing_snapshots)
-
-    def test_curr_snapshot_post_create(self, repo_snapshots):
-        """We want to combine all of the tests before the snapshot
-        creation into one snapshot so as to not repeat the creation
-        of a new snapshot for each test."""
-        repo_snapshots.return_value = self.existing_snapshots
-
-        snapshot_name = "new"
-
-        self.repo.create_snapshot(snapshot_name)
-
-        self.new_snapshot_path_3 = self.repo.snapshot_dir / f"snapshot-{snapshot_name}"
-
-        self.assertEqual(self.repo.curr_snapshot.path, self.new_snapshot_path_3)
-
-        # Test that len works correctly
-        self.assertEqual(len(self.repo), len(self.existing_snapshots))
-
-        # Test that iteration works correctly
-        result = []
-        for snapshot in self.repo:
-            result.append(snapshot)
-
-        self.assertListEqual(result, self.existing_snapshots)
-
-        repo_snapshots.return_value = self.existing_snapshots
-
-        # Test that subscripts work correctly
-        self.assertEqual(self.repo[0].path, self.existing_snapshots[0].path)
-        self.assertEqual(self.repo[-1].path, self.existing_snapshots[-1].path)
+    def tearDown(self):
+        self.patched_snapshots.stop()
+        self.patched_snapshot.stop()
+        self.patched_pickle.stop()
