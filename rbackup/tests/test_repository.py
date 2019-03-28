@@ -87,7 +87,7 @@ class TestRepositoryPostCreate(unittest.TestCase):
 
     @given(lists(builds(Snapshot, text()), unique=True))
     def test_empty(self, l):
-        self.repo_snapshots.return_value = l
+        self.repo_snapshots.return_value = l.copy()
         repo = Repository('backup')
 
         repo.create_snapshot()
@@ -96,23 +96,21 @@ class TestRepositoryPostCreate(unittest.TestCase):
 
     @given(lists(builds(Snapshot, text()), unique=True))
     def test_len(self, l):
-        self.repo_snapshots.return_value = l
+        self.repo_snapshots.return_value = l.copy()
         repo = Repository('backup')
 
         repo.create_snapshot()
 
-        # Did the repository add the snapshot to its internal list?
-        self.assertEqual(len(repo.snapshots), len(l))
+        self.assertEqual(len(repo.snapshots), len(l) + 1)
 
     @given(lists(builds(Snapshot, text()), unique=True))
     def test_current_snapshot(self, l):
-        self.repo_snapshots.return_value = l
+        self.repo_snapshots.return_value = l.copy()
         repo = Repository('backup')
 
         new_snapshot = repo.create_snapshot()
 
-        self.assertIs(new_snapshot, l[-1])
-        self.assertIs(repo.current_snapshot, l[-1])
+        self.assertIs(new_snapshot, repo.current_snapshot)
         self.assertIsInstance(new_snapshot, Snapshot)
 
     def tearDown(self):
