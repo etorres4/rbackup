@@ -3,7 +3,12 @@
 .. module:: rbackup.hierarchy.hierarchy
     :synopsis: Classes for creating the backup hierarchy.
 """
+import logging
+
 from pathlib import Path
+
+# ========== Logging Setup ===========
+syslog = logging.getLogger(__name__)
 
 
 # ========== Classes ==========
@@ -32,7 +37,12 @@ class Hierarchy:
         :param dest: the root directory of the backup hierarchy
         :type dest: str, path-like object
         """
-        self._path = Path(dest)
+        try:
+            self._path = Path(dest)
+        except TypeError as e:
+            raise e
+
+        self._metadata_path = self.path / ".metadata"
 
     @property
     def path(self):
