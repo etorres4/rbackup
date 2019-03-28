@@ -5,6 +5,7 @@
 """
 import logging
 import datetime
+import pickle
 
 from rbackup.hierarchy.hierarchy import Hierarchy
 from rbackup.hierarchy.snapshot import Snapshot
@@ -18,9 +19,16 @@ syslog = logging.getLogger(__name__)
 class Repository(Hierarchy):
     """A class for interacting with a backup repository.
 
+        Repository is a mutable, stateful class for representing a
+        directory that contains backup data sequestered into snapshots
+        and a symlink to the most recently created snapshot.
+    * Each snapshot in a repository is unaware of one another,
+      this is the job of the repository to organize
+    * The only way snapshots are linked together is in files
+      that are hardlinked together
+
     At the time of creation, the following is true about the class:
     ===============================================================
-
     The current snapshot points to:
     -------------------------------
     * None if the repository is empty
@@ -31,14 +39,15 @@ class Repository(Hierarchy):
     ----------
     * path (inherited from Hierarchy)
     * name (inherited from Hierarchy)
-    * curr_snapshot - return either the most recent snapshot
+    * current_snapshot - either the most recent snapshot
         before running create_snapshot() or the new snapshot
         created after running create_snapshot()
-    * snapshots - return a list of snapshots stored in this repository
+    * snapshots - a list of snapshots stored in this repository
+    * snapshot_dir - the snapshot storage location of this repository
 
     Methods
     -------
-    * create_snapshot() - create a new snapshot, then update curr_snapshot
+    * create_snapshot() - create a new snapshot, then update current_snapshot
 
     Directory Structure
     -------------------
@@ -60,15 +69,17 @@ class Repository(Hierarchy):
         super().__init__(dest)
 
         self._snapshot_index = 0
-        self._snapshots = [
-            Snapshot(s) for s in self.snapshot_dir.glob("*") if s.is_dir()
-        ]
-        self._snapshots.sort()
+
+        if self._metadata_path.exists():
+            with self._metadata_path.open(mode="rb") as metadata_file:
+                self._snapshots = pickle.load(metadata_file)
+        else:
+            self._snapshots = []
 
         try:
-            self._curr_snapshot = self._snapshots[-1]
+            self._current_snapshot = self.snapshots[-1]
         except IndexError:
-            self._curr_snapshot = None
+            self._current_snapshot = None
 
     def __len__(self):
         """Return the number of snapshots in this Repository."""
@@ -78,8 +89,16 @@ class Repository(Hierarchy):
         """Retrieve a Snapshot at a certain index."""
         return self.snapshots[position]
 
+    def __delitem__(self, s):
+        """Delete a Snapshot in this Repository."""
+        raise NotImplementedError
+
     def __iter__(self):
         return self
+
+    def __contains__(self, snapshot):
+        """Check whether a Snapshot is in this Repository."""
+        raise NotImplementedError
 
     def __next__(self):
         """Return the next Snapshot in this Repository."""
@@ -114,7 +133,8 @@ class Repository(Hierarchy):
         >>> repo = Repository('/tmp')
         >>> repo.snapshots
         []
-        >>> repo.create_snapshot()
+        >>> repo.create_snapshot() # doctest: +ELLIPSIS
+        <...Snapshot ... at 0x...>
         >>> repo.snapshots # doctest: +ELLIPSIS
         [<...Snapshot ... at 0x...>]
 
@@ -133,7 +153,8 @@ class Repository(Hierarchy):
         >>> repo = Repository('/tmp')
         >>> repo.empty
         True
-        >>> repo.create_snapshot()
+        >>> repo.create_snapshot() # doctest: +ELLIPSIS
+        <...Snapshot ... at 0x...>
         >>> repo.empty
         False
 
@@ -142,24 +163,12 @@ class Repository(Hierarchy):
         return self.snapshots == []
 
     @property
-    def curr_snapshot(self):
+    def current_snapshot(self):
         """Return this Repository's current snapshot.
-
-        Example
-        -------
-        >>> repo = Repository('/tmp')
-        >>> repo.curr_snapshot
-        >>> repo.snapshots
-        []
-        >>> repo.create_snapshot()
-        >>> repo.snapshots # doctest: +ELLIPSIS
-        [<...Snapshot ... at 0x...>]
-        >>> repo.curr_snapshot # doctest: +ELLIPSIS
-        <...Snapshot ... at 0x...>
 
         :rtype: Snapshot object
         """
-        return self._curr_snapshot
+        return self._current_snapshot
 
     def create_snapshot(
         self, name=datetime.datetime.utcnow().isoformat().replace(":", "-")
@@ -169,26 +178,27 @@ class Repository(Hierarchy):
         This method is non-intrusive in that it will not
         make any changes in the filesystem when called.
 
-        Example
-        -------
-        >>> repo = Repository('/tmp')
-        >>> repo.snapshots
-        []
-        >>> repo.curr_snapshot
-        >>> repo.create_snapshot()
-        >>> repo.curr_snapshot # doctest: +ELLIPSIS
-        <...Snapshot ... at 0x...>
-
         :return: a new Snapshot object
         """
         syslog.debug("Creating snapshot")
-        path = self.snapshot_dir / f"snapshot-{name}"
 
-        self._curr_snapshot = Snapshot(path)
-        self.snapshots.append(self._curr_snapshot)
+        if not isinstance(name, str):
+            raise ValueError(f"{name} is not a valid type for a snapshot name")
+
+        snapshot_name = (
+            name
+            if name is not None
+            else datetime.datetime.utcnow().isoformat().replace(":", "-")
+        )
+        path = self.snapshot_dir / f"snapshot-{snapshot_name}"
+
+        self._current_snapshot = Snapshot(path)
+        self.snapshots.append(self._current_snapshot)
 
         syslog.debug("Snapshot created")
-        syslog.debug(f"Snapshot name: {self.curr_snapshot.name}")
+        syslog.debug(f"Snapshot name: {self.current_snapshot.name}")
+
+        return self._current_snapshot
 
 
 # ========== Functions ==========
