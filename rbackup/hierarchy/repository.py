@@ -15,6 +15,13 @@ from rbackup.hierarchy.snapshot import Snapshot
 syslog = logging.getLogger(__name__)
 
 
+# ========== Constants ==========
+METADATA_READ = "rb"
+METADATA_WRITE = "wb"
+DIRMODE = 0o755
+FILEMODE = 0o644
+
+
 # ========== Classes ==========
 class Repository(Hierarchy):
     """A class for interacting with a backup repository.
@@ -39,6 +46,7 @@ class Repository(Hierarchy):
     ----------
     * path (inherited from Hierarchy)
     * name (inherited from Hierarchy)
+    * metadata_path (inherited from Hierarchy)
     * current_snapshot - either the most recent snapshot
         before running create_snapshot() or the new snapshot
         created after running create_snapshot()
@@ -70,24 +78,34 @@ class Repository(Hierarchy):
 
         self._snapshot_index = 0
 
-        if self._metadata_path.exists():
-            with self._metadata_path.open(mode="rb") as metadata_file:
-                self._snapshots = pickle.load(metadata_file)
+        if not self.metadata_path.exists():
+            self._init_new_repository()
         else:
-            self._snapshots = []
+            self._read_metadata()
 
-        try:
-            self._current_snapshot = self.snapshots[-1]
-        except IndexError:
-            self._current_snapshot = None
+    def _init_new_repository(self):
+        self.metadata_path.parent.mkdir(mode=DIRMODE, exist_ok=True)
+        self.metadata_path.touch(mode=FILEMODE)
+
+        self._data = {"snapshots": [], "current_snapshot": None}
+
+        self._write_metadata()
+
+    def _read_metadata(self):
+        with self.metadata_path.open(mode=METADATA_READ) as mfile:
+            self._data = pickle.load(mfile)
+
+    def _write_metadata(self):
+        with self.metadata_path.open(mode=METADATA_WRITE) as mfile:
+            pickle.dump(self._data, mfile)
 
     def __len__(self):
         """Return the number of snapshots in this Repository."""
-        return len(self.snapshots)
+        return len(self._data["snapshots"])
 
     def __getitem__(self, position):
         """Retrieve a Snapshot at a certain index."""
-        return self.snapshots[position]
+        return self.data["snapshots"][position]
 
     def __delitem__(self, s):
         """Delete a Snapshot in this Repository."""
@@ -103,7 +121,7 @@ class Repository(Hierarchy):
     def __next__(self):
         """Return the next Snapshot in this Repository."""
         try:
-            result = self.snapshots[self._snapshot_index]
+            result = self._data["snapshots"][self._snapshot_index]
             self._snapshot_index += 1
             return result
         except IndexError:
@@ -142,7 +160,7 @@ class Repository(Hierarchy):
             date
         :rtype: list of Snapshot objects
         """
-        return self._snapshots
+        return self._data["snapshots"]
 
     @property
     def empty(self):
@@ -160,7 +178,7 @@ class Repository(Hierarchy):
 
         :rtype: bool
         """
-        return self.snapshots == []
+        return self._data["snapshots"] == []
 
     @property
     def current_snapshot(self):
@@ -168,37 +186,36 @@ class Repository(Hierarchy):
 
         :rtype: Snapshot object
         """
-        return self._current_snapshot
+        return self._data["current_snapshot"]
 
-    def create_snapshot(
-        self, name=datetime.datetime.utcnow().isoformat().replace(":", "-")
-    ):
+    def create_snapshot(self, name=None):
         """Create a new snapshot in this repository.
 
         This method is non-intrusive in that it will not
         make any changes in the filesystem when called.
 
+        :param name: the name of the snapshot
+        :type name: str
         :return: a new Snapshot object
         """
         syslog.debug("Creating snapshot")
 
-        if not isinstance(name, str):
-            raise ValueError(f"{name} is not a valid type for a snapshot name")
-
         snapshot_name = (
             name
             if name is not None
-            else datetime.datetime.utcnow().isoformat().replace(":", "-")
+            else datetime.datetime.utcnow().isoformat().replace(":", "_")
         )
-        path = self.snapshot_dir / f"snapshot-{snapshot_name}"
+        path = self.snapshot_dir / snapshot_name
 
-        self._current_snapshot = Snapshot(path)
-        self.snapshots.append(self._current_snapshot)
+        self._data["current_snapshot"] = Snapshot(path)
+        self._data["snapshots"].append(self._data["current_snapshot"])
+
+        self._write_metadata()
 
         syslog.debug("Snapshot created")
         syslog.debug(f"Snapshot name: {self.current_snapshot.name}")
 
-        return self._current_snapshot
+        return self._data["current_snapshot"]
 
 
 # ========== Functions ==========
