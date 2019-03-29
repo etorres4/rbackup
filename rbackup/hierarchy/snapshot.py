@@ -19,6 +19,7 @@ class Snapshot(Hierarchy):
     ----------
     * path (inherited from Hierarchy)
     * name (inherited from Hierarchy)
+    * metadata_path (inherited from Hierarchy)
     * boot_dir
     * etc_dir
     * home_dir

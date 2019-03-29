@@ -23,13 +23,12 @@ class Hierarchy:
     ----------
     * path
     * name
+    * metadata_path
     """
 
     def __init__(self, dest):
         """Default constructor for the Hierarchy class.
 
-        Example
-        -------
         >>> hier = Hierarchy('backup')
         >>> hier.path
         PosixPath('backup')
@@ -42,14 +41,10 @@ class Hierarchy:
         except TypeError as e:
             raise e
 
-        self._metadata_path = self.path / ".metadata"
-
     @property
     def path(self):
         """Return the base directory of this hierarchy.
 
-        Example
-        -------
         >>> hier = Hierarchy('backup')
         >>> hier.path
         PosixPath('backup')
@@ -62,8 +57,6 @@ class Hierarchy:
     def name(self):
         """Return the name of this hierarchy.
 
-        Example
-        -------
         >>> hier = Hierarchy('backup/data/snapshot-one')
         >>> hier.name
         'snapshot-one'
@@ -71,6 +64,18 @@ class Hierarchy:
         :rtype: str
         """
         return self.path.name
+
+    @property
+    def metadata_path(self):
+        """Return the path of this hierarchy's metadata file.
+
+        >>> hier = Hierarchy('backup')
+        >>> hier.metadata_path
+        PosixPath('backup/.metadata')
+
+        :rtype: path-like object
+        """
+        return self.path / ".metadata"
 
 
 # ========== Functions ==========
