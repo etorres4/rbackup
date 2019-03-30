@@ -85,6 +85,7 @@ class Repository(Hierarchy):
             self._data = self.read_metadata()
 
     def _init_new_repository(self):
+        """Perform the setup steps for a new repository."""
         self.metadata_path.parent.mkdir(mode=DIRMODE, exist_ok=True)
         self.metadata_path.touch(mode=FILEMODE)
 
@@ -125,13 +126,28 @@ class Repository(Hierarchy):
 
         Example
         -------
-        >>> repo = Repository('/tmp')
+        >>> repo = Repository('backup')
         >>> repo.snapshot_dir # doctest: +ELLIPSIS
-        PosixPath('/tmp/data')
+        PosixPath('backup/data')
 
         :rtype: path-like object
         """
         return self.path / "data"
+
+    def gen_snapshot_path(self, name):
+        """Generate a path for a Snapshot by name.
+
+        Example
+        -------
+        >>> repo = Repository('backup')
+        >>> repo.gen_snapshot_path('new-snapshot') # doctest: +ELLIPSIS
+        PosixPath('backup/data/new-snapshot')
+
+        :param name: name of the Snapshot
+        :type name: str or path-like object
+        :rtype: path-like object
+        """
+        return self.snapshot_dir / name
 
     @property
     def snapshots(self):
@@ -188,6 +204,7 @@ class Repository(Hierarchy):
         :param name: the name of the snapshot
         :type name: str
         :return: a new Snapshot object
+        :raises: FileExistsError if snapshot directory already exists
         """
         syslog.debug("Creating snapshot")
 
@@ -196,9 +213,7 @@ class Repository(Hierarchy):
             if name is not None
             else datetime.datetime.utcnow().isoformat().replace(":", "_")
         )
-        path = self.snapshot_dir / snapshot_name
-
-        self._data["current_snapshot"] = Snapshot(path)
+        self._data["current_snapshot"] = Snapshot(self.gen_snapshot_path(snapshot_name))
         self._data["snapshots"].append(self._data["current_snapshot"])
 
         self.write_metadata()

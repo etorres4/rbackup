@@ -39,7 +39,21 @@ class TestRepositoryPreCreate(unittest.TestCase):
         self.mocked_w_metadata = self.patched_w_metadata.start()
         self.mocked_path = self.patched_path.start()
         self.mocked_snapshot = self.patched_snapshot.start()
-        self.mocked_pickle = self.patched_pickle.start()
+
+        self.mocked_path.return_value.exists.return_value = True
+
+    @given(text())
+    def test_gen_snapshot_path(self, name):
+        self.mocked_r_metadata.return_value = {
+            "snapshots": [],
+            "current_snapshot": None,
+        }
+
+        repo = Repository("backup")
+        snapshot_path = repo.gen_snapshot_path(name)
+
+        self.assertEqual(snapshot_path, Path(f"backup/data/{name}"))
+        self.assertIsInstance(snapshot_path, Path)
 
     @given(lists(builds(Snapshot, text()), unique=True))
     def test_empty(self, l):
