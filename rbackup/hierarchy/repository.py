@@ -146,7 +146,11 @@ class Repository(Hierarchy):
         :param name: name of the Snapshot
         :type name: str or path-like object
         :rtype: path-like object
+        :raises: ValueError if name contains slashes
         """
+        if "/" in str(name):
+            raise ValueError("Names cannot contain slashes")
+
         return self.snapshot_dir / name
 
     @property

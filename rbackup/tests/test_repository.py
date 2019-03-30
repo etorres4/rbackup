@@ -50,10 +50,14 @@ class TestRepositoryPreCreate(unittest.TestCase):
         }
 
         repo = Repository("backup")
-        snapshot_path = repo.gen_snapshot_path(name)
 
-        self.assertEqual(snapshot_path, Path(f"backup/data/{name}"))
-        self.assertIsInstance(snapshot_path, Path)
+        if "/" not in name:
+            snapshot_path = repo.gen_snapshot_path(name)
+            self.assertEqual(snapshot_path, Path(f"backup/data/{name}"))
+            self.assertIsInstance(snapshot_path, Path)
+        else:
+            with self.assertRaises(ValueError):
+                snapshot_path = repo.gen_snapshot_path(name)
 
     @given(lists(builds(Snapshot, text()), unique=True))
     def test_empty(self, l):
