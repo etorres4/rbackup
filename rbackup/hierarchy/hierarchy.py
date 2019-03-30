@@ -46,7 +46,7 @@ class Hierarchy:
         PosixPath('backup')
 
         :param dest: the root directory of the backup hierarchy
-        :type dest: str, path-like object
+        :type dest: str or path-like object
         """
         try:
             self._path = Path(dest)
