@@ -5,7 +5,6 @@
 """
 import logging
 import datetime
-import pickle
 
 from rbackup.hierarchy.hierarchy import Hierarchy
 from rbackup.hierarchy.snapshot import Snapshot
@@ -16,8 +15,6 @@ syslog = logging.getLogger(__name__)
 
 
 # ========== Constants ==========
-METADATA_READ = "rb"
-METADATA_WRITE = "wb"
 DIRMODE = 0o755
 FILEMODE = 0o644
 
@@ -55,7 +52,10 @@ class Repository(Hierarchy):
 
     Methods
     -------
-    * create_snapshot() - create a new snapshot, then update current_snapshot
+    * create_snapshot - create a new snapshot, then update current_snapshot
+    * gen_snapshot_path - generate a path for a snapshot given by name
+    * read_metadata (inherited from Hierarchy)
+    * write_metadata (inherited from Hierarchy)
 
     Directory Structure
     -------------------
@@ -79,25 +79,16 @@ class Repository(Hierarchy):
         self._snapshot_index = 0
 
         if not self.metadata_path.exists():
+            self._data = {"snapshots": [], "current_snapshot": None}
             self._init_new_repository()
         else:
-            self._read_metadata()
+            self._data = self.read_metadata()
 
     def _init_new_repository(self):
         self.metadata_path.parent.mkdir(mode=DIRMODE, exist_ok=True)
         self.metadata_path.touch(mode=FILEMODE)
 
-        self._data = {"snapshots": [], "current_snapshot": None}
-
-        self._write_metadata()
-
-    def _read_metadata(self):
-        with self.metadata_path.open(mode=METADATA_READ) as mfile:
-            self._data = pickle.load(mfile)
-
-    def _write_metadata(self):
-        with self.metadata_path.open(mode=METADATA_WRITE) as mfile:
-            pickle.dump(self._data, mfile)
+        self.write_metadata()
 
     def __len__(self):
         """Return the number of snapshots in this Repository."""
@@ -210,7 +201,12 @@ class Repository(Hierarchy):
         self._data["current_snapshot"] = Snapshot(path)
         self._data["snapshots"].append(self._data["current_snapshot"])
 
-        self._write_metadata()
+        self.write_metadata()
+
+        try:
+            self._data["current_snapshot"].path.mkdir(mode=DIRMODE, parents=True)
+        except FileExistsError as e:
+            raise e
 
         syslog.debug("Snapshot created")
         syslog.debug(f"Snapshot name: {self.current_snapshot.name}")

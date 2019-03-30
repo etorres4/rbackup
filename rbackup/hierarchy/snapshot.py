@@ -24,6 +24,11 @@ class Snapshot(Hierarchy):
     * etc_dir
     * home_dir
     * root_home_dir
+
+    Methods
+    -------
+    * read_metadata (inherited from Hierarchy)
+    * write_metadata (inherited from Hierarchy)
     """
 
     def __init__(self, path):
