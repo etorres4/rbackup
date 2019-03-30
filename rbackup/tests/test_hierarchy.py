@@ -5,7 +5,6 @@ from hypothesis import given
 from hypothesis.strategies import booleans, characters, iterables, one_of, none, text
 from pathlib import Path
 from rbackup.hierarchy.hierarchy import Hierarchy
-from unittest.mock import patch
 
 # ========== Constants ==========
 TESTING_MODULE = "rbackup.hierarchy.hierarchy"

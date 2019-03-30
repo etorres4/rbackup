@@ -6,7 +6,6 @@ Unit tests for the Snapshot class.
 import doctest
 import unittest
 
-from pathlib import Path
 from rbackup.hierarchy.snapshot import Snapshot
 
 # ========== Constants ==========
