@@ -115,6 +115,32 @@ class TestPackageManagerMethods(unittest.TestCase):
         self.p._gen_pkglist()
         self.mocked_tempfile.assert_not_called()
 
+    def test_db_archive(self):
+        p = Path("tmpfile")
+        self.mocked_path.return_value = p
+
+        archive = self.p.gen_db_archive()
+
+        self.assertIsInstance(archive, Path)
+        self.mocked_tempfile.assert_called_with(delete=False, suffix=".tar")
+        self.mocked_tarfile.assert_called_with(name=p, mode="w")
+
+    def test_db_archive_compress_mode(self):
+        p = Path("tmpfile")
+        compress = "xz"
+        self.mocked_path.return_value = p
+
+        archive = self.p.gen_db_archive(compress)
+
+        self.assertIsInstance(archive, Path)
+        self.mocked_tempfile.assert_called_with(delete=False, suffix=".tar.xz")
+        self.mocked_tarfile.assert_called_with(name=p, mode="w:xz")
+
+    @given(from_regex(r"(?!gz|bz2|lzma|xz)"))
+    def test_db_archive_invalid_compress_mode(self, invalid_mode):
+        with self.assertRaises(ValueError):
+            self.p.gen_db_archive(invalid_mode)
+
     def tearDown(self):
         self.patched_path.stop()
         self.patched_subprocess.stop()

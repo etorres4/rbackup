@@ -12,7 +12,7 @@ from pathlib import Path
 from tempfile import NamedTemporaryFile
 
 # ========== Constants ==========
-
+VALID_DB_COMPRESS_MODES = ["bzip2", "gz", "lzma", "xz"]
 
 # ========== Logging Setup ==========
 syslog = logging.getLogger(__name__)
@@ -83,21 +83,29 @@ class PackageManager:
             All arguments and keyword-only arguments are passed directly
             to the packagemanagerk
 
+        :param compress: compression mode
+        :type compress: str
         :returns: the path to the created file
         :rtype: path-like object
+        :raises: ValueError if compress is not in packagemanager.VALID_DB_COMPRESS_MODES
         """
-        raise NotImplementedError
-
         syslog.info("Creating a database archive")
 
-        with NamedTemporaryFile(delete=False) as db_archive:
-            archive = tarfile.open(*args, **kwargs)
+        if compress is not None and compress not in VALID_DB_COMPRESS_MODES:
+            raise ValueError(f"{compress} is not a valid compress mode")
 
-            archive.add(cachedir)
+        archivemode = "w" if compress is None else f"w:{compress}"
+        archivesuffix = ".tar" if compress is None else f".tar.{compress}"
+
+        with NamedTemporaryFile(delete=False, suffix=archivesuffix) as tmpfile:
+            archive_path = Path(tmpfile.name)
+
+        with tarfile.open(name=archive_path, mode=archivemode) as db_archive:
+            db_archive.add(self.database_path)
 
         syslog.info("Database archive generation complete")
 
-        return Path(db_archive.name)
+        return archive_path
 
     @property
     def cache_directory(self):
