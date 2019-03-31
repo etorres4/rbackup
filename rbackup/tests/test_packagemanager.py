@@ -102,7 +102,7 @@ class TestPackageManagerMethods(unittest.TestCase):
         self.mocked_run.return_value.stdout = "packages"
         self.mocked_tempfile.return_value.name = "tempfile"
 
-        pkglist = self.p._gen_pkglist()
+        pkglist = self.p.gen_pkglist()
 
         self.mocked_tempfile.return_value.__enter__.return_value.write.assert_called_with(
             "packages"
@@ -112,7 +112,7 @@ class TestPackageManagerMethods(unittest.TestCase):
     def test_pkglist_subprocess_error(self):
         self.mocked_run.side_effect = subprocess.CalledProcessError(1, self.pkglist_cmd)
 
-        self.p._gen_pkglist()
+        self.p.gen_pkglist()
         self.mocked_tempfile.assert_not_called()
 
     def test_db_archive(self):

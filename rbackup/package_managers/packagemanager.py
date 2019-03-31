@@ -43,11 +43,7 @@ class PackageManager:
         self._db_path = Path(db_path)
         self._pkglist_cmd = pkglist_cmd
 
-    def __init_subclass__(cls, cachedir, db_path, pkglist_cmd):
-        """Default constructor for all child classes."""
-        super().__init_subclass(cachedir, db_path, pkglist_cmd)
-
-    def _gen_pkglist(self):
+    def gen_pkglist(self):
         """Generate a text file listing installed packages
         on the system and return the path to that file.
 
@@ -74,7 +70,7 @@ class PackageManager:
             syslog.info("Package list generation complete")
             return Path(pkglist.name)
 
-    def _gen_db_archive(self, *args, **kwargs):
+    def gen_db_archive(self, compress=None):
         """Generate a database archive for this package manager.
 
             Note that this method is internal and is
