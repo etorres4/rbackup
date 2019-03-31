@@ -159,7 +159,7 @@ class Repository(Hierarchy):
 
         Example
         -------
-        >>> repo = Repository('/tmp')
+        >>> repo = Repository('backup')
         >>> repo.snapshots
         []
         >>> repo.create_snapshot() # doctest: +ELLIPSIS
@@ -179,7 +179,7 @@ class Repository(Hierarchy):
 
         Example
         -------
-        >>> repo = Repository('/tmp')
+        >>> repo = Repository('backup')
         >>> repo.empty
         True
         >>> repo.create_snapshot() # doctest: +ELLIPSIS
