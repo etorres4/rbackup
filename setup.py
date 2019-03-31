@@ -1,8 +1,14 @@
 import setuptools
 
+# ========== Constants ==========
+PACKAGES = ["rbackup"]
+SCRIPTS = ["bin/backup"]
+
+# ========== Functions ==========
 with open("README.rst", "r") as fh:
     long_description = fh.read()
 
+# ========== Package Setup ==========
 setuptools.setup(
     name="rbackup",
     version="0.1",
@@ -13,7 +19,7 @@ setuptools.setup(
     long_description_content_type="text/plain",
     url="",
     packages=PACKAGES,
-    scripts=["bin/backup"],
+    scripts=SCRIPTS,
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
