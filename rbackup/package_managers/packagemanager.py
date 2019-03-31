@@ -28,7 +28,10 @@ class PackageManager:
         :param db_path: path to the package manager database
         :type db_path: str or path-like object
         :param pkglist_cmd: command to list installed packages to stdout
-        :type pkglist_cmd: list
+        :type pkglist_cmd: str or iterable of str
+        :raises: TypeError if pkglist_cmd is not str or an iterable of str
+        :raises: ValueError if pkglist_cmd is an empty str or an iterable
+            containing an empty str
         """
         if not isinstance(pkglist_cmd, Iterable) or isinstance(pkglist_cmd, dict):
             raise TypeError("pkglist_cmd is the wrong type")
