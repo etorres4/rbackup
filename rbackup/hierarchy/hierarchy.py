@@ -95,11 +95,13 @@ class Hierarchy:
 
         :rtype: dict
         """
+        syslog.debug(f"Reading metadata from {self.metadata_path}")
         with self.metadata_path.open(mode=METADATA_READ) as mfile:
             return pickle.load(mfile)
 
     def write_metadata(self):
         """Write this repository's metadata to its file."""
+        syslog.debug(f"Writing metadata to {self.metadata_path}")
         with self.metadata_path.open(mode=METADATA_WRITE) as mfile:
             pickle.dump(self._data, mfile)
 
