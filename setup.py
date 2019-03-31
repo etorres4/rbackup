@@ -12,7 +12,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/plain",
     url="",
-    packages=setuptools.find_packages(),
+    packages=PACKAGES,
     scripts=["bin/backup"],
     classifiers=[
         "Programming Language :: Python :: 3",
