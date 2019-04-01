@@ -8,4 +8,4 @@ from rbackup.package_managers.packagemanager import PackageManager
 
 class Pacman(PackageManager):
     def __init__(self):
-        super().__init__("/var/cache/pacman", "/var/lib/pacman", ["pacman", "-Qqe"])
+        super().__init__("/var/cache/pacman", "/var/lib/pacman", ("pacman", "-Qqe"))
