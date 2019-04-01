@@ -109,7 +109,7 @@ class Hierarchy(PathLike):
         """
         syslog.debug(f"Writing metadata to {self.metadata_path}")
 
-        tmpfile = self.metadata_path.with_suffix('.tmp')
+        tmpfile = self.metadata_path.with_suffix(".tmp")
 
         with tmpfile.open(mode=METADATA_WRITE) as mfile:
             pickle.dump(self._data, mfile)
