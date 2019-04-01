@@ -6,6 +6,7 @@
 import logging
 import pickle
 
+from os import PathLike
 from pathlib import Path
 
 # ========== Logging Setup ===========
@@ -18,7 +19,7 @@ METADATA_WRITE = "wb"
 
 
 # ========== Classes ==========
-class Hierarchy:
+class Hierarchy(PathLike):
     """A class for organizing the backup root hierarchy.
 
     Upon creation of a Hierarchy object, it is up to the caller
@@ -52,6 +53,9 @@ class Hierarchy:
             self._path = Path(dest)
         except TypeError as e:
             raise e
+
+    def __fspath__(self):
+        return str(self._path)
 
     @property
     def path(self):
