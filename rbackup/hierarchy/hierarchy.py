@@ -100,10 +100,17 @@ class Hierarchy:
             return pickle.load(mfile)
 
     def write_metadata(self):
-        """Write this repository's metadata to its file."""
+        """Write this repository's metadata to its file.
+            Note that this write operation is atomic to the caller.
+        """
         syslog.debug(f"Writing metadata to {self.metadata_path}")
-        with self.metadata_path.open(mode=METADATA_WRITE) as mfile:
+
+        tmpfile = self.metadata_path.with_suffix('.tmp')
+
+        with tmpfile.open(mode=METADATA_WRITE) as mfile:
             pickle.dump(self._data, mfile)
+
+        tmpfile.rename(self.metadata_path)
 
 
 # ========== Functions ==========
