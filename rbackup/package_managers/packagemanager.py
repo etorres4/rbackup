@@ -88,10 +88,10 @@ class PackageManager:
         :rtype: path-like object
         :raises: ValueError if compress is not in packagemanager.VALID_DB_COMPRESS_MODES
         """
-        syslog.info("Creating a database archive")
-
         if compress is not None and compress not in VALID_DB_COMPRESS_MODES:
             raise ValueError(f"{compress} is not a valid compress mode")
+
+        syslog.info("Creating a database archive")
 
         archivemode = "w" if compress is None else f"w:{compress}"
         archivesuffix = ".tar" if compress is None else f".tar.{compress}"
