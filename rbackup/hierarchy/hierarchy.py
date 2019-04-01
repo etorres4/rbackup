@@ -79,7 +79,7 @@ class Hierarchy(PathLike):
 
         :rtype: str
         """
-        return self.path.name
+        return self._path.name
 
     @property
     def metadata_path(self):
@@ -91,7 +91,7 @@ class Hierarchy(PathLike):
 
         :rtype: path-like object
         """
-        return self.path / ".metadata"
+        return self._path / ".metadata"
 
     def read_metadata(self):
         """Read this repository's metadata from its file and
