@@ -54,6 +54,10 @@ class Hierarchy(PathLike):
         except TypeError as e:
             raise e
 
+    def __repr__(self):
+        """Return a string representation of this Hierarchy."""
+        return f"{self.__class__.__name__}('{self._path}')"
+
     def __fspath__(self):
         return str(self._path)
 
