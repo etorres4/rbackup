@@ -97,7 +97,7 @@ class Repository(Hierarchy):
 
     def __getitem__(self, position):
         """Retrieve a Snapshot at a certain index."""
-        return self.data["snapshots"][position]
+        return self._data["snapshots"][position]
 
     def __delitem__(self, s):
         """Delete a Snapshot in this Repository."""
