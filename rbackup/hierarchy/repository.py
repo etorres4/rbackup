@@ -124,24 +124,12 @@ class Repository(Hierarchy):
         """Return the directory in this Repository in which snapshots
         are stored.
 
-        Example
-        -------
-        >>> repo = Repository('backup')
-        >>> repo.snapshot_dir # doctest: +ELLIPSIS
-        PosixPath('backup/data')
-
         :rtype: path-like object
         """
         return self.path / "data"
 
     def gen_snapshot_path(self, name):
         """Generate a path for a Snapshot by name.
-
-        Example
-        -------
-        >>> repo = Repository('backup')
-        >>> repo.gen_snapshot_path('new-snapshot') # doctest: +ELLIPSIS
-        PosixPath('backup/data/new-snapshot')
 
         :param name: name of the Snapshot
         :type name: str or path-like object
@@ -157,16 +145,6 @@ class Repository(Hierarchy):
     def snapshots(self):
         """Return a list of snapshots stored in this Repository.
 
-        Example
-        -------
-        >>> repo = Repository('backup')
-        >>> repo.snapshots
-        []
-        >>> repo.create_snapshot() # doctest: +ELLIPSIS
-        <...Snapshot ... at 0x...>
-        >>> repo.snapshots # doctest: +ELLIPSIS
-        [<...Snapshot ... at 0x...>]
-
         :returns: the names of all snapshots in this repository sorted by
             date
         :rtype: list of Snapshot objects
@@ -176,16 +154,6 @@ class Repository(Hierarchy):
     @property
     def empty(self):
         """Determine whether or not this Repository is empty.
-
-        Example
-        -------
-        >>> repo = Repository('backup')
-        >>> repo.empty
-        True
-        >>> repo.create_snapshot() # doctest: +ELLIPSIS
-        <...Snapshot ... at 0x...>
-        >>> repo.empty
-        False
 
         :rtype: bool
         """
