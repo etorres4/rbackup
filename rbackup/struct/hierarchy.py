@@ -3,9 +3,8 @@
 .. module:: rbackup.struct.hierarchy
     :synopsis: Classes for creating the backup hierarchy.
 """
+import json
 import logging
-import pickle
-
 from os import PathLike
 from pathlib import Path
 
@@ -14,8 +13,8 @@ syslog = logging.getLogger(__name__)
 
 
 # ========== Constants ==========
-METADATA_READ = "rb"
-METADATA_WRITE = "wb"
+METADATA_READ = "r"
+METADATA_WRITE = "w"
 
 
 # ========== Classes ==========
@@ -101,22 +100,25 @@ class Hierarchy(PathLike):
         """Read this repository's metadata from its file and
         then return it.
 
-        :rtype: dict
+        :rtype: type that the data is serialized as
         """
         syslog.debug(f"Reading metadata from {self.metadata_path}")
         with self.metadata_path.open(mode=METADATA_READ) as mfile:
-            return pickle.load(mfile)
+            return json.load(mfile)
 
-    def write_metadata(self):
+    def write_metadata(self, attr):
         """Write this repository's metadata to its file.
             Note that this write operation is atomic to the caller.
+
+        :param attr: data to write to file
+        :type attr: class member to write
         """
         syslog.debug(f"Writing metadata to {self.metadata_path}")
 
         tmpfile = self.metadata_path.with_suffix(".tmp")
 
         with tmpfile.open(mode=METADATA_WRITE) as mfile:
-            pickle.dump(self._data, mfile)
+            json.dump(attr, mfile)
 
         tmpfile.rename(self.metadata_path)
 
