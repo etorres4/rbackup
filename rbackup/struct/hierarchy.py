@@ -1,6 +1,6 @@
 """
 .. author:: Eric Torres
-.. module:: rbackup.hierarchy.hierarchy
+.. module:: rbackup.struct.hierarchy
     :synopsis: Classes for creating the backup hierarchy.
 """
 import logging

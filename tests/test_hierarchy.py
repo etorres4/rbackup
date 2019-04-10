@@ -4,10 +4,10 @@ import unittest
 from hypothesis import given
 from hypothesis.strategies import booleans, characters, iterables, one_of, none, text
 from pathlib import Path
-from rbackup.hierarchy.hierarchy import Hierarchy
+from rbackup.struct.hierarchy import Hierarchy
 
 # ========== Constants ==========
-TESTING_MODULE = "rbackup.hierarchy.hierarchy"
+TESTING_MODULE = "rbackup.struct.struct"
 
 
 # ========== Functions ==========

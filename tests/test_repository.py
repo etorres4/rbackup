@@ -4,12 +4,12 @@ import unittest
 from hypothesis import given
 from hypothesis.strategies import builds, lists, text
 from pathlib import Path
-from rbackup.hierarchy.repository import Repository
-from rbackup.hierarchy.snapshot import Snapshot
-from unittest.mock import PropertyMock, patch
+from rbackup.struct.repository import Repository
+from rbackup.struct.snapshot import Snapshot
+from unittest.mock import MagicMock, PropertyMock, patch
 
 # ========== Constants  ==========
-TESTING_PACKAGE = "rbackup.hierarchy"
+TESTING_PACKAGE = "rbackup.struct"
 REPO_MODULE = f"{TESTING_PACKAGE}.repository"
 SS_MODULE = f"{TESTING_PACKAGE}.snapshot"
 

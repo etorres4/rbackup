@@ -6,10 +6,10 @@ Unit tests for the Snapshot class.
 import doctest
 import unittest
 
-from rbackup.hierarchy.snapshot import Snapshot
+from rbackup.struct.snapshot import Snapshot
 
 # ========== Constants ==========
-TESTING_MODULE = "rbackup.hierarchy.snapshot"
+TESTING_MODULE = "rbackup.struct.snapshot"
 
 
 # ========== Functions ==========

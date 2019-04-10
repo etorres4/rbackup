@@ -1,13 +1,13 @@
 """
 .. author:: Eric Torres
-.. module:: rbackup.hierarchy.repository
+.. module:: rbackup.struct.repository
     :synopsis: Class for structuring a backup repository.
 """
 import logging
 import datetime
 
-from rbackup.hierarchy.hierarchy import Hierarchy
-from rbackup.hierarchy.snapshot import Snapshot
+from rbackup.struct.hierarchy import Hierarchy
+from rbackup.struct.snapshot import Snapshot
 
 
 # ========== Logging Setup ===========
@@ -26,6 +26,7 @@ class Repository(Hierarchy):
         Repository is a mutable, stateful class for representing a
         directory that contains backup data sequestered into snapshots
         and a symlink to the most recently created snapshot.
+
     * Each snapshot in a repository is unaware of one another,
       this is the job of the repository to organize
     * The only way snapshots are linked together is in files
@@ -53,7 +54,6 @@ class Repository(Hierarchy):
     Methods
     -------
     * create_snapshot - create a new snapshot, then update current_snapshot
-    * gen_snapshot_path - generate a path for a snapshot given by name
     * read_metadata (inherited from Hierarchy)
     * write_metadata (inherited from Hierarchy)
 
@@ -90,6 +90,41 @@ class Repository(Hierarchy):
         self.metadata_path.touch(mode=FILEMODE)
 
         self.write_metadata()
+
+    def _is_duplicate_name(self, name):
+        """Check whether or not a snapshot of a given name is already 
+        on this Repository.
+
+        If the repository is empty, then this method always returns False.
+
+        :param name: the name to check for
+        :returns: True if this name is already in a snapshot.
+        :type name: str
+        :rtype: bool
+        """
+        for s in self._data["snapshots"]:
+            if name == s.name:
+                return True
+        return False
+
+    def _is_valid_name(self, name):
+        """Check if the given name is a valid name. If it is a duplicate,
+        log a warning. If it is invalid, raise a ValueError.
+
+        Invalid Names:
+        --------------
+        * Contain slashes
+        * Are empty values i.e. '' or []
+
+        :param name: name to validate
+        :type name: str
+        :returns: true if this name is deemed valid
+        :rtype: bool
+        """
+        if not str(name) or "/" in name:
+            return False
+        else:
+            return True
 
     def __len__(self):
         """Return the number of snapshots in this Repository."""
@@ -128,19 +163,6 @@ class Repository(Hierarchy):
         """
         return self.path / "data"
 
-    def gen_snapshot_path(self, name):
-        """Generate a path for a Snapshot by name.
-
-        :param name: name of the Snapshot
-        :type name: str or path-like object
-        :rtype: path-like object
-        :raises: ValueError if name contains slashes
-        """
-        if "/" in str(name):
-            raise ValueError("Names cannot contain slashes")
-
-        return self.snapshot_dir / name
-
     @property
     def snapshots(self):
         """Return a list of snapshots stored in this Repository.
@@ -167,16 +189,21 @@ class Repository(Hierarchy):
         """
         return self._data["current_snapshot"]
 
+    # TODO search for the name of snapshots
+    # add ability to use 'in' operator
     def create_snapshot(self, name=None):
         """Create a new snapshot in this repository.
 
         This method is non-intrusive in that it will not
         make any changes in the filesystem when called.
 
+        If name is given and it is the name of a snapshot already
+        on the repository, that snapshot is overwritten instead.
+
         :param name: the name of the snapshot
         :type name: str
         :return: a new Snapshot object
-        :raises: FileExistsError if snapshot directory already exists
+        :raises: ValueError if name is an invalid value
         """
         syslog.debug("Creating snapshot")
 
@@ -185,15 +212,20 @@ class Repository(Hierarchy):
             if name is not None
             else datetime.datetime.utcnow().isoformat().replace(":", "_")
         )
-        self._data["current_snapshot"] = Snapshot(self.gen_snapshot_path(snapshot_name))
-        self._data["snapshots"].append(self._data["current_snapshot"])
+
+        if not self._is_valid_name(snapshot_name):
+            raise ValueError(f"{name} is an invalid name")
+        elif self._is_duplicate_name(snapshot_name):
+            syslog.warning("Snapshot already exists, data will be overwritten.")
+        else:
+            self._data["current_snapshot"] = Snapshot(self.snapshot_dir / snapshot_name)
+            self._data["snapshots"].append(self._data["current_snapshot"])
 
         self.write_metadata()
 
-        try:
-            self._data["current_snapshot"].path.mkdir(mode=DIRMODE, parents=True)
-        except FileExistsError as e:
-            raise e
+        self._data["current_snapshot"].path.mkdir(
+            mode=DIRMODE, parents=True, exist_ok=True
+        )
 
         syslog.debug("Snapshot created")
         syslog.debug(f"Snapshot name: {self.current_snapshot.name}")

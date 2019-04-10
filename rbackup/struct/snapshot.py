@@ -1,11 +1,11 @@
 """
 .. author:: Eric Torres
-.. module:: rbackup.hierarchy.snapshot
+.. module:: rbackup.struct.snapshot
     :synopsis: Classes for creating the backup hierarchy.
 """
 import logging
 
-from rbackup.hierarchy.hierarchy import Hierarchy
+from rbackup.struct.hierarchy import Hierarchy
 
 
 # ========== Logging Setup ===========
@@ -31,6 +31,10 @@ class Snapshot(Hierarchy):
     def __init__(self, path):
         """Default constructor for the Snapshot class."""
         super().__init__(path)
+
+    def __repr__(self):
+        """Return a string representation of this Snapshot."""
+        return f"{self.__class__.__name__}('{self.name}')"
 
     @property
     def pkg_dir(self):
