@@ -1,8 +1,16 @@
+"""
+.. author:: Eric Torres
+
+Tests for the rbackup.struct.repository module.
+"""
+# TODO test that the snapshot returned is actually in the repository
+# TODO test creating snapshots, returned snapshot is an instance of Snapshot, etc.
+
 import unittest
-from unittest.mock import MagicMock, PropertyMock, patch
+from unittest.mock import PropertyMock, patch
 
 from hypothesis import given
-from hypothesis.strategies import builds, characters, lists, text
+from hypothesis.strategies import characters, lists, text
 
 from rbackup.struct.repository import Repository
 from rbackup.struct.snapshot import Snapshot

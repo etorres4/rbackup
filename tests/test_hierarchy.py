@@ -1,11 +1,15 @@
-import json
+"""
+.. author:: Eric Torres
+
+Tests for the rbackup.struct.hierarchy module.
+"""
 import unittest
 from io import StringIO
 from pathlib import Path
 from unittest.mock import PropertyMock, patch
 
 from hypothesis import given
-from hypothesis.strategies import characters, one_of, lists, text
+from hypothesis.strategies import characters, one_of, text
 
 from rbackup.struct.hierarchy import Hierarchy
 
