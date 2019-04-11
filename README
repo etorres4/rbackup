@@ -13,11 +13,13 @@ Features
 
 Advanced Features
 ^^^^^^^^^^^^^^^^^
-* rbackup depends on the filesystem that stores the repository to provide features such as checksumming, advanced deduplication, and data integrity verification
+* rbackup depends on the filesystem that stores the repository to provide features such as checksumming, deduplication, and data integrity verification
+* Encryption must be handled by an external program, this is out of scope for rbackup
+* xattrs and acl's are handled by rsync but must be a supported feature of the filesystem the repository is stored on
 
 Target Directories
 ------------------
-* /boot
+* /boot/loader
 * /etc
 * /home
 * /root
@@ -30,28 +32,55 @@ Target Directories
 
 Backup Directory Hierarchy
 --------------------------
-* basedir
-  | - data *directory containing all snapshots*
-  |   | - snapshot1 *first snapshot*
-  |     | - boot
-  |     | - home
-  |     | - etc
-  |   | - snapshot2
-  |     | - boot
-  |     | - home
-  |     | - etc
-  | - prev *link to previous snapshot*
-* Assuming snapshot2 was the previous backup and snapshot1 was the backup before that:
-  * prev would link to snapshot2
-  * Unchanged files files from snapshot1 backed up to snapshot2 are hardlinked to snapshot1
+basedir
+├── current
+└── data
+    ├── snapshot-one
+    │   ├── boot
+    │   ├── etc
+    │   ├── home
+    │   ├── pkg
+    │   └── root
+    └── snapshot-two
+        ├── boot
+        ├── etc
+        ├── home
+        ├── pkg
+        └── root
 
+* Assuming snapshot2 was the previous backup and snapshot1 was the backup before that:
+  * current would link to snapshot2
+  * Unchanged files files from snapshot1 backed up to snapshot2 are hardlinked to snapshot1
 
 Implementation Notes
 --------------------
 * pathlib is used for path handling
 * Use --link-dest=
 * Use --suffix=, --backup, and --backup-dir=
+* When hardlinking, rbackup passes the entire path to avoid needing relative paths
 
 To-do
 -----
+* Add -n flag to backup script to name a Snapshot
+  * What happens when two snapshots have the same name?
+* Add ability to read metadata from a file for a Repository
+  * Snapshot as well?
 * Use --suffix=, --backup, and --backup-dir=
+* Study how snapshots behave when --delete is passed
+* Snapshot cleanup script
+  * Repository.__delitem__()
+  * Repository.__contains__()
+  * Snapshot.__del__()?
+* Add __enter__ and __exit__ for PackageManager lockfiles to prevent transactions during backup
+* Get rid of counter variable in __next__?
+
+Dependencies
+------------
+Runtime
+^^^^^^^
+* rsync
+
+Build/Testing
+^^^^^^^^^^^^^
+* setuptools
+* hypothesis
