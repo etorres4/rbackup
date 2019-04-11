@@ -12,12 +12,7 @@ TESTING_PACKAGE = "rbackup.struct"
 REPO_MODULE = f"{TESTING_PACKAGE}.repository"
 SS_MODULE = f"{TESTING_PACKAGE}.snapshot"
 
-
-# ========== Functions ==========
-# @unittest.skip("Repositories create files, this should be mocked out")
-# def load_tests(loader, tests, ignore):
-#    tests.addTests(doctest.DocTestSuite(REPO_MODULE))
-#    return tests
+UNWANTED_SNAPSHOT_CHARS = ["/"]
 
 
 # ========== Integration Tests ==========
