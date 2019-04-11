@@ -3,12 +3,11 @@
 .. module:: rbackup.struct.repository
     :synopsis: Class for structuring a backup repository.
 """
-import logging
 import datetime
+import logging
 
 from rbackup.struct.hierarchy import Hierarchy
 from rbackup.struct.snapshot import Snapshot
-
 
 # ========== Logging Setup ===========
 syslog = logging.getLogger(__name__)
