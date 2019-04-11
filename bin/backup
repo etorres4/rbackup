@@ -48,7 +48,7 @@ CONFIG_DIR = "/etc/rbackup"
 FILE_OPTS = [
     f"--include-from={CONFIG_DIR}/etc-include.conf",
     f"--include-from={CONFIG_DIR}/system-include.conf",
-    f"--exclude-from{CONFIG_DIR}/home-exclude.conf",
+    f"--exclude-from={CONFIG_DIR}/home-exclude.conf",
 ]
 
 
