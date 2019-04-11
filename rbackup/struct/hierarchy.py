@@ -33,6 +33,7 @@ class Hierarchy(PathLike):
 
     Methods
     -------
+    * gen_metadata - generate the metadata for this Hierarchy
     * read_metadata - read this Hierarchy's metadata from a file
         and return it
     * write_metadata - write this Hierarchy's metadata to a file
@@ -41,9 +42,9 @@ class Hierarchy(PathLike):
     def __init__(self, dest):
         """Default constructor for the Hierarchy class.
 
-        >>> hier = Hierarchy('backup')
+        >>> hier = Hierarchy('backup_dir')
         >>> hier.path
-        PosixPath('backup')
+        PosixPath('backup_dir')
 
         :param dest: the root directory of the backup hierarchy
         :type dest: str or path-like object

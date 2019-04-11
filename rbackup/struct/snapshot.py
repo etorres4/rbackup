@@ -7,7 +7,6 @@ import logging
 
 from rbackup.struct.hierarchy import Hierarchy
 
-
 # ========== Logging Setup ===========
 syslog = logging.getLogger(__name__)
 
@@ -24,6 +23,7 @@ class Snapshot(Hierarchy):
 
     Methods
     -------
+    * gen_metadata (inherited from Hierarchy)
     * read_metadata (inherited from Hierarchy)
     * write_metadata (inherited from Hierarchy)
     """
