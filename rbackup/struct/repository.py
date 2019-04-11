@@ -29,15 +29,7 @@ class Repository(Hierarchy):
     * Each snapshot in a repository is unaware of one another,
       this is the job of the repository to organize
     * The only way snapshots are linked together is in files
-      that are hardlinked together
-
-    At the time of creation, the following is true about the class:
-    ===============================================================
-    The current snapshot points to:
-    -------------------------------
-    * None if the repository is empty
-    * The most recent snapshot before running create_snapshot()
-    * A new, empty snapshot after running create_snapshot()
+      that are hard-linked together
 
     Attributes
     ----------
@@ -81,7 +73,8 @@ class Repository(Hierarchy):
     """
 
     def __init__(self, dest):
-        """Default constructor for the Repository class."""
+        """Default constructor for the Repository class.
+        """
         super().__init__(dest)
 
         if not self.metadata_path.exists():
