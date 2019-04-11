@@ -34,8 +34,12 @@ class TestRepositoryPreCreate(unittest.TestCase):
         self.patched_path = patch.object(
             Repository, "metadata_path", new_callable=PropertyMock
         )
-        self.patched_r_metadata = patch.object(Repository, "read_metadata")
-        self.patched_w_metadata = patch.object(Repository, "write_metadata")
+        self.patched_r_metadata = patch.object(
+            Repository, "read_metadata", spec_set=list
+        )
+        self.patched_w_metadata = patch.object(
+            Repository, "write_metadata", spec_set=list
+        )
         self.patched_snapshot = patch(
             f"{TESTING_PACKAGE}.repository.Snapshot", spec_set=Snapshot
         )
@@ -47,65 +51,58 @@ class TestRepositoryPreCreate(unittest.TestCase):
 
         self.mocked_path.return_value.exists.return_value = True
 
-    @given(text())
-    def test_gen_snapshot_path(self, name):
-        self.mocked_r_metadata.return_value = {
-            "snapshots": [],
-            "current_snapshot": None,
-        }
-
+    @given(
+        lists(
+            text(
+                alphabet=characters(blacklist_characters=UNWANTED_SNAPSHOT_CHARS),
+                min_size=1,
+            ),
+            unique=True,
+        )
+    )
+    def test_empty(self, snapshots):
+        self.mocked_r_metadata.return_value = snapshots.copy()
         repo = Repository("backup")
 
-        if "/" not in name:
-            snapshot_path = repo.gen_snapshot_path(name)
-            self.assertEqual(snapshot_path, Path(f"backup/data/{name}"))
-            self.assertIsInstance(snapshot_path, Path)
-        else:
-            with self.assertRaises(ValueError):
-                snapshot_path = repo.gen_snapshot_path(name)
-
-    @given(lists(builds(Snapshot, text()), unique=True))
-    def test_empty(self, l):
-        self.mocked_r_metadata.return_value = {
-            "snapshots": l.copy(),
-            "current_snapshot": l[-1] if l else None,
-        }
-        repo = Repository("backup")
-
-        if l == []:
+        if not snapshots:
             self.assertTrue(repo.empty)
         else:
             self.assertFalse(repo.empty)
 
-    @given(lists(builds(Snapshot, text()), unique=True))
-    def test_len(self, l):
-        self.mocked_r_metadata.return_value = {
-            "snapshots": l.copy(),
-            "current_snapshot": l[-1] if l else None,
-        }
-
+    @given(
+        lists(
+            text(
+                alphabet=characters(blacklist_characters=UNWANTED_SNAPSHOT_CHARS),
+                min_size=1,
+            ),
+            unique=True,
+        )
+    )
+    def test_len(self, snapshots):
+        self.mocked_r_metadata.return_value = snapshots.copy()
         repo = Repository("backup")
 
-        self.assertEqual(len(repo.snapshots), len(l))
+        self.assertEqual(len(repo.snapshots), len(snapshots))
 
-    @given(lists(builds(Snapshot, text()), unique=True))
-    def test_current_snapshot(self, l):
-        self.mocked_r_metadata.return_value = {
-            "snapshots": l.copy(),
-            "current_snapshot": l[-1] if l else None,
-        }
-
-        if l == []:
-            self.mocked_r_metadata.return_value["current_snapshot"] = None
-        else:
-            self.mocked_r_metadata.return_value["current_snapshot"] = l[-1]
+    @given(text(min_size=1))
+    def test_contains(self, name):
+        self.mocked_r_metadata = []
         repo = Repository("backup")
 
-        if l == []:
-            self.assertIsNone(repo.current_snapshot)
+        self.assertFalse(name in repo)
+
+    @given(text())
+    def test_valid_name(self, name):
+        self.mocked_r_metadata.return_value = []
+
+        if not name or "/" in name:
+            self.assertFalse(Repository.is_valid_snapshot_name(name))
         else:
-            self.assertIsNotNone(repo.current_snapshot)
-            self.assertIsInstance(repo.current_snapshot, Snapshot)
+            self.assertTrue(Repository.is_valid_snapshot_name(name))
+
+    def test_snapshots_returns_empty_list(self):
+        r = Repository("backup")
+        self.assertListEqual(r.snapshots, [])
 
     def tearDown(self):
         self.patched_path.stop()
@@ -132,8 +129,12 @@ class TestRepositoryPostCreate(unittest.TestCase):
         self.patched_path = patch.object(
             Repository, "metadata_path", new_callable=PropertyMock
         )
-        self.patched_r_metadata = patch.object(Repository, "read_metadata")
-        self.patched_w_metadata = patch.object(Repository, "write_metadata")
+        self.patched_r_metadata = patch.object(
+            Repository, "read_metadata", spec_set=list
+        )
+        self.patched_w_metadata = patch.object(
+            Repository, "write_metadata", spec_set=list
+        )
         self.patched_snapshot = patch(
             f"{TESTING_PACKAGE}.repository.Snapshot", spec_set=Snapshot
         )
@@ -143,48 +144,53 @@ class TestRepositoryPostCreate(unittest.TestCase):
         self.mocked_w_metadata = self.patched_w_metadata.start()
         self.mocked_snapshot = self.patched_snapshot.start()
 
-    @given(lists(builds(Snapshot, text()), unique=True))
-    def test_empty(self, l):
-        self.mocked_r_metadata.return_value = {
-            "snapshots": l.copy(),
-            "current_snapshot": l[-1] if l else None,
-        }
-
-        if l == []:
-            self.mocked_r_metadata.return_value["current_snapshot"] = None
-        else:
-            self.mocked_r_metadata.return_value["current_snapshot"] = l[-1]
+    @given(
+        lists(
+            text(
+                alphabet=characters(blacklist_characters=UNWANTED_SNAPSHOT_CHARS),
+                min_size=1,
+            ),
+            unique=True,
+        )
+    )
+    def test_empty(self, snapshots):
+        self.mocked_r_metadata.return_value = snapshots.copy()
         repo = Repository("backup")
 
         repo.create_snapshot()
 
         self.assertFalse(repo.empty)
 
-    @given(lists(builds(Snapshot, text()), unique=True))
-    def test_len(self, l):
-        self.mocked_r_metadata.return_value = {
-            "snapshots": l.copy(),
-            "current_snapshot": l[-1] if l else None,
-        }
+    @given(
+        lists(
+            text(
+                alphabet=characters(blacklist_characters=UNWANTED_SNAPSHOT_CHARS),
+                min_size=1,
+            ),
+            unique=True,
+        )
+    )
+    def test_len(self, snapshots):
+        self.mocked_r_metadata.return_value = snapshots.copy()
         repo = Repository("backup")
 
         repo.create_snapshot()
 
-        self.assertEqual(len(repo), len(l) + 1)
-        self.assertEqual(len(repo.snapshots), len(l) + 1)
+        self.assertEqual(len(repo), len(snapshots) + 1)
+        self.assertEqual(len(repo.snapshots), len(snapshots) + 1)
 
-    @given(lists(builds(Snapshot, text()), unique=True))
-    def test_current_snapshot(self, l):
-        self.mocked_r_metadata.return_value = {
-            "snapshots": l.copy(),
-            "current_snapshot": l[-1] if l else None,
-        }
+    @given(
+        text(
+            alphabet=characters(blacklist_characters=UNWANTED_SNAPSHOT_CHARS),
+            min_size=1,
+        )
+    )
+    def test_contains(self, name):
+        self.mocked_path.return_value.exists.return_value = False
         repo = Repository("backup")
 
-        new_snapshot = repo.create_snapshot()
-
-        self.assertIs(new_snapshot, repo.current_snapshot)
-        self.assertIsInstance(new_snapshot, Snapshot)
+        repo.create_snapshot(name)
+        self.assertTrue(name in repo)
 
     def tearDown(self):
         self.patched_path.stop()

@@ -43,27 +43,6 @@ class TestCreatePackageManager(unittest.TestCase):
     def test_create_with_valid_values(self, l):
         PackageManager("nothing", "nothing", l)
 
-    @given(one_of(none(), booleans(), integers(), dictionaries(text(), text())))
-    def test_incorrect_cmd_type(self, cmd):
-        with self.assertRaises(TypeError):
-            PackageManager("nothing", "nothing", cmd)
-
-    def test_empty_cmd(self):
-        with self.assertRaises(ValueError):
-            PackageManager("nothing", "nothing", [])
-            PackageManager("nothing", "nothing", set())
-            PackageManager("nothing", "nothing", "")
-
-    @given(iterables(one_of(none(), booleans(), integers()), min_size=1))
-    def test_wrong_iterable_element_type(self, cmd):
-        with self.assertRaises(TypeError):
-            PackageManager("nothing", "nothing", cmd)
-
-    def test_empty_str_in_iterable(self):
-        with self.assertRaises(ValueError):
-            PackageManager("nothing", "nothing", [""])
-            PackageManager("nothing", "nothing", ["pacman", ""])
-
     def tearDown(self):
         self.patched_path.stop()
         self.patched_subprocess.stop()
