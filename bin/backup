@@ -66,118 +66,12 @@ syslog.addHandler(stderr_handler)
 
 
 # ========== Functions ==========
-def backup_all(s, prev, rsync_opts):
-    """Run all backup functions.
+def parse_cmdline_arguments(*args, **kwargs):
+    """Parse command line arguments passed to the script.
+        All args and kwargs are passed to ArgumentParser.parse_args()
 
-    :param s: snapshot to back up to
-    :type s: Snapshot object
-    :param prev: previous snapshot for hardlinking
-    :type prev: Snapshot object or None
-    :param opts: options to pass to rsync
-    :type opts: list
+    :rtype: argparse.Namespace object
     """
-    raise NotImplementedError
-
-
-def backup_etc(s, prev, rsync_opts):
-    """Create a backup of /etc.
-
-    :param s: snapshot to back up to
-    :type s: Snapshot object
-    :param prev: previous snapshot for hardlinking
-    :type prev: Snapshot object or None
-    :param opts: options to pass to rsync
-    :type opts: list
-    """
-    local_opts = rsync_opts
-    local_opts.append(f"--files-from={ETC_INCLUDE_FILE}")
-
-    if prev is not None:
-        rsync_opts.append(f"--link-dest={prev_snapshot.etc_dir}")
-
-    syslog.debug("Creating directory {s.etc_dir}")
-    s.etc_dir.mkdir(parents=True, exist_ok=False)
-    rsync(*local_opts, "/etc/", str(s.etc_dir))
-
-
-def backup_home(s, prev, rsync_opts):
-    """Create a backup of /home.
-
-    :param s: snapshot to back up to
-    :type s: Snapshot object
-    :param prev: previous snapshot for hardlinking
-    :type prev: Snapshot object or None
-    :param opts: options to pass to rsync
-    :type opts: list
-    """
-    local_opts = rsync_opts
-    local_opts.append(f"--exclude-from={HOME_EXCLUDE_FILE}")
-
-    if prev is not None:
-        rsync_opts.append(f"--link-dest={prev_snapshot.home_dir}")
-
-    syslog.debug("Creating directory {s.home_dir}")
-    s.home_dir.mkdir(parents=True, exist_ok=False)
-    rsync(*local_opts, "/home/", str(s.home_dir))
-
-
-def backup_pkgmanager(s, prev, rsync_opts):
-    """Create a backup of package manager files.
-
-    :param s: snapshot to back up to
-    :type s: Snapshot object
-    :param prev: previous snapshot for hardlinking
-    :type prev: Snapshot object or None
-    :param opts: options to pass to rsync
-    :type opts: list
-    """
-    raise NotImplementedError
-
-
-def backup_root_home(s, prev, rsync_opts):
-    """Create a backup of /root.
-
-    :param s: snapshot to back up to
-    :type s: Snapshot object
-    :param prev: previous snapshot for hardlinking
-    :type prev: Snapshot object or None
-    :param opts: options to pass to rsync
-    :type opts: list
-    """
-    local_opts = rsync_opts
-    local_opts.append(f"--exclude-from={HOME_EXCLUDE_FILE}")
-
-    if prev is not None:
-        rsync_opts.append(f"--link-dest={prev_snapshot.root_home_dir}")
-
-    syslog.debug("Creating directory {s.root_home_dir}")
-    s.root_home_dir.mkdir(parents=True, exist_ok=False)
-    rsync(*local_opts, "/root/", str(s.root_home_dir))
-
-
-def backup_system():
-    """Create a backup of system directories.
-
-    :param s: snapshot to back up to
-    :type s: Snapshot object
-    :param prev: previous snapshot for hardlinking
-    :type prev: Snapshot object or None
-    :param opts: options to pass to rsync
-    :type opts: list
-    """
-    raise NotImplementedError
-
-
-DISPATCHER = {
-    "all": backup_all,
-    "etc": backup_etc,
-    "home": backup_home,
-    "system": backup_system,
-}
-
-
-# ========== Main Script ==========
-if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-c",
