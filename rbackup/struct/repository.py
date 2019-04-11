@@ -45,15 +45,14 @@ class Repository(Hierarchy):
     * path (inherited from Hierarchy)
     * name (inherited from Hierarchy)
     * metadata_path (inherited from Hierarchy)
-    * current_snapshot - either the most recent snapshot
-        before running create_snapshot() or the new snapshot
-        created after running create_snapshot()
     * snapshots - a list of snapshots stored in this repository
     * snapshot_dir - the snapshot storage location of this repository
 
     Methods
     -------
-    * create_snapshot - create a new snapshot, then update current_snapshot
+    * create_snapshot - create a new snapshot
+    * gen_metadata (inherited from Hierarchy)
+    * is_valid_snapshot_name - validate a potential name for a snapshot
     * read_metadata (inherited from Hierarchy)
     * write_metadata (inherited from Hierarchy)
 
@@ -72,42 +71,61 @@ class Repository(Hierarchy):
     can be iterated through.
     """
 
+    """Snapshots are serialized as their names relative to the repository
+    data directory, but have their full paths during runtime.
+
+    Private Attributes
+    ------------------
+    * _snapshots - list of Snapshot objects created and accessed at runtime
+    * _snapshot_metadata - list of Snapshot names serialized and deserialized
+        when this Repository is first created
+    """
+
     def __init__(self, dest):
         """Default constructor for the Repository class."""
         super().__init__(dest)
 
-        self._snapshot_index = 0
-
         if not self.metadata_path.exists():
-            self._data = {"snapshots": [], "current_snapshot": None}
-            self._init_new_repository()
+            self._snapshots = []
+            self._snapshot_metadata = []
+            self.metadata_path.parent.mkdir(mode=DIRMODE, exist_ok=True)
+            self.metadata_path.touch(mode=FILEMODE)
+            self.write_metadata(self._snapshots)
         else:
-            self._data = self.read_metadata()
+            self._snapshot_metadata = self.read_metadata()
+            self._snapshots = [
+                Snapshot(self.snapshot_dir / s) for s in self._snapshot_metadata
+            ]
 
-    def _init_new_repository(self):
-        """Perform the setup steps for a new repository."""
-        self.metadata_path.parent.mkdir(mode=DIRMODE, exist_ok=True)
-        self.metadata_path.touch(mode=FILEMODE)
+    def __len__(self):
+        """Return the number of snapshots in this Repository."""
+        return len(self._snapshots)
 
-        self.write_metadata()
+    def __getitem__(self, position):
+        """Retrieve a Snapshot at a certain index."""
+        return self._snapshots[position]
 
-    def _is_duplicate_name(self, name):
-        """Check whether or not a snapshot of a given name is already 
-        on this Repository.
+    def __delitem__(self, s):
+        """Delete a Snapshot in this Repository."""
+        raise NotImplementedError
 
-        If the repository is empty, then this method always returns False.
+    def __iter__(self):
+        return self
 
-        :param name: the name to check for
-        :returns: True if this name is already in a snapshot.
+    def __contains__(self, name):
+        """Check whether a Snapshot is in this Repository by name.
+
         :type name: str
         :rtype: bool
         """
-        for s in self._data["snapshots"]:
-            if name == s.name:
-                return True
-        return False
+        return name in self._snapshot_metadata
 
-    def _is_valid_name(self, name):
+    def __next__(self):
+        """Return the next Snapshot in this Repository."""
+        return next(self._snapshots)
+
+    @staticmethod
+    def is_valid_snapshot_name(name):
         """Check if the given name is a valid name. If it is a duplicate,
         log a warning. If it is invalid, raise a ValueError.
 
@@ -126,34 +144,6 @@ class Repository(Hierarchy):
         else:
             return True
 
-    def __len__(self):
-        """Return the number of snapshots in this Repository."""
-        return len(self._data["snapshots"])
-
-    def __getitem__(self, position):
-        """Retrieve a Snapshot at a certain index."""
-        return self._data["snapshots"][position]
-
-    def __delitem__(self, s):
-        """Delete a Snapshot in this Repository."""
-        raise NotImplementedError
-
-    def __iter__(self):
-        return self
-
-    def __contains__(self, snapshot):
-        """Check whether a Snapshot is in this Repository."""
-        raise NotImplementedError
-
-    def __next__(self):
-        """Return the next Snapshot in this Repository."""
-        try:
-            result = self._data["snapshots"][self._snapshot_index]
-            self._snapshot_index += 1
-            return result
-        except IndexError:
-            raise StopIteration
-
     @property
     def snapshot_dir(self):
         """Return the directory in this Repository in which snapshots
@@ -171,7 +161,7 @@ class Repository(Hierarchy):
             date
         :rtype: list of Snapshot objects
         """
-        return self._data["snapshots"]
+        return self._snapshots
 
     @property
     def empty(self):
@@ -179,18 +169,8 @@ class Repository(Hierarchy):
 
         :rtype: bool
         """
-        return self._data["snapshots"] == []
+        return not self.snapshots
 
-    @property
-    def current_snapshot(self):
-        """Return this Repository's current snapshot.
-
-        :rtype: Snapshot object
-        """
-        return self._data["current_snapshot"]
-
-    # TODO search for the name of snapshots
-    # add ability to use 'in' operator
     def create_snapshot(self, name=None):
         """Create a new snapshot in this repository.
 
@@ -202,7 +182,7 @@ class Repository(Hierarchy):
 
         :param name: the name of the snapshot
         :type name: str
-        :return: a new Snapshot object
+        :return: Snapshot object
         :raises: ValueError if name is an invalid value
         """
         syslog.debug("Creating snapshot")
@@ -213,28 +193,20 @@ class Repository(Hierarchy):
             else datetime.datetime.utcnow().isoformat().replace(":", "_")
         )
 
-        if not self._is_valid_name(snapshot_name):
+        if not self.is_valid_snapshot_name(snapshot_name):
             raise ValueError(f"{name} is an invalid name")
-        elif self._is_duplicate_name(snapshot_name):
+        elif snapshot_name in self:
             syslog.warning("Snapshot already exists, data will be overwritten.")
         else:
-            self._data["current_snapshot"] = Snapshot(self.snapshot_dir / snapshot_name)
-            self._data["snapshots"].append(self._data["current_snapshot"])
+            new_snapshot = Snapshot(self.snapshot_dir / snapshot_name)
+            self._snapshot_metadata.append(snapshot_name)
+            self._snapshots.append(new_snapshot)
 
-        self.write_metadata()
+            new_snapshot.path.mkdir(mode=DIRMODE, parents=True, exist_ok=True)
 
-        self._data["current_snapshot"].path.mkdir(
-            mode=DIRMODE, parents=True, exist_ok=True
-        )
+        self.write_metadata(self._snapshot_metadata)
 
         syslog.debug("Snapshot created")
-        syslog.debug(f"Snapshot name: {self.current_snapshot.name}")
+        syslog.debug(f"Snapshot name: {new_snapshot.name}")
 
-        return self._data["current_snapshot"]
-
-
-# ========== Functions ==========
-if __name__ == "__main__":
-    import doctest
-
-    doctest.testmod()
+        return new_snapshot
