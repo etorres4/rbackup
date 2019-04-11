@@ -17,7 +17,18 @@ UNWANTED_SNAPSHOT_CHARS = ["/"]
 
 # ========== Integration Tests ==========
 class TestRepositoryPreCreate(unittest.TestCase):
-    """Test properties of the Repository before running create_snapshot()."""
+    """Test properties of the Repository before running create_snapshot().
+
+    Mocked Modules/Classes
+    ----------------------
+    rbackup.struct.repository.Snapshot
+
+    Mocked Attributes
+    -----------------
+    * Repository.metadata_path
+    * Repository.read_metadata
+    * Repository.write_metadata
+    """
 
     def setUp(self):
         self.patched_path = patch.object(
@@ -104,7 +115,18 @@ class TestRepositoryPreCreate(unittest.TestCase):
 
 
 class TestRepositoryPostCreate(unittest.TestCase):
-    """Test properties of the Repository before running create_snapshot()."""
+    """Test properties of the Repository after running create_snapshot().
+
+    Mocked Modules/Classes
+    ----------------------
+    rbackup.struct.repository.Snapshot
+
+    Mocked Attributes
+    -----------------
+    * Repository.metadata_path
+    * Repository.read_metadata
+    * Repository.write_metadata
+    """
 
     def setUp(self):
         self.patched_path = patch.object(
