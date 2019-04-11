@@ -1,25 +1,27 @@
 #!/usr/bin/python3
 """
-Run a backup.
+Run a backup, creating a snapshot in the process.
 
 Command-Line Arguments
 ======================
 * -c, --use-checksums   use rsync's checksum feature to detect file changes
 * -d, --dry-run         make this backup a dry run
+* --debug               show debug messages
+* -n, --name            name to give to the backup snapshot
 * -s, --run-post-sync   run sync syscall after backup
-* -v, --verbose         increase script verbosity
+* -v, --verbose         show info messages
 
 On each run of this script, a new snapshot is made and any unchanged
-files are hardlinked into this new snapshot.
+files are hardlinked into the new snapshot.
 """
 import argparse
 import logging
 import os
 import sys
-
-from rbackup.hierarchy.repository import Repository
-from rbackup.rsync import rsync
 from subprocess import CalledProcessError
+
+from rbackup.rsync import rsync
+from rbackup.struct.repository import Repository
 
 # ========== Constants ==========
 LOGFORMAT = "==> %(levelname)s %(message)s"
@@ -27,6 +29,7 @@ RSYNC_DEFAULT_OPTS = [
     "--acls",
     "--archive",
     "--backup",
+    "--backup-dir=backup",
     "--hard-links",
     "--ignore-missing-args",
     "--prune-empty-dirs",
@@ -40,12 +43,18 @@ EXTRA_RSYNC_OPTS = {
     "update": "--update",
 }
 
+# ----- File Options -----
 CONFIG_DIR = "/etc/rbackup"
-ETC_INCLUDE_FILE = f"{CONFIG_DIR}/etc-include.conf"
-HOME_EXCLUDE_FILE = f"{CONFIG_DIR}/home-exclude.conf"
+FILE_OPTS = [
+    f"--include-from={CONFIG_DIR}/etc-include.conf",
+    f"--include-from={CONFIG_DIR}/system-include.conf",
+    f"--exclude-from{CONFIG_DIR}/home-exclude.conf",
+]
+
 
 # ----- Error Codes -----
 E_FAILED_PROCESS = 1
+E_INVALID_SNAPSHOT_NAME = 2
 
 # ========== Logging Setup ==========
 console_formatter = logging.Formatter(LOGFORMAT)
@@ -89,6 +98,10 @@ def parse_cmdline_arguments(*args, **kwargs):
         const=EXTRA_RSYNC_OPTS["dry_run"],
         help="pass --dry-run to rsync",
     )
+    parser.add_argument("--debug", action="store_true", help="log debug messages")
+    parser.add_argument(
+        "-n", "--name", default=None, help="name to give to the snapshot"
+    )
     parser.add_argument(
         "-s",
         "--run-post-sync",
@@ -96,48 +109,44 @@ def parse_cmdline_arguments(*args, **kwargs):
         help="run sync operation after backup is complete",
     )
     parser.add_argument(
-        "-v",
-        "--verbose",
-        action="store_true",
-        help="increase script verbosity",
+        "-v", "--verbose", action="store_true", help="log info messages"
     )
-    parser.add_argument(
-        "operation",
-        choices=["all", "etc", "home", "pkg", "system"],
-        help="the operation to perform",
-        metavar="op",
-    )
-    parser.add_argument(
-        "repository", help="repository to back up to", metavar="repo"
-    )
+    parser.add_argument("repository", help="repository to back up to", metavar="repo")
 
-    args = parser.parse_args()
+    return parser.parse_args(*args, **kwargs)
 
-    rsync_opts = RSYNC_DEFAULT_OPTS
+
+# ========== Main Script ==========
+if __name__ == "__main__":
+    args = parse_cmdline_arguments()
+    repo = Repository(args.repository)
+
+    rsync_opts = RSYNC_DEFAULT_OPTS.copy()
+
     if args.extra_rsync_opts is not None:
         rsync_opts.extend(args.extra_rsync_opts)
 
-    args = parser.parse_args()
-    repo = Repository(args.repository)
-
     if args.verbose:
+        stdout_handler.setLevel(logging.INFO)
+
+    if args.debug:
         stdout_handler.setLevel(logging.DEBUG)
 
-    if repo.empty:
-        prev_snapshot = None
-    else:
-        prev_snapshot = repo.curr_snapshot
+    # We want to iterate through the repository and create the --link-dest
+    # options before creating the new snapshot
+    link_dests = tuple(f"--link-dest={s.path}" for s in repo)
 
-    repo.create_snapshot()
-    curr_snapshot = repo.curr_snapshot
-
-    rsync_opts.append("--backup-dir=backup")
+    curr_snapshot = None
 
     try:
-        DISPATCHER[args.operation](curr_snapshot, prev_snapshot, rsync_opts)
+        curr_snapshot = repo.create_snapshot(args.name)
+        rsync(*rsync_opts, *FILE_OPTS, *link_dests, "/", str(curr_snapshot.path))
+    except ValueError as e:
+        syslog.critical(e)
+        exit(E_INVALID_SNAPSHOT_NAME)
     except CalledProcessError as e:
-        syslog.error("Backup process failed")
-        syslog.info(f"Failing command: {e.cmd}")
+        syslog.critical("Backup process failed")
+        syslog.critical(f"Failing command: {e.cmd}")
         exit(E_FAILED_PROCESS)
 
     snapshot_symlink = repo.path / "current"
@@ -147,7 +156,7 @@ def parse_cmdline_arguments(*args, **kwargs):
     except FileNotFoundError:
         pass
 
-    snapshot_symlink.symlink_to(curr_snapshot.path, target_is_directory=True)
+    snapshot_symlink.symlink_to(curr_snapshot, target_is_directory=True)
 
     if args.run_post_sync:
         os.sync()
