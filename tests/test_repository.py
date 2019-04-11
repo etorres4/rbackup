@@ -1,12 +1,11 @@
-# import doctest
 import unittest
+from unittest.mock import MagicMock, PropertyMock, patch
 
 from hypothesis import given
-from hypothesis.strategies import builds, lists, text
-from pathlib import Path
+from hypothesis.strategies import builds, characters, lists, text
+
 from rbackup.struct.repository import Repository
 from rbackup.struct.snapshot import Snapshot
-from unittest.mock import MagicMock, PropertyMock, patch
 
 # ========== Constants  ==========
 TESTING_PACKAGE = "rbackup.struct"

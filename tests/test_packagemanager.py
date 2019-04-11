@@ -2,24 +2,20 @@
 .. author:: Eric Torres
 :synopsis: Unit tests for the PackageManager module.
 """
-import doctest
 import subprocess
 import unittest
+from pathlib import Path
+from unittest.mock import patch
 
 from hypothesis import given
 from hypothesis.strategies import (
-    booleans,
-    dictionaries,
     from_regex,
-    integers,
     iterables,
     one_of,
-    none,
     text,
 )
-from pathlib import Path
+
 from rbackup.package_managers.packagemanager import PackageManager
-from unittest.mock import patch
 
 # ========== Constants ==========
 TESTING_MODULE = "rbackup.package_managers.packagemanager"

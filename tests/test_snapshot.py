@@ -9,7 +9,8 @@ import unittest
 from rbackup.struct.snapshot import Snapshot
 
 # ========== Constants ==========
-TESTING_MODULE = "rbackup.struct.snapshot"
+TESTING_PACKAGE = "rbackup.struct"
+TESTING_MODULE = f"{TESTING_PACKAGE}.snapshot"
 
 
 
