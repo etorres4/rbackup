@@ -12,10 +12,5 @@ from rbackup.struct.snapshot import Snapshot
 TESTING_MODULE = "rbackup.struct.snapshot"
 
 
-# ========== Functions ==========
-def load_tests(loader, tests, ignore):
-    tests.addTests(doctest.DocTestSuite(TESTING_MODULE))
-    return tests
-
 
 # ========== Unit Tests ==========

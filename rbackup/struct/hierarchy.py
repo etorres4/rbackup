@@ -128,10 +128,3 @@ class Hierarchy(PathLike):
             json.dump(attr, mfile)
 
         tmpfile.rename(self.metadata_path)
-
-
-# ========== Functions ==========
-if __name__ == "__main__":
-    import doctest
-
-    doctest.testmod()

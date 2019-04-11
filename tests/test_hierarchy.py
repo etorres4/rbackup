@@ -7,13 +7,8 @@ from pathlib import Path
 from rbackup.struct.hierarchy import Hierarchy
 
 # ========== Constants ==========
-TESTING_MODULE = "rbackup.struct.struct"
-
-
-# ========== Functions ==========
-def load_tests(loader, tests, ignore):
-    tests.addTests(doctest.DocTestSuite(TESTING_MODULE))
-    return tests
+TESTING_PACKAGE = "rbackup.struct"
+TESTING_MODULE = f"{TESTING_PACKAGE}.hierarchy"
 
 
 # ========== Tests ==========

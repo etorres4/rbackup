@@ -25,12 +25,6 @@ from unittest.mock import patch
 TESTING_MODULE = "rbackup.package_managers.packagemanager"
 
 
-# ========== Functions ==========
-def load_tests(loader, tests, ignore):
-    tests.addTests(doctest.DocTestSuite(TESTING_MODULE))
-    return tests
-
-
 # ========== Test Cases ==========
 class TestCreatePackageManager(unittest.TestCase):
     def setUp(self):
