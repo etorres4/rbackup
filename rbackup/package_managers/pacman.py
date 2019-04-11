@@ -1,7 +1,7 @@
 """
 .. author:: Eric Torres
 .. module:: rbackup.package_managers.pacman
-    :synopsis: Implementation class for the Pacman package manager.
+:synopsis: Implementation class for the Pacman package manager.
 """
 from rbackup.package_managers.packagemanager import PackageManager
 
