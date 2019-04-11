@@ -102,7 +102,7 @@ class Repository(Hierarchy):
         raise NotImplementedError
 
     def __iter__(self):
-        return self
+        return iter(self._snapshots)
 
     def __contains__(self, name):
         """Check whether a Snapshot is in this Repository by name.
@@ -114,7 +114,7 @@ class Repository(Hierarchy):
 
     def __next__(self):
         """Return the next Snapshot in this Repository."""
-        return next(self._snapshots)
+        return next(iter(self._snapshots))
 
     @staticmethod
     def is_valid_snapshot_name(name):
@@ -186,7 +186,7 @@ class Repository(Hierarchy):
         )
 
         if not self.is_valid_snapshot_name(snapshot_name):
-            raise ValueError(f"{name} is an invalid name")
+            raise ValueError(f"'{name}' is an invalid name")
         elif snapshot_name in self:
             syslog.warning("Snapshot already exists, data will be overwritten.")
         else:
