@@ -29,7 +29,7 @@ def rsync(*args):
     syslog.info("Beginning rsync process")
 
     try:
-        process = subprocess.run(cmd, capture_output=True, check=True)
+        process = subprocess.run(cmd, capture_output=True, check=True, text=True)
     except subprocess.CalledProcessError as e:
         syslog.error(e.stderr)
         syslog.debug(e.stdout)
