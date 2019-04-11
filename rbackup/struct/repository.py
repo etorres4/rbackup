@@ -1,7 +1,8 @@
 """
 .. author:: Eric Torres
 .. module:: rbackup.struct.repository
-    :synopsis: Class for structuring a backup repository.
+
+:synopsis: Module for helpers for structuring a backup repository.
 """
 import datetime
 import logging
@@ -89,20 +90,7 @@ class Repository(Hierarchy):
                 Snapshot(self.snapshot_dir / s) for s in self._snapshot_metadata
             ]
 
-    def __len__(self):
-        """Return the number of snapshots in this Repository."""
-        return len(self._snapshots)
-
-    def __getitem__(self, position):
-        """Retrieve a Snapshot at a certain index."""
-        return self._snapshots[position]
-
-    def __delitem__(self, s):
-        """Delete a Snapshot in this Repository."""
-        raise NotImplementedError
-
-    def __iter__(self):
-        return iter(self._snapshots)
+        self._snapshot_iterator = iter(self._snapshots)
 
     def __contains__(self, name):
         """Check whether a Snapshot is in this Repository by name.
@@ -112,9 +100,24 @@ class Repository(Hierarchy):
         """
         return name in self._snapshot_metadata
 
+    def __delitem__(self, s):
+        """Delete a Snapshot in this Repository."""
+        raise NotImplementedError
+
+    def __getitem__(self, position):
+        """Retrieve a Snapshot at a certain index."""
+        return self._snapshots[position]
+
+    def __iter__(self):
+        return iter(self._snapshots)
+
+    def __len__(self):
+        """Return the number of snapshots in this Repository."""
+        return len(self._snapshots)
+
     def __next__(self):
         """Return the next Snapshot in this Repository."""
-        return next(iter(self._snapshots))
+        return next(self._snapshot_iterator)
 
     @staticmethod
     def is_valid_snapshot_name(name):
@@ -189,16 +192,15 @@ class Repository(Hierarchy):
             raise ValueError(f"'{name}' is an invalid name")
         elif snapshot_name in self:
             syslog.warning("Snapshot already exists, data will be overwritten.")
+            return self._snapshots[self._snapshot_metadata.index(snapshot_name)]
         else:
             new_snapshot = Snapshot(self.snapshot_dir / snapshot_name)
             self._snapshot_metadata.append(snapshot_name)
             self._snapshots.append(new_snapshot)
-
             new_snapshot.path.mkdir(mode=DIRMODE, parents=True, exist_ok=True)
+            self.write_metadata(self._snapshot_metadata)
 
-        self.write_metadata(self._snapshot_metadata)
+            syslog.debug("Snapshot created")
+            syslog.debug(f"Snapshot name: {new_snapshot.name}")
 
-        syslog.debug("Snapshot created")
-        syslog.debug(f"Snapshot name: {new_snapshot.name}")
-
-        return new_snapshot
+            return new_snapshot
