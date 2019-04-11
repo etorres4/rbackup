@@ -97,6 +97,12 @@ class Hierarchy(PathLike):
         """
         return self._path / ".metadata"
 
+    def gen_metadata(self):
+        """Generate metadata for this repository. After this method is called,
+        the data necessary for this repository has been created.
+        """
+        raise NotImplementedError("This method must be called in a child class.")
+
     def read_metadata(self):
         """Read this repository's metadata from its file and
         then return it.
