@@ -5,7 +5,7 @@ PACKAGES = ["rbackup"]
 SCRIPTS = ["bin/backup"]
 
 # ========== Functions ==========
-with open("README.rst", "r") as fh:
+with open("README", "r") as fh:
     long_description = fh.read()
 
 # ========== Package Setup ==========
