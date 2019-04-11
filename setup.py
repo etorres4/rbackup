@@ -1,7 +1,7 @@
 import setuptools
 
 # ========== Constants ==========
-PACKAGES = ["rbackup", "rbackup.struct", "package_managers"]
+PACKAGES = ["rbackup", "rbackup.package_managers", "rbackup.struct"]
 SCRIPTS = ["bin/backup"]
 
 # ========== Functions ==========
