@@ -7,7 +7,6 @@ import logging
 import subprocess
 import tarfile
 
-from collections.abc import Iterable
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
@@ -33,15 +32,6 @@ class PackageManager:
         :raises: ValueError if pkglist_cmd is an empty str or an iterable
             containing an empty str
         """
-        if not isinstance(pkglist_cmd, Iterable) or isinstance(pkglist_cmd, dict):
-            raise TypeError("pkglist_cmd is the wrong type")
-        elif not pkglist_cmd:
-            raise ValueError(f"Package list command is empty: {pkglist_cmd}")
-        elif any(not isinstance(arg, str) for arg in pkglist_cmd):
-            raise TypeError(f"{pkglist_cmd} contains a non-str value")
-        elif any(not bool(arg) for arg in pkglist_cmd):
-            raise ValueError(f"{pkglist_cmd} contains an empty str value")
-
         self._cachedir = Path(cachedir)
         self._db_path = Path(db_path)
         self._pkglist_cmd = pkglist_cmd
