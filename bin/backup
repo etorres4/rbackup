@@ -34,6 +34,7 @@ RSYNC_DEFAULT_OPTS = [
     "--ignore-missing-args",
     "--prune-empty-dirs",
     "--suffix=.old",
+    "--recursive",
     "--xattrs",
 ]
 EXTRA_RSYNC_OPTS = {
