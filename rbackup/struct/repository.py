@@ -46,6 +46,7 @@ class Repository(Hierarchy):
 
     Methods
     -------
+    * cleanup - clean all repository data
     * create_snapshot - create a new snapshot
     * gen_metadata (inherited from Hierarchy)
     * is_valid_snapshot_name - validate a potential name for a snapshot
@@ -207,3 +208,41 @@ class Repository(Hierarchy):
             syslog.debug(f"Snapshot name: {new_snapshot.name}")
 
             return new_snapshot
+
+    def cleanup(self, *, remove_snapshots=False, remove_repo_dir=False):
+        """Clean up any filesystem references to this repository.
+        By default, no snapshots are deleted.
+
+        :param remove_snapshots: delete the data directory of this repository
+        :type remove_snapshots: bool
+        :param remove_repo_dir: remove the top-directory level of this repository
+        :type remove_repo_dir: bool
+        """
+        # We don't want to risk symlink attacks
+        if not shutil.rmtree.avoids_symlink_attacks:
+            syslog.error(
+                "shutil cannot avoid symlink attacks on this platform. Ignoring."
+            )
+            return
+
+        syslog.debug("Cleaning repository data")
+
+        self.metadata_path.unlink()
+        syslog.info("Removing repository metadata")
+        syslog.debug(f"Repository metadata removed: {self.metadata_path}")
+
+        if remove_snapshots:
+            try:
+                shutil.rmtree(self.snapshot_dir)
+            except PermissionError as e:
+                syslog.error(e)
+            else:
+                syslog.info("Removed snapshots")
+
+        if remove_repo_dir:
+            try:
+                self.path.unlink()
+            except PermissionError as e:
+                syslog.error(e)
+            else:
+                syslog.info(f"Removed repository directory: {self.path}")

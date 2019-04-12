@@ -180,9 +180,59 @@ class TestRepositoryPostCreate(unittest.TestCase):
 
         repo.create_snapshot(name)
         self.assertTrue(name in repo)
+        self.assertEqual(len(repo), 1)
 
     def tearDown(self):
         self.patched_path.stop()
         self.patched_r_metadata.stop()
         self.patched_w_metadata.stop()
+        self.patched_snapshot.stop()
+
+
+class TestRepositoryCleanup(unittest.TestCase):
+    """Test that repository cleanup works properly.
+
+    Test cases
+    ----------
+    * Function stops if system is not symlink attack-resistant
+    * If symlink attack-resistant, then only delete metadata when all others false
+    * Function only deletes snapshots when told to
+    * Function only deletes repository directory when told to
+    """
+
+    def setUp(self):
+        self.patched_path = patch.object(
+            Repository, "metadata_path", new_callable=PropertyMock
+        )
+        self.patched_r_metadata = patch.object(
+            Repository, "read_metadata", spec_set=list
+        )
+        self.patched_w_metadata = patch.object(
+            Repository, "write_metadata", spec_set=list
+        )
+        self.patched_shutil = patch(f"{TESTING_PACKAGE}.repository.shutil")
+        self.patched_snapshot = patch(
+            f"{TESTING_PACKAGE}.repository.Snapshot", spec_set=Snapshot
+        )
+
+        self.mocked_path = self.patched_path.start()
+        self.mocked_r_metadata = self.patched_r_metadata.start()
+        self.mocked_w_metadata = self.patched_w_metadata.start()
+        self.mocked_shutil = self.patched_shutil.start()
+        self.mocked_snapshot = self.patched_snapshot.start()
+
+    def test_stops_on_non_symlink_resistant(self):
+        self.mocked_shutil.rmtree.avoids_symlink_attacks = False
+        repo = Repository("backup")
+
+        repo.cleanup(remove_snapshots=True)
+
+        self.mocked_path.return_value.unlink.assert_not_called()
+        self.mocked_shutil.rmtree.assert_not_called()
+
+    def tearDown(self):
+        self.patched_path.stop()
+        self.patched_r_metadata.stop()
+        self.patched_w_metadata.stop()
+        self.patched_shutil.stop()
         self.patched_snapshot.stop()
