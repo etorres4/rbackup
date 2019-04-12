@@ -241,7 +241,7 @@ class Repository(Hierarchy):
 
         if remove_repo_dir:
             try:
-                self.path.unlink()
+                shutil.rmtree(self)
             except PermissionError as e:
                 syslog.error(e)
             else:
