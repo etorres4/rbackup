@@ -9,7 +9,7 @@ from pathlib import Path
 from unittest.mock import PropertyMock, patch
 
 from hypothesis import given
-from hypothesis.strategies import characters, one_of, text
+from hypothesis.strategies import from_regex, text
 
 from rbackup.struct.hierarchy import Hierarchy
 
@@ -20,9 +20,9 @@ TESTING_MODULE = f"{TESTING_PACKAGE}.hierarchy"
 
 # ========== Tests ==========
 class TestHierarchyPaths(unittest.TestCase):
-    @given(one_of(text(), characters()))
-    def test_returns_correct_path(self, p):
-        self.assertEqual(Path(p), Hierarchy(p).path)
+    @given(from_regex(r"[\w/._-]+", fullmatch=True))
+    def test_returns_absolute_path(self, dest):
+        self.assertTrue(Hierarchy(dest).path.is_absolute())
 
     def test_raises_notimplemented_error(self):
         h = Hierarchy("backup")

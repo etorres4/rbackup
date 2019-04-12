@@ -25,6 +25,8 @@ class Hierarchy(PathLike):
     to call either shutil.mkdir() or a related method to create
     the directory structure it emulates.
 
+    For consistency, Hierarchy objects always store and return absolute paths.
+
     Attributes
     ----------
     * Hierarchy.path
@@ -49,7 +51,7 @@ class Hierarchy(PathLike):
         :type dest: str or path-like object
         """
         try:
-            self._path = Path(dest)
+            self._path = Path(dest).resolve()
         except TypeError as e:
             raise e
 
