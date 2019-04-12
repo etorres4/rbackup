@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5347b3d8-88d5-44d6-9a37-827f1dd92d61" name="Default Changelist" comment="Update exception message">
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/etorres.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/etorres.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PKGBUILD" beforeDir="false" afterPath="$PROJECT_DIR$/PKGBUILD" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/backup" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backup" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -15,23 +12,14 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/rbackup/struct/repository.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="467">
-              <caret line="246" column="16" selection-start-line="246" selection-start-column="16" selection-end-line="246" selection-end-column="16" />
-              <folding>
-                <element signature="e#138#153#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/tests/test_repository.py">
+        <entry file="file://$PROJECT_DIR$/bin/backup">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="275">
-              <caret line="235" column="42" selection-start-line="235" selection-start-column="42" selection-end-line="235" selection-end-column="42" />
+            <state relative-caret-position="16">
+              <caret line="1" selection-start-line="1" selection-end-line="1" />
+              <folding>
+                <element signature="e#566#581#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -53,13 +41,13 @@
         <option value="$PROJECT_DIR$/rbackup/struct/snapshot.py" />
         <option value="$PROJECT_DIR$/rbackup/package_managers/packagemanager.py" />
         <option value="$PROJECT_DIR$/rbackup/package_managers/pacman.py" />
-        <option value="$PROJECT_DIR$/tests/test_packagemanager.py" />
-        <option value="$PROJECT_DIR$/bin/backup" />
         <option value="$PROJECT_DIR$/backup" />
         <option value="$PROJECT_DIR$/tests/test_snapshot.py" />
         <option value="$PROJECT_DIR$/tests/test_hierarchy.py" />
         <option value="$PROJECT_DIR$/rbackup/struct/repository.py" />
         <option value="$PROJECT_DIR$/tests/test_repository.py" />
+        <option value="$PROJECT_DIR$/tests/test_packagemanager.py" />
+        <option value="$PROJECT_DIR$/bin/backup" />
       </list>
     </option>
   </component>
@@ -81,6 +69,11 @@
             <path>
               <item name="rbackup" type="b2602c69:ProjectViewProjectNode" />
               <item name="rbackup" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="rbackup" type="b2602c69:ProjectViewProjectNode" />
+              <item name="rbackup" type="462c0819:PsiDirectoryNode" />
+              <item name="bin" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="rbackup" type="b2602c69:ProjectViewProjectNode" />
@@ -127,7 +120,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python tests.Test rbackup.struct.repository">
+  <component name="RunManager" selected="Python tests.Run all tests">
     <configuration name="backup" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="rbackup" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -249,13 +242,24 @@
       <option name="project" value="LOCAL" />
       <updated>1555080668601</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Update project-level dictionary">
+      <created>1555080705448</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1555080705448</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Update project-level settings">
+      <created>1555080730260</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1555080730260</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="Test_rbackup_struct_repository - 2019.04.11 at 21h 58m 13s.xml">
-      <configuration name="Test rbackup.struct.repository" configurationId="tests" />
-    </history-entry>
     <history-entry file="Test_rbackup_struct_repository - 2019.04.11 at 22h 03m 17s.xml">
       <configuration name="Test rbackup.struct.repository" configurationId="tests" />
     </history-entry>
@@ -283,9 +287,13 @@
     <history-entry file="Test_rbackup_struct_repository - 2019.04.12 at 07h 46m 54s.xml">
       <configuration name="Test rbackup.struct.repository" configurationId="tests" />
     </history-entry>
+    <history-entry file="Run_all_tests - 2019.04.12 at 07h 57m 31s.xml">
+      <configuration name="Run all tests" configurationId="tests" />
+    </history-entry>
   </component>
   <component name="ToolWindowManager">
     <frame x="5" y="-2" width="1356" height="765" extended-state="4" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.16629213" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -332,7 +340,8 @@
     <MESSAGE value="Fix potential bug with removing repository directory" />
     <MESSAGE value="Test all parts of Repository.cleanup()" />
     <MESSAGE value="Update project-level dictionary" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update project-level dictionary" />
+    <MESSAGE value="Update project-level settings" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update project-level settings" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file:///usr/lib/python3.7/abc.py">
@@ -363,16 +372,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="97">
           <caret line="679" selection-start-line="679" selection-end-line="679" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/test_packagemanager.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="32">
-          <caret line="2" column="51" selection-start-line="2" selection-start-column="51" selection-end-line="2" selection-end-column="51" />
-          <folding>
-            <element signature="e#85#102#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -413,16 +412,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bin/backup">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="192">
-          <caret line="141" column="4" selection-start-line="141" selection-start-column="4" selection-end-line="141" selection-end-column="4" />
-          <folding>
-            <element signature="e#566#581#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tests/test_snapshot.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="176">
@@ -455,6 +444,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/tests/test_repository.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="17" column="34" lean-forward="true" selection-start-line="17" selection-start-column="34" selection-end-line="17" selection-end-column="34" />
+          <folding>
+            <element signature="e#81#90#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/rbackup/struct/repository.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="467">
@@ -465,10 +464,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/test_repository.py">
+    <entry file="file://$PROJECT_DIR$/tests/test_packagemanager.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="275">
-          <caret line="235" column="42" selection-start-line="235" selection-start-column="42" selection-end-line="235" selection-end-column="42" />
+        <state relative-caret-position="193">
+          <caret line="54" column="51" selection-start-line="54" selection-start-column="51" selection-end-line="54" selection-end-column="51" />
+          <folding>
+            <element signature="e#85#102#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/backup">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="16">
+          <caret line="1" selection-start-line="1" selection-end-line="1" />
+          <folding>
+            <element signature="e#566#581#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
