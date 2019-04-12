@@ -75,9 +75,9 @@ syslog.addHandler(stderr_handler)
 
 
 # ========== Functions ==========
-def parse_cmdline_arguments(*args, **kwargs):
+def parse_cmdline_arguments(**kwargs):
     """Parse command line arguments passed to the script.
-        All args and kwargs are passed to ArgumentParser.parse_args()
+        All kwargs are passed to ArgumentParser.parse_args().
 
     :rtype: argparse.Namespace object
     """
@@ -113,7 +113,7 @@ def parse_cmdline_arguments(*args, **kwargs):
     )
     parser.add_argument("repository", help="repository to back up to", metavar="repo")
 
-    return parser.parse_args(*args, **kwargs)
+    return parser.parse_args(**kwargs)
 
 
 # ========== Main Script ==========
@@ -153,10 +153,12 @@ if __name__ == "__main__":
 
     try:
         snapshot_symlink.unlink()
+        snapshot_symlink.symlink_to(curr_snapshot, target_is_directory=True)
     except FileNotFoundError:
         pass
-
-    snapshot_symlink.symlink_to(curr_snapshot, target_is_directory=True)
+    except PermissionError as e:
+        syslog.error(e)
 
     if args.run_post_sync:
+        syslog.info("Running sync operation")
         os.sync()
