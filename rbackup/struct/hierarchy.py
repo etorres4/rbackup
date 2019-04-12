@@ -1,7 +1,7 @@
 """
 .. author:: Eric Torres
 .. module:: rbackup.struct.hierarchy
-    :synopsis: Classes for creating the backup hierarchy.
+:synopsis: Classes for creating the backup hierarchy.
 """
 import json
 import logging
@@ -27,9 +27,9 @@ class Hierarchy(PathLike):
 
     Attributes
     ----------
-    * path
-    * name
-    * metadata_path
+    * Hierarchy.path
+    * Hierarchy.name
+    * Hierarchy.metadata_path
 
     Methods
     -------
@@ -42,8 +42,7 @@ class Hierarchy(PathLike):
     def __init__(self, dest):
         """Default constructor for the Hierarchy class.
 
-        >>> hier = Hierarchy('backup_dir')
-        >>> hier.path
+        >>> Hierarchy('backup_dir').path
         PosixPath('backup_dir')
 
         :param dest: the root directory of the backup hierarchy
@@ -54,19 +53,18 @@ class Hierarchy(PathLike):
         except TypeError as e:
             raise e
 
+    def __fspath__(self):
+        return str(self._path)
+
     def __repr__(self):
         """Return a string representation of this Hierarchy."""
         return f"{self.__class__.__name__}('{self._path}')"
-
-    def __fspath__(self):
-        return str(self._path)
 
     @property
     def path(self):
         """Return the base directory of this hierarchy.
 
-        >>> hier = Hierarchy('backup')
-        >>> hier.path
+        >>> Hierarchy('backup').path
         PosixPath('backup')
 
         :rtype: path-like object
@@ -77,8 +75,7 @@ class Hierarchy(PathLike):
     def name(self):
         """Return the name of this hierarchy.
 
-        >>> hier = Hierarchy('backup/data/snapshot-one')
-        >>> hier.name
+        >>> Hierarchy('backup/data/snapshot-one').name
         'snapshot-one'
 
         :rtype: str
@@ -89,8 +86,7 @@ class Hierarchy(PathLike):
     def metadata_path(self):
         """Return the path of this hierarchy's metadata file.
 
-        >>> hier = Hierarchy('backup')
-        >>> hier.metadata_path
+        >>> Hierarchy('backup').metadata_path
         PosixPath('backup/.metadata')
 
         :rtype: path-like object
@@ -98,8 +94,8 @@ class Hierarchy(PathLike):
         return self._path / ".metadata"
 
     def gen_metadata(self):
-        """Generate metadata for this repository. After this method is called,
-        the data necessary for this repository has been created.
+        """Generate metadata for this repository.
+            After this method is called, the data necessary for this repository has been created.
         """
         raise NotImplementedError("This method must be called in a child class.")
 
