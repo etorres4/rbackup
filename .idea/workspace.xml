@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="AnalysisUIOptions">
-    <option name="SCOPE_TYPE" value="3" />
-  </component>
   <component name="ChangeListManager">
-    <list default="true" id="5347b3d8-88d5-44d6-9a37-827f1dd92d61" name="Default Changelist" comment="">
+    <list default="true" id="5347b3d8-88d5-44d6-9a37-827f1dd92d61" name="Default Changelist" comment="Update exception message">
+      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/etorres.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/etorres.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PKGBUILD" beforeDir="false" afterPath="$PROJECT_DIR$/PKGBUILD" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README" beforeDir="false" afterPath="$PROJECT_DIR$/README" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/backup" beforeDir="false" afterPath="$PROJECT_DIR$/bin/backup" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -17,14 +15,23 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/bin/backup">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/rbackup/struct/repository.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="144">
-              <caret line="138" lean-forward="true" selection-start-line="138" selection-end-line="138" />
+            <state relative-caret-position="467">
+              <caret line="246" column="16" selection-start-line="246" selection-start-column="16" selection-end-line="246" selection-end-column="16" />
               <folding>
-                <element signature="e#566#581#0" expanded="true" />
+                <element signature="e#138#153#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/tests/test_repository.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="275">
+              <caret line="235" column="42" selection-start-line="235" selection-start-column="42" selection-end-line="235" selection-end-column="42" />
             </state>
           </provider>
         </entry>
@@ -44,13 +51,15 @@
       <list>
         <option value="$PROJECT_DIR$/rbackup/struct/hierarchy.py" />
         <option value="$PROJECT_DIR$/rbackup/struct/snapshot.py" />
-        <option value="$PROJECT_DIR$/rbackup/struct/repository.py" />
-        <option value="$PROJECT_DIR$/tests/test_repository.py" />
-        <option value="$PROJECT_DIR$/tests/test_hierarchy.py" />
         <option value="$PROJECT_DIR$/rbackup/package_managers/packagemanager.py" />
         <option value="$PROJECT_DIR$/rbackup/package_managers/pacman.py" />
         <option value="$PROJECT_DIR$/tests/test_packagemanager.py" />
         <option value="$PROJECT_DIR$/bin/backup" />
+        <option value="$PROJECT_DIR$/backup" />
+        <option value="$PROJECT_DIR$/tests/test_snapshot.py" />
+        <option value="$PROJECT_DIR$/tests/test_hierarchy.py" />
+        <option value="$PROJECT_DIR$/rbackup/struct/repository.py" />
+        <option value="$PROJECT_DIR$/tests/test_repository.py" />
       </list>
     </option>
   </component>
@@ -65,17 +74,13 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
               <item name="rbackup" type="b2602c69:ProjectViewProjectNode" />
               <item name="rbackup" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="rbackup" type="b2602c69:ProjectViewProjectNode" />
-              <item name="rbackup" type="462c0819:PsiDirectoryNode" />
-              <item name="bin" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="rbackup" type="b2602c69:ProjectViewProjectNode" />
@@ -103,13 +108,12 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/tests/test_packagemanager.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/tests" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="preferences.externalTools" />
+    <property name="settings.editor.selected.configurable" value="debugger.stepping" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -123,7 +127,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python tests.Run all tests">
+  <component name="RunManager" selected="Python tests.Test rbackup.struct.repository">
     <configuration name="backup" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="rbackup" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -145,17 +149,17 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Run all tests" type="tests" factoryName="py.test">
+    <configuration name="Run all tests" type="tests" factoryName="py.test" singleton="false">
       <module name="rbackup" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="/usr/bin/python3.7" />
-      <option name="WORKING_DIRECTORY" value="$USER_HOME$" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_keywords" value="&quot;&quot;" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;--cov\u003dtests --cov-branch&quot;" />
       <option name="_new_target" value="&quot;$PROJECT_DIR$/tests&quot;" />
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
@@ -190,7 +194,7 @@
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Test rbackup.struct.repository" type="tests" factoryName="py.test">
+    <configuration name="Test rbackup.struct.repository" type="tests" factoryName="py.test" singleton="false">
       <module name="rbackup" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -224,48 +228,88 @@
       <option name="presentableId" value="Default" />
       <updated>1554855277852</updated>
     </task>
+    <task id="LOCAL-00001" summary="Update exception message">
+      <created>1554946920288</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1554946920288</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Fix potential bug with removing repository directory">
+      <created>1555080631203</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1555080631208</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Test all parts of Repository.cleanup()">
+      <created>1555080668601</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1555080668601</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="Test_rbackup_struct_hierarchy - 2019.04.10 at 07h 15m 52s.xml">
-      <configuration name="Test rbackup.struct.hierarchy" configurationId="tests" />
+    <history-entry file="Test_rbackup_struct_repository - 2019.04.11 at 21h 58m 13s.xml">
+      <configuration name="Test rbackup.struct.repository" configurationId="tests" />
     </history-entry>
-    <history-entry file="Test_rbackup_struct_hierarchy - 2019.04.10 at 07h 21m 17s.xml">
-      <configuration name="Test rbackup.struct.hierarchy" configurationId="tests" />
+    <history-entry file="Test_rbackup_struct_repository - 2019.04.11 at 22h 03m 17s.xml">
+      <configuration name="Test rbackup.struct.repository" configurationId="tests" />
     </history-entry>
-    <history-entry file="Test_rbackup_struct_hierarchy - 2019.04.10 at 07h 29m 37s.xml">
-      <configuration name="Test rbackup.struct.hierarchy" configurationId="tests" />
+    <history-entry file="Test_rbackup_struct_repository - 2019.04.11 at 22h 05m 06s.xml">
+      <configuration name="Test rbackup.struct.repository" configurationId="tests" />
     </history-entry>
-    <history-entry file="Test_rbackup_struct_hierarchy - 2019.04.10 at 09h 10m 15s.xml">
-      <configuration name="Test rbackup.struct.hierarchy" configurationId="tests" />
+    <history-entry file="Test_rbackup_struct_repository - 2019.04.11 at 22h 08m 54s.xml">
+      <configuration name="Test rbackup.struct.repository" configurationId="tests" />
     </history-entry>
-    <history-entry file="Test_rbackup_struct_hierarchy - 2019.04.10 at 09h 30m 58s.xml">
-      <configuration name="Test rbackup.struct.hierarchy" configurationId="tests" />
+    <history-entry file="pytest_for_test_repository_TestRepositoryPreCreate_test_snapshots_returns_empty_list - 2019.04.11 at 22h 19m 01s.xml">
+      <configuration name="pytest for test_repository.TestRepositoryPreCreate.test_snapshots_returns_empty_list" configurationId="tests" />
     </history-entry>
-    <history-entry file="Run_all_tests - 2019.04.10 at 09h 32m 09s.xml">
+    <history-entry file="Run_all_tests - 2019.04.11 at 22h 19m 46s.xml">
       <configuration name="Run all tests" configurationId="tests" />
     </history-entry>
-    <history-entry file="Test_packagemanagers_packagemanager - 2019.04.10 at 09h 32m 58s.xml">
-      <configuration name="Test packagemanagers.packagemanager" configurationId="tests" />
+    <history-entry file="Test_rbackup_struct_repository - 2019.04.12 at 07h 42m 32s.xml">
+      <configuration name="Test rbackup.struct.repository" configurationId="tests" />
     </history-entry>
-    <history-entry file="Test_packagemanagers_packagemanager - 2019.04.10 at 09h 34m 19s.xml">
-      <configuration name="Test packagemanagers.packagemanager" configurationId="tests" />
+    <history-entry file="Test_rbackup_struct_repository - 2019.04.12 at 07h 45m 41s.xml">
+      <configuration name="Test rbackup.struct.repository" configurationId="tests" />
     </history-entry>
-    <history-entry file="Run_all_tests - 2019.04.10 at 13h 05m 36s.xml">
-      <configuration name="Run all tests" configurationId="tests" />
+    <history-entry file="Test_rbackup_struct_repository - 2019.04.12 at 07h 46m 01s.xml">
+      <configuration name="Test rbackup.struct.repository" configurationId="tests" />
     </history-entry>
-    <history-entry file="Run_all_tests - 2019.04.10 at 18h 30m 10s.xml">
-      <configuration name="Run all tests" configurationId="tests" />
+    <history-entry file="Test_rbackup_struct_repository - 2019.04.12 at 07h 46m 54s.xml">
+      <configuration name="Test rbackup.struct.repository" configurationId="tests" />
     </history-entry>
   </component>
   <component name="ToolWindowManager">
     <frame x="5" y="-2" width="1356" height="765" extended-state="4" />
-    <editor active="true" />
     <layout>
+      <window_info content_ui="combo" id="Project" order="0" weight="0.16629213" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32970452" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49962547" weight="0.47278383" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.39968896" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Version Control" order="7" />
+      <window_info anchor="bottom" id="Terminal" order="8" weight="0.32970452" />
+      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.50037456" side_tool="true" weight="0.47278383" />
+      <window_info anchor="bottom" id="Python Console" order="10" weight="0.32970452" />
+      <window_info anchor="bottom" id="Inspection Results" order="11" weight="0.32970452" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+    </layout>
+    <layout-to-restore>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.16629213" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Inspection Results" weight="0.32970452" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32970452" />
       <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49962547" visible="true" weight="0.47278383" />
@@ -277,10 +321,18 @@
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.32970452" />
       <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.50037456" side_tool="true" weight="0.47278383" />
       <window_info anchor="bottom" id="Python Console" order="10" weight="0.32970452" />
+      <window_info anchor="bottom" id="Inspection Results" order="11" weight="0.32970452" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-    </layout>
+    </layout-to-restore>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Update exception message" />
+    <MESSAGE value="Fix potential bug with removing repository directory" />
+    <MESSAGE value="Test all parts of Repository.cleanup()" />
+    <MESSAGE value="Update project-level dictionary" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update project-level dictionary" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file:///usr/lib/python3.7/abc.py">
@@ -314,26 +366,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/test_hierarchy.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="32">
-          <caret line="38" column="54" selection-start-line="38" selection-start-column="54" selection-end-line="38" selection-end-column="54" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/test_repository.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="243">
-          <caret line="183" column="40" selection-start-line="183" selection-start-column="40" selection-end-line="183" selection-end-column="40" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tests/test_packagemanager.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="32">
@@ -361,16 +393,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/rbackup/struct/repository.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="90" selection-start-line="90" selection-end-line="90" />
-          <folding>
-            <element signature="e#128#143#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/rbackup/struct/snapshot.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="115">
@@ -393,11 +415,60 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/bin/backup">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="138" lean-forward="true" selection-start-line="138" selection-end-line="138" />
+        <state relative-caret-position="192">
+          <caret line="141" column="4" selection-start-line="141" selection-start-column="4" selection-end-line="141" selection-end-column="4" />
           <folding>
             <element signature="e#566#581#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/test_snapshot.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="176">
+          <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backup" />
+    <entry file="file://$PROJECT_DIR$/tests/test_hierarchy.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="16">
+          <caret line="32" column="9" selection-start-line="32" selection-start-column="9" selection-end-line="32" selection-end-column="9" />
+          <folding>
+            <element signature="e#80#95#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/lib/python3.7/tokenize.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="264">
+          <caret line="455" column="12" selection-start-line="455" selection-start-column="12" selection-end-line="455" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/lib/python3.7/unittest/mock.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="958" selection-start-line="958" selection-end-line="958" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/rbackup/struct/repository.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="467">
+          <caret line="246" column="16" selection-start-line="246" selection-start-column="16" selection-end-line="246" selection-end-column="16" />
+          <folding>
+            <element signature="e#138#153#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/test_repository.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="275">
+          <caret line="235" column="42" selection-start-line="235" selection-start-column="42" selection-end-line="235" selection-end-column="42" />
         </state>
       </provider>
     </entry>
