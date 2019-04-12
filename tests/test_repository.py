@@ -227,6 +227,8 @@ class TestRepositoryCleanup(unittest.TestCase):
         self.mocked_shutil = self.patched_shutil.start()
         self.mocked_snapshot = self.patched_snapshot.start()
 
+        self.mocked_shutil.rmtree.avoids_symlink_attacks = True
+
     def test_stops_on_non_symlink_resistant(self):
         self.mocked_shutil.rmtree.avoids_symlink_attacks = False
         repo = Repository("backup")
@@ -235,6 +237,27 @@ class TestRepositoryCleanup(unittest.TestCase):
 
         self.mocked_path.return_value.unlink.assert_not_called()
         self.mocked_shutil.rmtree.assert_not_called()
+
+    def test_removes_metadata_by_default(self):
+        repo = Repository('backup')
+
+        repo.cleanup()
+
+        self.mocked_path.return_value.unlink.assert_called_once()
+
+    def test_removes_snapshots(self):
+        repo = Repository('backup')
+
+        repo.cleanup(remove_snapshots=True)
+
+        self.mocked_shutil.rmtree.assert_called_once()
+
+    def test_removes_repo_dir(self):
+        repo = Repository('backup')
+
+        repo.cleanup(remove_repo_dir=True)
+
+        self.mocked_shutil.rmtree.assert_called_once()
 
     def tearDown(self):
         self.patched_path.stop()
