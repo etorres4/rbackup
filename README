@@ -69,10 +69,9 @@ To-do
 * Study how snapshots behave when --delete is passed
 * Snapshot cleanup script
   * Repository.__delitem__()
-  * Repository.__contains__()
   * Snapshot.__del__()?
 * Add __enter__ and __exit__ for PackageManager lockfiles to prevent transactions during backup
-* Get rid of counter variable in __next__?
+* Profile-based path selection?
 
 Dependencies
 ------------
