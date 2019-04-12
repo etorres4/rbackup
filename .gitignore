@@ -1,8 +1,8 @@
-basedir
 __pycache__
 pkg
 src
 tags
 *.tar.gz
 *.tar.xz
+.coverage
 .hypothesis
