@@ -55,23 +55,21 @@ basedir
 Implementation Notes
 --------------------
 * pathlib is used for path handling
+  * Only absolute paths are used internally for consistency
 * Use --link-dest=
 * Use --suffix=, --backup, and --backup-dir=
 * When hardlinking, rbackup passes the entire path to avoid needing relative paths
 
 To-do
 -----
-* Add -n flag to backup script to name a Snapshot
-  * What happens when two snapshots have the same name?
-* Add ability to read metadata from a file for a Repository
-  * Snapshot as well?
 * Use --suffix=, --backup, and --backup-dir=
+* Create config module
 * Study how snapshots behave when --delete is passed
-* Snapshot cleanup script
-  * Repository.__delitem__()
-  * Snapshot.__del__()?
 * Add __enter__ and __exit__ for PackageManager lockfiles to prevent transactions during backup
-* Profile-based path selection?
+* Create snapshot manipulation script
+* Interactive cleanup script
+  * Repository.__delitem__()
+  * Repository.delete_snapshot(name)
 
 Dependencies
 ------------
