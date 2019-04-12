@@ -67,24 +67,16 @@ class TestRepositoryPreCreate(unittest.TestCase):
         else:
             self.assertFalse(repo.empty)
 
-    @given(
-        lists(
-            text(
-                alphabet=characters(blacklist_characters=UNWANTED_SNAPSHOT_CHARS),
-                min_size=1,
-            ),
-            unique=True,
-        )
-    )
-    def test_len(self, snapshots):
+    @given(lists(from_regex(VALID_SNAPSHOT_NAME, fullmatch=True), unique=True))
+    def test_dunder_len(self, snapshots):
         self.mocked_r_metadata.return_value = snapshots.copy()
         repo = Repository("backup")
 
         self.assertEqual(len(repo.snapshots), len(snapshots))
 
     @given(text(min_size=1))
-    def test_contains(self, name):
-        self.mocked_r_metadata = []
+    def test_dunder_contains(self, name):
+        self.mocked_r_metadata.return_value = []
         repo = Repository("backup")
 
         self.assertFalse(name in repo)
@@ -99,8 +91,17 @@ class TestRepositoryPreCreate(unittest.TestCase):
             self.assertTrue(Repository.is_valid_snapshot_name(name))
 
     def test_snapshots_returns_empty_list(self):
-        r = Repository("backup")
-        self.assertListEqual(r.snapshots, [])
+        repo = Repository("backup")
+        self.assertListEqual(repo.snapshots, [])
+
+    @given(
+        lists(from_regex(VALID_SNAPSHOT_NAME, fullmatch=True), min_size=1, unique=True)
+    )
+    def snapshots_property_contains_snapshot_objects(self, snapshots):
+        self.mocked_r_metadata.return_value = snapshots
+        repo = Repository("backup")
+
+        self.assertTrue(all(isinstance(p, Snapshot) for p in repo))
 
     def tearDown(self):
         self.patched_path.stop()
@@ -149,7 +150,8 @@ class TestRepositoryPostCreate(unittest.TestCase):
 
         repo.create_snapshot()
 
-        self.assertFalse(repo.empty)
+        self.assertEqual(len(repo), len(snapshots) + 1)
+        self.assertEqual(len(repo.snapshots), len(snapshots) + 1)
 
     @given(from_regex(VALID_SNAPSHOT_NAME, fullmatch=True))
     def test_dunder_contains(self, name):
@@ -165,20 +167,24 @@ class TestRepositoryPostCreate(unittest.TestCase):
 
         repo.create_snapshot()
 
-        self.assertEqual(len(repo), len(snapshots) + 1)
-        self.assertEqual(len(repo.snapshots), len(snapshots) + 1)
+        self.assertFalse(repo.empty)
 
-    @given(
-        text(
-            alphabet=characters(blacklist_characters=UNWANTED_SNAPSHOT_CHARS),
-            min_size=1,
-        )
-    )
-    def test_contains(self, name):
-        self.mocked_path.return_value.exists.return_value = False
+    def test_snapshot_returns_snapshot_object(self):
+        self.mocked_r_metadata.return_value = []
         repo = Repository("backup")
 
-        repo.create_snapshot(name)
+        self.assertIsInstance(repo.create_snapshot(), Snapshot)
+
+    def test_create_duplicate_snapshot(self):
+        # Test that if a snapshot is a duplicate, then return that duplicate snapshot
+        self.mocked_r_metadata.return_value = []
+        repo = Repository("backup")
+        name = "new-snapshot"
+
+        first = repo.create_snapshot(name)
+        second = repo.create_snapshot(name)
+
+        self.assertIs(first, second)
         self.assertTrue(name in repo)
         self.assertEqual(len(repo), 1)
 
