@@ -17,13 +17,10 @@ files are hardlinked into the new snapshot.
 import argparse
 import logging
 import os
-import re
 import sys
-from contextlib import contextmanager
-from pathlib import Path
 from subprocess import CalledProcessError
-from tempfile import NamedTemporaryFile
 
+import rbackup.config as config
 from rbackup.rsync import rsync
 from rbackup.struct.repository import Repository
 
@@ -47,12 +44,6 @@ EXTRA_RSYNC_OPTS = {
     "checksum": "--checksum",
     "update": "--update",
 }
-
-# ----- File Options -----
-CONFIG_DIR = "/etc/rbackup"
-FILE_OPTS = [f"--exclude-from={CONFIG_DIR}/home-exclude.conf"]
-INCLUDE_PATHS = [f"{CONFIG_DIR}/etc-include.conf", f"{CONFIG_DIR}/system-include.conf"]
-COMMENT_REGEX = r"^[^#; ]+"
 
 
 # ----- Error Codes -----
@@ -119,43 +110,6 @@ def parse_cmdline_arguments(**kwargs):
     return parser.parse_args(**kwargs)
 
 
-@contextmanager
-def merge_files(*config_files):
-    """Parse, filter, and sort through config files to create a single
-    --files-from argument.
-
-        Any files included that do not exist send a warning to the log.
-
-    >>> merge_files('/etc/rbackup/etc-include.conf', '/etc/rbackup/system-include.conf') # doctest: +ELLIPSIS
-    >>> '/tmp/...'
-
-    :param config_files: files including paths to read from
-    :type config_files: iterable of str
-    :returns: path to file that lists include paths
-    :rtype: str
-    """
-    file_paths = [Path(p) for p in config_files]
-    include_lines = []
-
-    for config_file in file_paths:
-        if config_file.exists():
-            with config_file.open(mode="r") as opened_file:
-                include_lines.extend(
-                    l for l in opened_file.readlines() if re.match(COMMENT_REGEX, l)
-                )
-        else:
-            syslog.warning(f"{config_file} does not exist, ignoring.")
-
-    include_lines.sort()
-
-    with NamedTemporaryFile(mode="w", delete=False) as include_paths:
-        include_paths.writelines(include_lines)
-
-    tmpfile = Path(include_paths.name)
-    yield tmpfile
-    tmpfile.unlink()
-
-
 # ========== Main Script ==========
 if __name__ == "__main__":
     args = parse_cmdline_arguments()
@@ -178,24 +132,24 @@ if __name__ == "__main__":
 
     curr_snapshot = None
 
-    try:
-        with merge_files(*INCLUDE_PATHS) as include_file:
+    with config.merge_include_files() as include_file, config.merge_exclude_files() as exclude_file:
+        try:
             curr_snapshot = repo.create_snapshot(args.name)
             rsync(
                 *rsync_opts,
-                *FILE_OPTS,
+                f"--exclude-from={exclude_file}",
                 f"--files-from={include_file}",
                 *link_dests,
                 "/",
                 str(curr_snapshot.path),
             )
-    except ValueError as e:
-        syslog.critical(e)
-        exit(E_INVALID_SNAPSHOT_NAME)
-    except CalledProcessError as e:
-        syslog.critical("Backup process failed")
-        syslog.critical(f"Failing command: {e.cmd}")
-        exit(E_FAILED_PROCESS)
+        except ValueError as e:
+            syslog.critical(e)
+            exit(E_INVALID_SNAPSHOT_NAME)
+        except CalledProcessError as e:
+            syslog.critical("Backup process failed")
+            syslog.critical(f"Failing command: {e.cmd}")
+            exit(E_FAILED_PROCESS)
 
     snapshot_symlink = repo.path / "current"
 
