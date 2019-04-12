@@ -6,4 +6,5 @@ tags
 *.tar.xz
 .coverage
 .hypothesis
+.idea
 PKGBUILD
