@@ -3,14 +3,12 @@
 
 Tests for the rbackup.struct.repository module.
 """
-# TODO test that the snapshot returned is actually in the repository
-# TODO test creating snapshots, returned snapshot is an instance of Snapshot, etc.
-
+import re
 import unittest
 from unittest.mock import PropertyMock, patch
 
 from hypothesis import given
-from hypothesis.strategies import characters, lists, text
+from hypothesis.strategies import from_regex, lists, text
 
 from rbackup.struct.repository import Repository
 from rbackup.struct.snapshot import Snapshot
@@ -20,7 +18,7 @@ TESTING_PACKAGE = "rbackup.struct"
 REPO_MODULE = f"{TESTING_PACKAGE}.repository"
 SS_MODULE = f"{TESTING_PACKAGE}.snapshot"
 
-UNWANTED_SNAPSHOT_CHARS = ["/"]
+VALID_SNAPSHOT_NAME = r"[\w._+-]+[^/]*"
 
 
 # ========== Integration Tests ==========
@@ -59,15 +57,7 @@ class TestRepositoryPreCreate(unittest.TestCase):
 
         self.mocked_path.return_value.exists.return_value = True
 
-    @given(
-        lists(
-            text(
-                alphabet=characters(blacklist_characters=UNWANTED_SNAPSHOT_CHARS),
-                min_size=1,
-            ),
-            unique=True,
-        )
-    )
+    @given(lists(from_regex(VALID_SNAPSHOT_NAME, fullmatch=True), unique=True))
     def test_empty(self, snapshots):
         self.mocked_r_metadata.return_value = snapshots.copy()
         repo = Repository("backup")
@@ -103,7 +93,7 @@ class TestRepositoryPreCreate(unittest.TestCase):
     def test_valid_name(self, name):
         self.mocked_r_metadata.return_value = []
 
-        if not name or "/" in name:
+        if not re.match(VALID_SNAPSHOT_NAME, name):
             self.assertFalse(Repository.is_valid_snapshot_name(name))
         else:
             self.assertTrue(Repository.is_valid_snapshot_name(name))
@@ -152,16 +142,8 @@ class TestRepositoryPostCreate(unittest.TestCase):
         self.mocked_w_metadata = self.patched_w_metadata.start()
         self.mocked_snapshot = self.patched_snapshot.start()
 
-    @given(
-        lists(
-            text(
-                alphabet=characters(blacklist_characters=UNWANTED_SNAPSHOT_CHARS),
-                min_size=1,
-            ),
-            unique=True,
-        )
-    )
-    def test_empty(self, snapshots):
+    @given(lists(from_regex(VALID_SNAPSHOT_NAME, fullmatch=True), unique=True))
+    def test_dunder_len(self, snapshots):
         self.mocked_r_metadata.return_value = snapshots.copy()
         repo = Repository("backup")
 
@@ -169,17 +151,16 @@ class TestRepositoryPostCreate(unittest.TestCase):
 
         self.assertFalse(repo.empty)
 
-    @given(
-        lists(
-            text(
-                alphabet=characters(blacklist_characters=UNWANTED_SNAPSHOT_CHARS),
-                min_size=1,
-            ),
-            unique=True,
-        )
-    )
-    def test_len(self, snapshots):
-        self.mocked_r_metadata.return_value = snapshots.copy()
+    @given(from_regex(VALID_SNAPSHOT_NAME, fullmatch=True))
+    def test_dunder_contains(self, name):
+        self.mocked_path.return_value.exists.return_value = False
+        repo = Repository("backup")
+
+        repo.create_snapshot(name)
+        self.assertTrue(name in repo)
+
+    def test_empty(self):
+        self.mocked_r_metadata.return_value = []
         repo = Repository("backup")
 
         repo.create_snapshot()

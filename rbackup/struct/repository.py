@@ -6,6 +6,8 @@
 """
 import datetime
 import logging
+import re
+import shutil
 
 from rbackup.struct.hierarchy import Hierarchy
 from rbackup.struct.snapshot import Snapshot
@@ -17,6 +19,8 @@ syslog = logging.getLogger(__name__)
 # ========== Constants ==========
 DIRMODE = 0o755
 FILEMODE = 0o644
+
+VALID_SNAPSHOT_NAME = r"[\w._+-]+[^/]*"
 
 
 # ========== Classes ==========
@@ -121,23 +125,22 @@ class Repository(Hierarchy):
 
     @staticmethod
     def is_valid_snapshot_name(name):
-        """Check if the given name is a valid name. If it is a duplicate,
-        log a warning. If it is invalid, raise a ValueError.
+        """Check if the given name is a valid name.
 
         Invalid Names:
         --------------
         * Contain slashes
-        * Are empty values i.e. '' or []
+        * Are empty values
+
+        Valid names match the regex
+        r'[\w]+[^/]*'
 
         :param name: name to validate
         :type name: str
         :returns: true if this name is deemed valid
         :rtype: bool
         """
-        if not str(name) or "/" in name:
-            return False
-        else:
-            return True
+        return bool(re.match(VALID_SNAPSHOT_NAME, name))
 
     @property
     def snapshot_dir(self):
