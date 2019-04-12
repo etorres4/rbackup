@@ -51,7 +51,7 @@ EXTRA_RSYNC_OPTS = {
 # ----- File Options -----
 CONFIG_DIR = "/etc/rbackup"
 FILE_OPTS = [f"--exclude-from={CONFIG_DIR}/home-exclude.conf"]
-INCLUDE_PATHS = [f"{CONFIG_DIR}/etc-include.conf", "{CONFIG_DIR}/system-include.conf"]
+INCLUDE_PATHS = [f"{CONFIG_DIR}/etc-include.conf", f"{CONFIG_DIR}/system-include.conf"]
 COMMENT_REGEX = r"^[^#; ]+"
 
 
@@ -144,7 +144,7 @@ def merge_files(*config_files):
                     l for l in opened_file.readlines() if re.match(COMMENT_REGEX, l)
                 )
         else:
-            syslog.warning(f"{config_file} does not exist, ignoring")
+            syslog.warning(f"{config_file} does not exist, ignoring.")
 
     include_lines.sort()
 
