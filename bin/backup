@@ -155,11 +155,12 @@ if __name__ == "__main__":
 
     try:
         snapshot_symlink.unlink()
-        snapshot_symlink.symlink_to(curr_snapshot, target_is_directory=True)
     except FileNotFoundError:
         pass
     except PermissionError as e:
         syslog.error(e)
+
+    snapshot_symlink.symlink_to(curr_snapshot, target_is_directory=True)
 
     if args.run_post_sync:
         syslog.info("Running sync operation")
