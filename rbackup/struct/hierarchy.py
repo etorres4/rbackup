@@ -44,9 +44,6 @@ class Hierarchy(PathLike):
     def __init__(self, dest):
         """Default constructor for the Hierarchy class.
 
-        >>> Hierarchy('backup_dir').path
-        PosixPath('backup_dir')
-
         :param dest: the root directory of the backup hierarchy
         :type dest: str or path-like object
         """
@@ -66,9 +63,6 @@ class Hierarchy(PathLike):
     def path(self):
         """Return the base directory of this hierarchy.
 
-        >>> Hierarchy('backup').path
-        PosixPath('backup')
-
         :rtype: path-like object
         """
         return self._path
@@ -77,9 +71,6 @@ class Hierarchy(PathLike):
     def name(self):
         """Return the name of this hierarchy.
 
-        >>> Hierarchy('backup/data/snapshot-one').name
-        'snapshot-one'
-
         :rtype: str
         """
         return self._path.name
@@ -87,9 +78,6 @@ class Hierarchy(PathLike):
     @property
     def metadata_path(self):
         """Return the path of this hierarchy's metadata file.
-
-        >>> Hierarchy('backup').metadata_path
-        PosixPath('backup/.metadata')
 
         :rtype: path-like object
         """

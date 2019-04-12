@@ -29,7 +29,7 @@ def get_files_by_suffix(suffix):
     """Retrieve all include files from the program configuration directory.
 
     >>> get_files_by_suffix('-include.conf') # doctest: +ELLIPSIS
-    ...
+    <generator object ...>
 
     :param suffix: the suffix to search for
     :type suffix: str
@@ -45,8 +45,8 @@ def merge_files(files):
 
         Any files included that do not exist send a warning to the log.
 
-    >>> merge_files() # doctest: +ELLIPSIS
-    PosixPath(/tmp/...)
+    >>> merge_files(get_files_by_suffix('')) # doctest: +ELLIPSIS
+    PosixPath('/tmp/...')
 
     :param files: files including paths to read from
     :type files: iterable of path-like objects

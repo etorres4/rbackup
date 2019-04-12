@@ -39,9 +39,6 @@ class Snapshot(Hierarchy):
     @property
     def pkg_dir(self):
         """Retrieve the package manager backup directory of this snapshot.
-        >>> s = Snapshot('backup/data/snapshot-new')
-        >>> s.pkg_dir
-        PosixPath('backup/data/snapshot-new/pkg')
 
         :rtype: path-like object
         """
