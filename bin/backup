@@ -179,7 +179,7 @@ if __name__ == "__main__":
     curr_snapshot = None
 
     try:
-        with merge_files(INCLUDE_PATHS) as include_file:
+        with merge_files(*INCLUDE_PATHS) as include_file:
             curr_snapshot = repo.create_snapshot(args.name)
             rsync(
                 *rsync_opts,
