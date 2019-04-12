@@ -6,3 +6,4 @@ tags
 *.tar.xz
 .coverage
 .hypothesis
+PKGBUILD
