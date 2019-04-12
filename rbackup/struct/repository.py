@@ -38,11 +38,11 @@ class Repository(Hierarchy):
 
     Attributes
     ----------
-    * path (inherited from Hierarchy)
-    * name (inherited from Hierarchy)
-    * metadata_path (inherited from Hierarchy)
-    * snapshots - a list of snapshots stored in this repository
-    * snapshot_dir - the snapshot storage location of this repository
+    * Repository.path (inherited from Hierarchy)
+    * Repository.name (inherited from Hierarchy)
+    * Repository.metadata_path (inherited from Hierarchy)
+    * Repository.snapshots - a list of snapshots stored in this repository
+    * Repository.snapshot_dir - the snapshot storage location of this repository
 
     Methods
     -------
@@ -169,6 +169,12 @@ class Repository(Hierarchy):
         :rtype: bool
         """
         return not self.snapshots
+
+    def gen_metadata(self):
+        """Generate metadata for this repository.
+            After this method is called, the data necessary for this snapshot has been created.
+        """
+        pass
 
     def create_snapshot(self, name=None):
         """Create a new snapshot in this repository.

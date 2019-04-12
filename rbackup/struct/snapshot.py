@@ -16,10 +16,10 @@ class Snapshot(Hierarchy):
     """Hierarchy for a single snapshot.
     Attributes
     ----------
-    * path (inherited from Hierarchy)
-    * name (inherited from Hierarchy)
-    * metadata_path (inherited from Hierarchy)
-    * pkg_dir
+    * Snapshot.path (inherited from Hierarchy)
+    * Snapshot.name (inherited from Hierarchy)
+    * Snapshot.metadata_path (inherited from Hierarchy)
+    * Snapshot.pkg_dir
 
     Methods
     -------
@@ -43,6 +43,12 @@ class Snapshot(Hierarchy):
         :rtype: path-like object
         """
         return self.path / "pkg"
+
+    def gen_metadata(self):
+        """Generate metadata for this repository.
+            After this method is called, the data necessary for this snapshot has been created.
+        """
+        pass
 
 
 # ========== Functions ==========

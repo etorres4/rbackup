@@ -47,10 +47,7 @@ class Hierarchy(PathLike):
         :param dest: the root directory of the backup hierarchy
         :type dest: str or path-like object
         """
-        try:
-            self._path = Path(dest).resolve()
-        except TypeError as e:
-            raise e
+        self._path = Path(dest).resolve()
 
     def __fspath__(self):
         return str(self._path)
@@ -85,7 +82,7 @@ class Hierarchy(PathLike):
 
     def gen_metadata(self):
         """Generate metadata for this repository.
-            After this method is called, the data necessary for this repository has been created.
+            After this method is called, the data necessary for this hierarchy has been created.
         """
         raise NotImplementedError("This method must be called in a child class.")
 
