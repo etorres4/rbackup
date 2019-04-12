@@ -134,7 +134,7 @@ class Repository(Hierarchy):
         * Are empty values
 
         Valid names match the regex
-        r'[\w]+[^/]*'
+        r'[\\w]+[^/]*'
 
         :param name: name to validate
         :type name: str
