@@ -8,12 +8,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from hypothesis import given
-from hypothesis.strategies import (
-    from_regex,
-    iterables,
-    one_of,
-    text,
-)
+from hypothesis.strategies import from_regex, iterables, one_of, text
 
 from rbackup.package_managers.packagemanager import PackageManager
 

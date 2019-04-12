@@ -239,21 +239,21 @@ class TestRepositoryCleanup(unittest.TestCase):
         self.mocked_shutil.rmtree.assert_not_called()
 
     def test_removes_metadata_by_default(self):
-        repo = Repository('backup')
+        repo = Repository("backup")
 
         repo.cleanup()
 
         self.mocked_path.return_value.unlink.assert_called_once()
 
     def test_removes_snapshots(self):
-        repo = Repository('backup')
+        repo = Repository("backup")
 
         repo.cleanup(remove_snapshots=True)
 
         self.mocked_shutil.rmtree.assert_called_once()
 
     def test_removes_repo_dir(self):
-        repo = Repository('backup')
+        repo = Repository("backup")
 
         repo.cleanup(remove_repo_dir=True)
 
