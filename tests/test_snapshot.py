@@ -1,5 +1,5 @@
 """
-.. author:: Eric Torres
+.. moduleauthor:: Eric Torres
 
 Unit tests for the rbackup.struct.snapshot module.
 """

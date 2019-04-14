@@ -1,5 +1,5 @@
 """
-.. author:: Eric Torres
+.. moduleauthor:: Eric Torres
 .. module:: rbackup.struct.snapshot
     :synopsis: Classes for creating the backup hierarchy.
 """
@@ -14,18 +14,12 @@ syslog = logging.getLogger(__name__)
 # ========== Classes ==========
 class Snapshot(Hierarchy):
     """Hierarchy for a single snapshot.
-    Attributes
-    ----------
-    * Snapshot.path (inherited from Hierarchy)
-    * Snapshot.name (inherited from Hierarchy)
-    * Snapshot.metadata_path (inherited from Hierarchy)
-    * Snapshot.pkg_dir
 
-    Methods
-    -------
-    * gen_metadata (inherited from Hierarchy)
-    * read_metadata (inherited from Hierarchy)
-    * write_metadata (inherited from Hierarchy)
+    Data from each run of a backup script is intended to go here.
+
+    Snapshots are unaware of one another, it is up to a third-party caller
+    to orchestrate operations such as hardlinking between snapshots and
+    ordering snapshots.
     """
 
     def __init__(self, path):
@@ -40,16 +34,13 @@ class Snapshot(Hierarchy):
 
     @property
     def pkg_dir(self):
-        """Retrieve the package manager backup directory of this snapshot.
-
+        """
+        :returns: the package manager backup directory of this snapshot.
         :rtype: path-like object
         """
         return self._pkg_dir
 
     def gen_metadata(self):
-        """Generate metadata for this repository.
-            After this method is called, the data necessary for this snapshot has been created.
-        """
         pass
 
 

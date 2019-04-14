@@ -1,7 +1,7 @@
 """
-.. author:: Eric Torres
+.. moduleauthor:: Eric Torres
 .. module:: rbackup.struct.hierarchy
-:synopsis: Classes for creating the backup hierarchy.
+    :synopsis: Classes for creating the backup hierarchy.
 """
 import json
 import logging
@@ -22,23 +22,10 @@ class Hierarchy(PathLike):
     """A class for organizing the backup root hierarchy.
 
     Upon creation of a Hierarchy object, it is up to the caller
-    to call either shutil.mkdir() or a related method to create
+    to call either :func:`shutil.mkdir` or a related method to create
     the directory structure it emulates.
 
-    For consistency, Hierarchy objects always store and return absolute paths.
-
-    Attributes
-    ----------
-    * Hierarchy.path
-    * Hierarchy.name
-    * Hierarchy.metadata_path
-
-    Methods
-    -------
-    * gen_metadata - generate the metadata for this Hierarchy
-    * read_metadata - read this Hierarchy's metadata from a file
-        and return it
-    * write_metadata - write this Hierarchy's metadata to a file
+    For consistency, ``Hierarchy`` objects always store and return absolute paths.
     """
 
     def __init__(self, dest):
@@ -60,30 +47,31 @@ class Hierarchy(PathLike):
 
     @property
     def path(self):
-        """Return the base directory of this hierarchy.
-
+        """
+        :returns: the base directory of this hierarchy
         :rtype: path-like object
         """
         return self._path
 
     @property
     def name(self):
-        """Return the name of this hierarchy.
-
+        """
+        :returns: the name of this hierarchy.
         :rtype: str
         """
         return self._name
 
     @property
     def metadata_path(self):
-        """Return the path of this hierarchy's metadata file.
-
+        """
+        :returns: the path of this hierarchy's metadata file.
         :rtype: path-like object
         """
         return self._metadata_path
 
     def gen_metadata(self):
         """Generate metadata for this repository.
+
             After this method is called, the data necessary for this hierarchy has been created.
         """
         raise NotImplementedError("This method must be called in a child class.")
@@ -99,11 +87,12 @@ class Hierarchy(PathLike):
             return json.load(mfile)
 
     def write_metadata(self, attr):
-        """Write this repository's metadata to its file.
-            Note that this write operation is atomic to the caller.
+        """Write this repository's metadata to its metadata file.
 
-        :param attr: data to write to file
-        :type attr: class member to write
+            .. note:: This write operation is atomic to the caller.
+
+        :param attr: class data to write to file
+        :type attr: any type
         """
         syslog.debug(f"Writing metadata to {self.metadata_path}")
 

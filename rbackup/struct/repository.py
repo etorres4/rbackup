@@ -1,8 +1,7 @@
 """
-.. author:: Eric Torres
+.. moduleauthor:: Eric Torres
 .. module:: rbackup.struct.repository
-
-:synopsis: Module for helpers for structuring a backup repository.
+    :synopsis: Classes for structuring a backup repository.
 """
 import datetime
 import logging
@@ -27,60 +26,62 @@ VALID_SNAPSHOT_NAME = r"[\w._+-]+[^/]*"
 class Repository(Hierarchy):
     """A class for interacting with a backup repository.
 
-        Repository is a mutable, stateful class for representing a
-        directory that contains backup data sequestered into snapshots
-        and a symlink to the most recently created snapshot.
+    Repository is a mutable, stateful class for representing a
+    directory that contains backup data sequestered into snapshots
+    and a symlink to the most recently created snapshot.
+
+    Properties
 
     * Each snapshot in a repository is unaware of one another,
       this is the job of the repository to organize
     * The only way snapshots are linked together is in files
       that are hard-linked together
 
-    Attributes
-    ----------
-    * Repository.path (inherited from Hierarchy)
-    * Repository.name (inherited from Hierarchy)
-    * Repository.metadata_path (inherited from Hierarchy)
-    * Repository.snapshots - a list of snapshots stored in this repository
-    * Repository.snapshot_dir - the snapshot storage location of this repository
+    Snapshots can be accessed on a one-by-one basis through iteration.
 
-    Methods
-    -------
-    * cleanup - clean all repository data
-    * create_snapshot - create a new snapshot
-    * gen_metadata (inherited from Hierarchy)
-    * is_valid_snapshot_name - validate a potential name for a snapshot
-    * read_metadata (inherited from Hierarchy)
-    * write_metadata (inherited from Hierarchy)
+    ::
 
-    Directory Structure
-    -------------------
-    * "data" directory for storing snapshots
-      * Each snapshot is its own directory with its own sub-hierarchy
-      * Each snapshot has an "old" directory for storing deleted data
-      * rsync hardlinks unchanged files between snapshots
-    * A symlink in the root of the repository symlinking to the
-      most recent snapshot
+        >>> for snapshot in Repository('backup'):
+        >>>     print(snapshot.path)
+        first
+        second
+        ...
 
-    Iteration
-    ---------
-    To support checking all snapshots for hardlinking, the Repository class
-    can be iterated through.
+    Snapshots on repositories can be retrieved by index using python's
+    list slicing syntax.
+
+    ::
+
+        >>> print(Repository('backup')[:])
+        [Snapshot(...), ...]
+
+    Membership of a snapshot in a repository can be checked by name.
+
+    ::
+
+        >>> Repository('backup').create_snapshot('test')
+        >>> 'test' in Repository('backup')
+        True
+
+    Number of snapshots in a repository can be checked as well
+
+    ::
+
+        >>> Repository('backup').create_snapshot()
+        >>> len(Repository('backup'))
+        1
     """
-
     """Snapshots are serialized as their names relative to the repository
     data directory, but have their full paths during runtime.
 
     Private Attributes
-    ------------------
     * _snapshots - list of Snapshot objects created and accessed at runtime
     * _snapshot_metadata - list of Snapshot names serialized and deserialized
         when this Repository is first created
     """
 
     def __init__(self, dest):
-        """Default constructor for the Repository class.
-        """
+        """Default constructor for the Repository class."""
         super().__init__(dest)
 
         if self.metadata_path.exists():
@@ -95,8 +96,9 @@ class Repository(Hierarchy):
         self._snapshot_iterator = iter(self._snapshots)
 
     def __contains__(self, name):
-        """Check whether a Snapshot is in this Repository by name.
+        """Check membership of a Snapshot in this Repository by name.
 
+        :returns: True if name is the name of a Snapshot in this Repository
         :type name: str
         :rtype: bool
         """
@@ -126,43 +128,43 @@ class Repository(Hierarchy):
         """Check if the given name is a valid name.
 
         Invalid Names:
-        --------------
+
         * Contain slashes
         * Are empty values
 
-        Valid names match the regex
-        r'[\\w]+[^/]*'
+        Valid names:
+
+        * Match the regex r'[\\w]+[^/]*'
 
         :param name: name to validate
         :type name: str
-        :returns: true if this name is deemed valid
+        :returns: true if this name is deemed valid, otherwise False
         :rtype: bool
         """
         return bool(re.match(VALID_SNAPSHOT_NAME, name))
 
     @property
     def snapshot_dir(self):
-        """Return the directory in this Repository in which snapshots
-        are stored.
-
+        """
+        :returns: the directory in this Repository in which snapshots
+            are stored.
         :rtype: path-like object
         """
         return self.path / "data"
 
     @property
     def snapshots(self):
-        """Return a list of snapshots stored in this Repository.
-
-        :returns: the names of all snapshots in this repository sorted by
-            date
+        """
+        :returns: all snapshots stored in this repository
         :rtype: list of Snapshot objects
         """
         return self._snapshots
 
     @property
     def empty(self):
-        """Determine whether or not this Repository is empty.
-
+        """
+        :returns: True if there are no Snapshots in this Repository,
+            False otherwise
         :rtype: bool
         """
         return not self.snapshots
@@ -179,8 +181,13 @@ class Repository(Hierarchy):
     def create_snapshot(self, name=None):
         """Create a new snapshot in this repository.
 
-        This method is non-intrusive in that it will not
+        This operation is non-intrusive in that it will not
         make any changes in the filesystem when called.
+
+        If name is not given, then the new snapshot's name is the current
+        UTC date in ISO format.
+
+        If name is given, then it is the name for the new snapshot.
 
         If name is given and it is the name of a snapshot already
         on the repository, that snapshot is overwritten instead.
@@ -221,7 +228,7 @@ class Repository(Hierarchy):
 
         :param remove_snapshots: delete the data directory of this repository
         :type remove_snapshots: bool
-        :param remove_repo_dir: remove the top-directory level of this repository
+        :param remove_repo_dir: remove the top-level directory of this repository
         :type remove_repo_dir: bool
         """
         # We don't want to risk symlink attacks

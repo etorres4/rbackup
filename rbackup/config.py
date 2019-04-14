@@ -1,7 +1,7 @@
 """
 .. :author:: Eric Torres
 .. :module:: rbackup.config
-.. :synopsis: Functions for handling config files.
+    :synopsis: Functions for handling config files.
 """
 import configparser
 import logging
@@ -45,7 +45,7 @@ def merge_files(files):
 
         Any files included that do not exist send a warning to the log.
 
-    >>> merge_files(get_files_by_suffix('')) # doctest: +ELLIPSIS
+    >>> merge_files(get_files_by_suffix('-include.conf')) # doctest: +ELLIPSIS
     PosixPath('/tmp/...')
 
     :param files: files including paths to read from

@@ -1,7 +1,7 @@
 """
-.. author:: Eric Torres
-.. module:: rbackup.packagemanager
-:synopsis: Module for package manager plugins
+.. moduleauthor:: Eric Torres
+.. module:: rbackup.package_managers.packagemanager
+    :synopsis: Module for package manager plugins
 """
 import logging
 import subprocess
@@ -41,8 +41,8 @@ class PackageManager:
             it is to be assumed that no file was created, therefore there
             is no file to cleanup.
 
-            Note that this method is internal and is
-            meant to be called from a subclass in a separate module.
+        .. note:: This method is internal and is meant to be called from
+            a subclass in a separate module.
 
         :returns: path to temporary file
         :rtype: path-like object
@@ -63,11 +63,11 @@ class PackageManager:
     def gen_db_archive(self, compress=None):
         """Generate a database archive for this package manager.
 
-            Note that this method is internal and is
-            meant to be called from a subclass in a separate module.
-
             All arguments and keyword-only arguments are passed directly
             to the PackageManager object.
+
+        .. note:: This method is internal and is meant to be called from
+            a subclass in a separate module.
 
         :param compress: compression mode
         :type compress: str
@@ -95,24 +95,24 @@ class PackageManager:
 
     @property
     def cache_directory(self):
-        """Return the cache directory of this package manager.
-
+        """
+        :returns: the cache directory of this package manager.
         :rtype: path-like object
         """
         return self._cachedir
 
     @property
     def database_path(self):
-        """Return the database path of this package manager.
-
+        """
+        :returns: the database path of this package manager.
         :rtype: path-like object
         """
         return self._db_path
 
     @property
     def pkglist_cmd(self):
-        """Return the package listing command of this package manager.
-
+        """
+        :returns: the package listing command of this package manager.
         :rtype: iterable or str
         """
         return self._pkglist_cmd

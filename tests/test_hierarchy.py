@@ -1,5 +1,5 @@
 """
-.. author:: Eric Torres
+.. moduleauthor:: Eric Torres
 
 Tests for the rbackup.struct.hierarchy module.
 """

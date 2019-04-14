@@ -1,5 +1,5 @@
 """
-.. author:: Eric Torres
+.. moduleauthor:: Eric Torres
 :synopsis: Unit tests for the PackageManager module.
 """
 import subprocess

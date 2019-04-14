@@ -1,5 +1,5 @@
 """
-.. author:: Eric Torres
+.. moduleauthor:: Eric Torres
 .. module:: rbackup.rsync
     :synopsis: helper functions for running the rsync backend
 """
