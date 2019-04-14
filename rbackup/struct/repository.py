@@ -83,17 +83,14 @@ class Repository(Hierarchy):
         """
         super().__init__(dest)
 
-        if not self.metadata_path.exists():
-            self._snapshots = []
-            self._snapshot_metadata = []
-            self.metadata_path.parent.mkdir(mode=DIRMODE, exist_ok=True)
-            self.metadata_path.touch(mode=FILEMODE)
-            self.write_metadata(self._snapshots)
-        else:
+        if self.metadata_path.exists():
             self._snapshot_metadata = self.read_metadata()
-            self._snapshots = [
-                Snapshot(self.snapshot_dir / s) for s in self._snapshot_metadata
-            ]
+        else:
+            self.gen_metadata()
+
+        self._snapshots = [
+            Snapshot(self.snapshot_dir / s) for s in self._snapshot_metadata
+        ]
 
         self._snapshot_iterator = iter(self._snapshots)
 
@@ -109,9 +106,9 @@ class Repository(Hierarchy):
         """Delete a Snapshot in this Repository."""
         raise NotImplementedError
 
-    def __getitem__(self, position):
+    def __getitem__(self, idx):
         """Retrieve a Snapshot at a certain index."""
-        return self._snapshots[position]
+        return self._snapshots[idx]
 
     def __iter__(self):
         return iter(self._snapshots)
@@ -174,7 +171,10 @@ class Repository(Hierarchy):
         """Generate metadata for this repository.
             After this method is called, the data necessary for this snapshot has been created.
         """
-        pass
+        self._snapshot_metadata = []
+        self.metadata_path.parent.mkdir(mode=DIRMODE, exist_ok=True)
+        self.metadata_path.touch(mode=FILEMODE)
+        self.write_metadata(self._snapshot_metadata)
 
     def create_snapshot(self, name=None):
         """Create a new snapshot in this repository.
