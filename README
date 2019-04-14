@@ -79,5 +79,6 @@ Runtime
 
 Build/Testing
 ^^^^^^^^^^^^^
+* pytest
 * setuptools
 * hypothesis
