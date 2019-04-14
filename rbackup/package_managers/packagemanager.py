@@ -28,9 +28,6 @@ class PackageManager:
         :type db_path: str or path-like object
         :param pkglist_cmd: command to list installed packages to stdout
         :type pkglist_cmd: str or iterable of str
-        :raises: TypeError if pkglist_cmd is not str or an iterable of str
-        :raises: ValueError if pkglist_cmd is an empty str or an iterable
-            containing an empty str
         """
         self._cachedir = Path(cachedir)
         self._db_path = Path(db_path)
@@ -99,7 +96,7 @@ class PackageManager:
     @property
     def cache_directory(self):
         """Return the cache directory of this package manager.
-        
+
         :rtype: path-like object
         """
         return self._cachedir
@@ -115,7 +112,7 @@ class PackageManager:
     @property
     def pkglist_cmd(self):
         """Return the package listing command of this package manager.
-        
+
         :rtype: iterable or str
         """
         return self._pkglist_cmd
