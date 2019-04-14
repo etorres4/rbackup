@@ -4,9 +4,7 @@
 Tests for the rbackup.struct.hierarchy module.
 """
 import unittest
-from io import StringIO
-from pathlib import Path
-from unittest.mock import PropertyMock, patch
+from unittest.mock import PropertyMock, mock_open, patch
 
 from hypothesis import given
 from hypothesis.strategies import from_regex, text
@@ -20,6 +18,9 @@ TESTING_MODULE = f"{TESTING_PACKAGE}.hierarchy"
 
 # ========== Tests ==========
 class TestHierarchyPaths(unittest.TestCase):
+    def test_retrieves_correct_metadata_filename(self):
+        self.assertEqual(Hierarchy("backup").metadata_path.name, ".metadata")
+
     @given(from_regex(r"[\w/._-]+", fullmatch=True))
     def test_returns_absolute_path(self, dest):
         self.assertTrue(Hierarchy(dest).path.is_absolute())
@@ -30,25 +31,21 @@ class TestHierarchyPaths(unittest.TestCase):
             h.gen_metadata()
 
 
-@unittest.skip("Unable to successfully mock JSON")
 class TestHierarchyMetadata(unittest.TestCase):
     def setUp(self):
         self.patched_json = patch(f"{TESTING_MODULE}.json")
         self.patched_path = patch.object(
-            Hierarchy, "metadata_path", new_callable=PropertyMock, spec_set=Path
+            Hierarchy, "metadata_path", new_callable=PropertyMock, create=True
         )
 
         self.mocked_path = self.patched_path.start()
         self.mocked_json = self.patched_json.start()
 
+        self.mocked_path.return_value.open = mock_open
+
     @unittest.skip("Figure out how to mock file objects")
     @given(text())
     def test_write_metadata(self, data):
-        file_obj = StringIO()
-        self.mocked_path.return_value.open.return_value = file_obj
-
-        self.mocked_json.load.return_value = file_obj.getvalue()
-
         h = Hierarchy("backup")
         h.write_metadata(data)
         read_data = h.read_metadata()
