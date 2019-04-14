@@ -48,6 +48,8 @@ class Hierarchy(PathLike):
         :type dest: str or path-like object
         """
         self._path = Path(dest).resolve()
+        self._metadata_path = self._path / ".metadata"
+        self._name = self._path.name
 
     def __fspath__(self):
         return str(self._path)
@@ -70,7 +72,7 @@ class Hierarchy(PathLike):
 
         :rtype: str
         """
-        return self._path.name
+        return self._name
 
     @property
     def metadata_path(self):
@@ -78,7 +80,7 @@ class Hierarchy(PathLike):
 
         :rtype: path-like object
         """
-        return self._path / ".metadata"
+        return self._metadata_path
 
     def gen_metadata(self):
         """Generate metadata for this repository.

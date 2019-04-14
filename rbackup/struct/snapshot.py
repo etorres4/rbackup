@@ -32,6 +32,8 @@ class Snapshot(Hierarchy):
         """Default constructor for the Snapshot class."""
         super().__init__(path)
 
+        self._pkg_dir = self.path / "pkg"
+
     def __repr__(self):
         """Return a string representation of this Snapshot."""
         return f"{self.__class__.__name__}('{self.name}')"
@@ -42,7 +44,7 @@ class Snapshot(Hierarchy):
 
         :rtype: path-like object
         """
-        return self.path / "pkg"
+        return self._pkg_dir
 
     def gen_metadata(self):
         """Generate metadata for this repository.
