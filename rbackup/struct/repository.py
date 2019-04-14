@@ -188,7 +188,7 @@ class Repository(Hierarchy):
         :param name: the name of the snapshot
         :type name: str
         :return: Snapshot object
-        :raises: ValueError if name is an invalid value
+        :raises ValueError: if name is an invalid value
         """
         syslog.debug("Creating snapshot")
 

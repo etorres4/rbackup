@@ -21,7 +21,7 @@ def rsync(*args):
 
     :param args: all arguments to pass to rsync
     :type args: str
-    :raises: subprocess.CalledProcessError if rsync process failed
+    :raises subprocess.CalledProcessError: if rsync process failed
     """
     cmd = [_RSYNC_BIN, *args]
 

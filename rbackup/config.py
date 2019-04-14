@@ -97,7 +97,7 @@ def parse_configfile():
 
     :returns: object used to parse config file
     :rtype: ConfigParser object
-    :raises: FileNotFoundError if path does not exist
+    :raises FileNotFoundError: if path does not exist
     """
     if not MAIN_CONFIG_FILE.is_file():
         raise FileNotFoundError(f"{MAIN_CONFIG_FILE} does not exist")

@@ -70,13 +70,13 @@ class PackageManager:
             meant to be called from a subclass in a separate module.
 
             All arguments and keyword-only arguments are passed directly
-            to the packagemanagerk
+            to the PackageManager object.
 
         :param compress: compression mode
         :type compress: str
         :returns: the path to the created file
         :rtype: path-like object
-        :raises: ValueError if compress is not in packagemanager.VALID_DB_COMPRESS_MODES
+        :raises ValueError: if compress is not in packagemanager.VALID_DB_COMPRESS_MODES
         """
         if compress is not None and compress not in VALID_DB_COMPRESS_MODES:
             raise ValueError(f"{compress} is not a valid compress mode")
