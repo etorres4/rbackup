@@ -10,10 +10,11 @@ from unittest.mock import patch
 from hypothesis import given
 from hypothesis.strategies import from_regex, iterables, one_of, text
 
-from rbackup.package_managers.packagemanager import PackageManager
+from rbackup.plugins.packagemanager import PackageManager
 
 # ========== Constants ==========
-TESTING_MODULE = "rbackup.package_managers.packagemanager"
+TESTING_PACKAGE = "rbackup.plugins"
+TESTING_MODULE = f"{TESTING_PACKAGE}.packagemanager"
 
 
 # ========== Test Cases ==========

@@ -1,6 +1,6 @@
 """
 .. moduleauthor:: Eric Torres
-.. module:: rbackup.package_managers.packagemanager
+.. module:: rbackup.plugins.packagemanager
     :synopsis: Module for package manager plugins.
 """
 import logging
