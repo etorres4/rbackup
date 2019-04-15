@@ -4,6 +4,7 @@
     :synopsis: Functions for handling config files.
 """
 import configparser
+import json
 import logging
 import re
 from contextlib import contextmanager
@@ -37,6 +38,27 @@ def get_files_by_suffix(suffix):
     :rtype: generator of path-like objects
     """
     yield from CONFIG_DIR.glob(f"*{suffix}")
+
+
+def load_list_from_option(parser, *, section="", option="", fallback=list()):
+    """Using a combination of ``ConfigParser`` and JSON, load a
+    list from a configuration file option.
+
+    :param parser: the parsed config file
+    :type parser: ``ConfigParser`` object
+    :param section: the section of the config file to load
+    :type section: str
+    :param option: the option value inside the specified section
+    :type option: str
+    :returns: the list parsed by JSON
+    :param fallback: the fallback value to return if the option is empty
+    :type fallback: list
+    :rtype: list
+    """
+    try:
+        return json.loads(parser[section][option])
+    except (json.decoder.JSONDecodeError, KeyError):
+        return fallback
 
 
 def merge_files(files):
@@ -90,8 +112,8 @@ def merge_exclude_files():
 
 
 def parse_configfile():
-    """Parse a config file given its path and return
-    a ConfigParser object.
+    """Parse the main backup config file and return
+    a ``configparser.ConfigParser`` object.
 
     :returns: object used to parse config file
     :rtype: ConfigParser object
