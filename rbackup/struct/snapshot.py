@@ -42,10 +42,3 @@ class Snapshot(Hierarchy):
 
     def gen_metadata(self):
         pass
-
-
-# ========== Functions ==========
-if __name__ == "__main__":
-    import doctest
-
-    doctest.testmod()
