@@ -24,23 +24,11 @@ import sys
 from subprocess import CalledProcessError
 
 import rbackup.config as config
-from rbackup.rsync import rsync
+import rbackup.rsync
 from rbackup.struct.repository import Repository
 
 # ========== Constants ==========
 LOGFORMAT = "==> %(levelname)s %(message)s"
-RSYNC_DEFAULT_OPTS = [
-    "--acls",
-    "--archive",
-    "--backup",
-    "--backup-dir=backup",
-    "--hard-links",
-    "--ignore-missing-args",
-    "--prune-empty-dirs",
-    "--suffix=.old",
-    "--recursive",
-    "--xattrs",
-]
 EXTRA_RSYNC_OPTS = {
     "dry_run": "--dry-run",
     "delete": "--delete-after",
@@ -116,9 +104,18 @@ def parse_cmdline_arguments(**kwargs):
 # ========== Main Script ==========
 if __name__ == "__main__":
     args = parse_cmdline_arguments()
+    parsed_config = config.parse_configfile()
     repo = Repository(args.repository)
 
-    rsync_opts = RSYNC_DEFAULT_OPTS.copy()
+    user_opts = config.load_list_from_option(
+        parsed_config, section="main", option="RsyncOptions"
+    )
+    rsync_opts = []
+
+    if not user_opts:
+        rsync_opts = rbackup.rsync.DEFAULT_RSYNC_OPTS.copy()
+    else:
+        rsync_opts.extend(user_opts)
 
     if args.extra_rsync_opts is not None:
         rsync_opts.extend(args.extra_rsync_opts)
@@ -138,7 +135,7 @@ if __name__ == "__main__":
     with config.merge_include_files() as include_file, config.merge_exclude_files() as exclude_file:
         try:
             curr_snapshot = repo.create_snapshot(args.name)
-            rsync(
+            rbackup.rsync.rsync(
                 *rsync_opts,
                 f"--exclude-from={exclude_file}",
                 f"--files-from={include_file}",
