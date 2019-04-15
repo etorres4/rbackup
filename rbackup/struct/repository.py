@@ -169,59 +169,6 @@ class Repository(Hierarchy):
         """
         return not self.snapshots
 
-    def gen_metadata(self):
-        """Generate metadata for this repository.
-            After this method is called, the data necessary for this snapshot has been created.
-        """
-        self._snapshot_metadata = []
-        self.metadata_path.parent.mkdir(mode=DIRMODE, exist_ok=True)
-        self.metadata_path.touch(mode=FILEMODE)
-        self.write_metadata(self._snapshot_metadata)
-
-    def create_snapshot(self, name=None):
-        """Create a new snapshot in this repository.
-
-        This operation is non-intrusive in that it will not
-        make any changes in the filesystem when called.
-
-        If name is not given, then the new snapshot's name is the current
-        UTC date in ISO format.
-
-        If name is given, then it is the name for the new snapshot.
-
-        If name is given and it is the name of a snapshot already
-        on the repository, that snapshot is overwritten instead.
-
-        :param name: the name of the snapshot
-        :type name: str
-        :return: Snapshot object
-        :raises ValueError: if name is an invalid value
-        """
-        syslog.debug("Creating snapshot")
-
-        snapshot_name = (
-            name
-            if name is not None
-            else datetime.datetime.utcnow().isoformat().replace(":", "_")
-        )
-
-        if not self.is_valid_snapshot_name(snapshot_name):
-            raise ValueError(f"'{name}' is an invalid name")
-        elif snapshot_name in self:
-            syslog.warning("Snapshot already exists, data will be overwritten.")
-            return self._snapshots[self._snapshot_metadata.index(snapshot_name)]
-        else:
-            new_snapshot = Snapshot(self.snapshot_dir / snapshot_name)
-            self._snapshot_metadata.append(snapshot_name)
-            self._snapshots.append(new_snapshot)
-            new_snapshot.path.mkdir(mode=DIRMODE, parents=True, exist_ok=True)
-            self.write_metadata(self._snapshot_metadata)
-
-            syslog.debug("Snapshot created")
-            syslog.debug(f"Snapshot name: {new_snapshot.name}")
-
-            return new_snapshot
-
     def cleanup(self, *, remove_snapshots=False, remove_repo_dir=False):
         """Clean up any filesystem references to this repository.
         By default, no snapshots are deleted.
@@ -259,3 +206,73 @@ class Repository(Hierarchy):
                 syslog.error(e)
             else:
                 syslog.info(f"Removed repository directory: {self.path}")
+
+    def create_snapshot(self, name=None):
+        """Create a new snapshot in this repository.
+
+        This operation is non-intrusive in that it will not
+        make any changes in the filesystem when called.
+
+        If name is not given, then the new snapshot's name is the current
+        UTC date in ISO format.
+
+        If name is given, then it is the name for the new snapshot.
+
+        If name is given and it is the name of a snapshot already
+        on the repository, that snapshot is overwritten instead.
+
+        :param name: the name of the snapshot
+        :type name: str
+        :returns: Snapshot object
+        :raises ValueError: if name is an invalid value
+        """
+        syslog.debug("Creating snapshot")
+
+        snapshot_name = (
+            name
+            if name is not None
+            else datetime.datetime.utcnow().isoformat().replace(":", "_")
+        )
+
+        if not self.is_valid_snapshot_name(snapshot_name):
+            raise ValueError(f"'{name}' is an invalid name")
+        elif snapshot_name in self:
+            syslog.warning("Snapshot already exists, data will be overwritten.")
+            return self._snapshots[self._snapshot_metadata.index(snapshot_name)]
+        else:
+            new_snapshot = Snapshot(self.snapshot_dir / snapshot_name)
+            self._snapshot_metadata.append(snapshot_name)
+            self._snapshots.append(new_snapshot)
+            new_snapshot.path.mkdir(mode=DIRMODE, parents=True, exist_ok=True)
+            self.write_metadata(self._snapshot_metadata)
+
+            syslog.debug("Snapshot created")
+            syslog.debug(f"Snapshot name: {new_snapshot.name}")
+
+            return new_snapshot
+
+    def gen_metadata(self):
+        """Generate metadata for this repository.
+            After this method is called, the data necessary for this snapshot has been created.
+        """
+        self._snapshot_metadata = []
+        self.metadata_path.parent.mkdir(mode=DIRMODE, exist_ok=True)
+        self.metadata_path.touch(mode=FILEMODE)
+        self.write_metadata(self._snapshot_metadata)
+
+    def symlink_snapshot(self, snapshot):
+        """Create a symbolic link in the Repository directory to a snapshot.
+
+        :param snapshot: the snapshot to create the symlink to
+        :type snapshot: Snapshot object
+        """
+        snapshot_symlink = self.path / "current"
+
+        try:
+            snapshot_symlink.unlink()
+        except FileNotFoundError:
+            pass
+        except PermissionError as e:
+            syslog.error(e)
+
+        snapshot_symlink.symlink_to(snapshot)
