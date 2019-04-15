@@ -9,6 +9,18 @@ import subprocess
 
 # ========== Constants ==========
 _RSYNC_BIN = "/usr/bin/rsync"
+DEFAULT_RSYNC_OPTS = [
+    "--acls",
+    "--archive",
+    "--backup",
+    "--backup-dir=backup",
+    "--hard-links",
+    "--ignore-missing-args",
+    "--prune-empty-dirs",
+    "--suffix=.old",
+    "--recursive",
+    "--xattrs",
+]
 
 
 # ========== Logging Setup ===========
