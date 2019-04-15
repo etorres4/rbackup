@@ -40,7 +40,7 @@ def get_files_by_suffix(suffix):
     yield from CONFIG_DIR.glob(f"*{suffix}")
 
 
-def load_list_from_option(parser, *, section="", option="", fallback=list()):
+def load_list_from_option(parser, *, section="", option="", fallback=None):
     """Using a combination of ``ConfigParser`` and JSON, load a
     list from a configuration file option.
 
@@ -53,7 +53,7 @@ def load_list_from_option(parser, *, section="", option="", fallback=list()):
     :returns: the list parsed by JSON
     :param fallback: the fallback value to return if the option is empty
     :type fallback: list
-    :rtype: list
+    :rtype: list or type of fallback value
     """
     try:
         return json.loads(parser[section][option])
