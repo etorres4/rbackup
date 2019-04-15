@@ -19,13 +19,17 @@ METADATA_WRITE = "w"
 
 # ========== Classes ==========
 class Hierarchy(PathLike):
-    """A class for organizing the backup root hierarchy.
+    """A general class for organizing a hierarchy of data.
 
-    Upon creation of a Hierarchy object, it is up to the caller
-    to call either :func:`shutil.mkdir` or a related method to create
+    Hierarchy objects are non-intrusive in that they do not affect
+    the filesystem upon creation. It is up to the caller
+    to call either :func:`shutil.mkdir` or related method to create
     the directory structure it emulates.
 
-    For consistency, ``Hierarchy`` objects always store and return absolute paths.
+    Implementation Details
+
+    * For consistency, ``Hierarchy`` objects always store and return absolute paths
+    * Data for all ``Hierarchy`` objects and subclassed objects use JSON for serialization
     """
 
     def __init__(self, dest):
@@ -89,7 +93,7 @@ class Hierarchy(PathLike):
     def write_metadata(self, attr):
         """Write this repository's metadata to its metadata file.
 
-            .. note:: This write operation is atomic to the caller.
+        .. note:: This write operation is atomic to the caller.
 
         :param attr: class data to write to file
         :type attr: any type

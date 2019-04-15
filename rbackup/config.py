@@ -43,8 +43,6 @@ def merge_files(files):
     """Parse, filter, and sort through config files to create a single
     --files-from argument.
 
-        Any files included that do not exist send a warning to the log.
-
     >>> merge_files(get_files_by_suffix('-include.conf')) # doctest: +ELLIPSIS
     PosixPath('/tmp/...')
 

@@ -1,7 +1,7 @@
 """
 .. moduleauthor:: Eric Torres
 .. module:: rbackup.struct.snapshot
-    :synopsis: Classes for creating the backup hierarchy.
+    :synopsis: Class for creating the backup snapshot hierarchy.
 """
 import logging
 

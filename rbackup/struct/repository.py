@@ -2,6 +2,16 @@
 .. moduleauthor:: Eric Torres
 .. module:: rbackup.struct.repository
     :synopsis: Classes for structuring a backup repository.
+
+A repository is a directory that contains backup data
+sequestered into snapshots and a symlink to the most
+recently created snapshot.
+
+Properties
+
+* Each snapshot in a repository is unaware of one another,
+    this is the job of the repository to organize
+* Has a symlink pointing to the most recently created snapshot
 """
 import datetime
 import logging
@@ -25,17 +35,6 @@ VALID_SNAPSHOT_NAME = r"[\w._+-]+[^/]*"
 # ========== Classes ==========
 class Repository(Hierarchy):
     """A class for interacting with a backup repository.
-
-    Repository is a mutable, stateful class for representing a
-    directory that contains backup data sequestered into snapshots
-    and a symlink to the most recently created snapshot.
-
-    Properties
-
-    * Each snapshot in a repository is unaware of one another,
-      this is the job of the repository to organize
-    * The only way snapshots are linked together is in files
-      that are hard-linked together
 
     Snapshots can be accessed on a one-by-one basis through iteration.
 
@@ -71,6 +70,7 @@ class Repository(Hierarchy):
         >>> len(Repository('backup'))
         1
     """
+
     """Snapshots are serialized as their names relative to the repository
     data directory, but have their full paths during runtime.
 
