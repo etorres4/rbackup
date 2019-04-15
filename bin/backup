@@ -107,15 +107,12 @@ if __name__ == "__main__":
     parsed_config = config.parse_configfile()
     repo = Repository(args.repository)
 
-    user_opts = config.load_list_from_option(
-        parsed_config, section="main", option="RsyncOptions"
+    rsync_opts = config.load_list_from_option(
+        parsed_config,
+        section="main",
+        option="RsyncOptions",
+        fallback=rbackup.rsync.DEFAULT_RSYNC_OPTS.copy(),
     )
-    rsync_opts = []
-
-    if not user_opts:
-        rsync_opts = rbackup.rsync.DEFAULT_RSYNC_OPTS.copy()
-    else:
-        rsync_opts.extend(user_opts)
 
     if args.extra_rsync_opts is not None:
         rsync_opts.extend(args.extra_rsync_opts)
@@ -137,8 +134,8 @@ if __name__ == "__main__":
             curr_snapshot = repo.create_snapshot(args.name)
             rbackup.rsync.rsync(
                 *rsync_opts,
-                f"--exclude-from={exclude_file}",
                 f"--files-from={include_file}",
+                f"--exclude-from={exclude_file}",
                 *link_dests,
                 "/",
                 str(curr_snapshot.path),
