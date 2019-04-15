@@ -1,9 +1,12 @@
 #!/usr/bin/python3
 """
+.. moduleauthor:: Eric Torres
+
 Run a backup, creating a snapshot in the process.
 
 Command-Line Arguments
 ======================
+
 * -c, --use-checksums   use rsync's checksum feature to detect file changes
 * -d, --dry-run         make this backup a dry run
 * --debug               show debug messages
@@ -151,16 +154,7 @@ if __name__ == "__main__":
             syslog.critical(f"Failing command: {e.cmd}")
             exit(E_FAILED_PROCESS)
 
-    snapshot_symlink = repo.path / "current"
-
-    try:
-        snapshot_symlink.unlink()
-    except FileNotFoundError:
-        pass
-    except PermissionError as e:
-        syslog.error(e)
-
-    snapshot_symlink.symlink_to(curr_snapshot, target_is_directory=True)
+    repo.symlink_snapshot(curr_snapshot)
 
     if args.run_post_sync:
         syslog.info("Running sync operation")
