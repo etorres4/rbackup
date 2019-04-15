@@ -40,10 +40,8 @@ class Repository(Hierarchy):
 
     ::
 
-        >>> for snapshot in Repository('backup'):
-        >>>     print(snapshot.path)
-        first
-        second
+        >>> for snapshot in Repository('backup'): # doctest: +ELLIPSIS
+        ...     ...
         ...
 
     Snapshots on repositories can be retrieved by index using python's
@@ -179,6 +177,7 @@ class Repository(Hierarchy):
         :type remove_repo_dir: bool
         """
         # We don't want to risk symlink attacks
+        # noinspection PyUnresolvedReferences
         if not shutil.rmtree.avoids_symlink_attacks:
             syslog.error(
                 "shutil cannot avoid symlink attacks on this platform. Ignoring."
