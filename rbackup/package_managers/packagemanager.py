@@ -1,7 +1,7 @@
 """
 .. moduleauthor:: Eric Torres
 .. module:: rbackup.package_managers.packagemanager
-    :synopsis: Module for package manager plugins
+    :synopsis: Module for package manager plugins.
 """
 import logging
 import subprocess
