@@ -50,10 +50,10 @@ class PackageManager:
         :param pkglist_cmd: command to list installed packages to stdout
         :type pkglist_cmd: str or iterable of str
         """
-        self._cachedir = Path(cachedir)
-        self._db_path = Path(db_path)
-        self._lockfile = Path(lockfile)
-        self._pkglist_cmd = pkglist_cmd
+        self._cachedir = Path(cachedir) if cachedir else None
+        self._db_path = Path(db_path) if db_path else None
+        self._lockfile = Path(lockfile) if lockfile else None
+        self._pkglist_cmd = pkglist_cmd if pkglist_cmd else None
 
     def __enter__(self):
         """Create the package manager's lockfile. This prevents transactions
