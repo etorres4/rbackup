@@ -33,6 +33,7 @@ class TestRepositoryPreCreate(unittest.TestCase):
     -----------------
     * Repository.metadata_path
     * Repository.read_metadata
+    * Repository.symlink_snapshot
     * Repository.write_metadata
     """
 
@@ -49,11 +50,13 @@ class TestRepositoryPreCreate(unittest.TestCase):
         self.patched_snapshot = patch(
             f"{TESTING_PACKAGE}.repository.Snapshot", spec_set=Snapshot
         )
+        self.patched_symlink = patch.object(Repository, "symlink_snapshot")
 
         self.mocked_r_metadata = self.patched_r_metadata.start()
         self.mocked_w_metadata = self.patched_w_metadata.start()
         self.mocked_path = self.patched_path.start()
         self.mocked_snapshot = self.patched_snapshot.start()
+        self.mocked_symlink = self.patched_symlink.start()
 
         self.mocked_path.return_value.exists.return_value = True
 
@@ -108,6 +111,7 @@ class TestRepositoryPreCreate(unittest.TestCase):
         self.patched_r_metadata.stop()
         self.patched_w_metadata.stop()
         self.patched_snapshot.stop()
+        self.patched_symlink.stop()
 
 
 class TestRepositoryPostCreate(unittest.TestCase):
@@ -121,6 +125,7 @@ class TestRepositoryPostCreate(unittest.TestCase):
     -----------------
     * Repository.metadata_path
     * Repository.read_metadata
+    * Repository.symlink_snapshot
     * Repository.write_metadata
     """
 
@@ -137,11 +142,13 @@ class TestRepositoryPostCreate(unittest.TestCase):
         self.patched_snapshot = patch(
             f"{TESTING_PACKAGE}.repository.Snapshot", spec_set=Snapshot
         )
+        self.patched_symlink = patch.object(Repository, "symlink_snapshot")
 
         self.mocked_path = self.patched_path.start()
         self.mocked_r_metadata = self.patched_r_metadata.start()
         self.mocked_w_metadata = self.patched_w_metadata.start()
         self.mocked_snapshot = self.patched_snapshot.start()
+        self.mocked_symlink = self.patched_symlink.start()
 
     @given(lists(from_regex(VALID_SNAPSHOT_NAME, fullmatch=True), unique=True))
     def test_dunder_len(self, snapshots):
@@ -193,6 +200,7 @@ class TestRepositoryPostCreate(unittest.TestCase):
         self.patched_r_metadata.stop()
         self.patched_w_metadata.stop()
         self.patched_snapshot.stop()
+        self.patched_symlink.stop()
 
 
 class TestRepositoryCleanup(unittest.TestCase):
