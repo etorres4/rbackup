@@ -253,7 +253,7 @@ class Repository(Hierarchy):
 
     def gen_metadata(self):
         """Generate metadata for this repository.
-            After this method is called, the data necessary for this snapshot has been created.
+            After this method is called, the data necessary for this repository has been created.
         """
         self._snapshot_metadata = []
         self.metadata_path.parent.mkdir(mode=DIRMODE, exist_ok=True)
