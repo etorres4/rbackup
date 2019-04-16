@@ -71,14 +71,16 @@ class PackageManager:
         :rtype: ``PackageManager`` object
         :raises FileExistsError: if lockfile exists when this method is called
         """
-        self._lockfile.touch(mode=0o000)
+        if self._lockfile:
+            self._lockfile.touch(mode=0o000, exist_ok=False)
         yield self
 
     def __exit__(self):
         """Remove the package manager's lockfile. After this lockfile is closed,
         the package manager this class abstracts can perform transactions once again.
         """
-        self._lockfile.unlink()
+        if self._lockfile:
+            self._lockfile.unlink()
 
     def gen_pkglist(self):
         """Generate a text file listing installed packages
