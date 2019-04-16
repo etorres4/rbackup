@@ -26,7 +26,7 @@ class Hierarchy(PathLike):
     to call either :func:`shutil.mkdir` or related method to create
     the directory structure it emulates.
 
-    Implementation Details
+    **Implementation Details**
 
     * For consistency, ``Hierarchy`` objects always store and return absolute paths
     * Data for all ``Hierarchy`` objects and subclassed objects use JSON for serialization

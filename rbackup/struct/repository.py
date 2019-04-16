@@ -5,9 +5,10 @@
 
 A repository is a directory that contains backup data
 sequestered into snapshots and a symlink to the most
-recently created snapshot.
+recently created snapshot. Additionally, it has a metadata
+dot file for the names of the snapshots.
 
-Properties
+**Properties**
 
 * Each snapshot in a repository is unaware of one another,
     this is the job of the repository to organize

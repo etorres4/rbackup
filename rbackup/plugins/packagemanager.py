@@ -24,8 +24,7 @@ class PackageManager:
 
     The package manager can be used in conjunction with a ``Snapshot`` for backups.
 
-    Lockfile Management
-    ^^^^^^^^^^^^^^^^^^^
+    **Lockfile Management**
 
     This class can be used as a context manager for creating a lockfile for the
     specific package manager. This is to prevent transactions from occurring during
@@ -34,6 +33,9 @@ class PackageManager:
 
         .. note:: Subclasses can override the context manager and implement i.e. blocking until
             the process is complete with a timeout.
+
+        .. note:: The lockfile is only created if it was configured. Otherwise it is silently
+            ignored.
     """
 
     def __init__(self, cachedir=None, db_path=None, lockfile=None, pkglist_cmd=None):
@@ -62,6 +64,8 @@ class PackageManager:
             the package manager. For example, pacman's db.lck indicates
             either there is an ongoing transaction in progress or a previous transaction
             failed and the database is in an inconsistent state.
+
+        This method only creates the lockfile if it was configured.
 
         :returns: self
         :rtype: ``PackageManager`` object
@@ -107,9 +111,6 @@ class PackageManager:
     def gen_db_archive(self, compress=None):
         """Generate a database archive for this package manager.
 
-            All arguments and keyword-only arguments are passed directly
-            to the PackageManager object.
-
         :param compress: compression mode
         :type compress: str
         :returns: the path to the created file
@@ -142,7 +143,7 @@ class PackageManager:
     def cache_directory(self):
         """
         :returns: the cache directory of this package manager
-        :rtype: path-like object
+        :rtype: path-like object or None
         """
         return self._cachedir
 
@@ -150,7 +151,7 @@ class PackageManager:
     def database_path(self):
         """
         :returns: the database path of this package manager
-        :rtype: path-like object
+        :rtype: path-like object or None
         """
         return self._db_path
 
@@ -158,7 +159,7 @@ class PackageManager:
     def lockfile(self):
         """
         :returns: the lockfile path of this package manager
-        :rtype: path-like object
+        :rtype: path-like object or None
         """
         return self._lockfile
 
@@ -166,6 +167,6 @@ class PackageManager:
     def pkglist_cmd(self):
         """
         :returns: the package listing command of this package manager
-        :rtype: iterable or str
+        :rtype: iterable, str or None
         """
         return self._pkglist_cmd
