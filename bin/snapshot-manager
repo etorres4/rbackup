@@ -1,0 +1,13 @@
+#!/usr/bin/python3
+"""
+.. moduleauthor:: Eric Torres
+
+Delete old snapshots.
+
+Command-Line Arguments
+======================
+
+* --debug               show debug messages
+* -s, --run-post-sync   run sync syscall after backup
+* -v, --verbose         show info messages
+"""
