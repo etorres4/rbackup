@@ -125,8 +125,8 @@ class PackageManager:
 
         syslog.info("Creating a database archive")
 
-        archivemode = "w" if compress is None else f"w:{compress}"
-        archivesuffix = ".tar" if compress is None else f".tar.{compress}"
+        archivemode = f"w:{compress}" if compress else "w"
+        archivesuffix = f".tar.{compress}" if compress else ".tar"
 
         with NamedTemporaryFile(delete=False, suffix=archivesuffix) as tmpfile:
             archive_path = Path(tmpfile.name)
