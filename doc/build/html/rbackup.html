@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>rbackup package &#8212; rbackup 0.3.1 documentation</title>
+    <title>rbackup package &#8212; rbackup 0.4 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -14,7 +14,7 @@
     <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="rbackup.package_managers package" href="rbackup.package_managers.html" />
+    <link rel="next" title="rbackup.plugins package" href="rbackup.plugins.html" />
     <link rel="prev" title="Welcome to rbackup’s documentation!" href="index.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -38,11 +38,11 @@
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="rbackup.package_managers.html">rbackup.package_managers package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="rbackup.package_managers.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rbackup.package_managers.html#module-rbackup.package_managers.packagemanager">rbackup.package_managers.packagemanager module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rbackup.package_managers.html#module-rbackup.package_managers.pacman">rbackup.package_managers.pacman module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rbackup.package_managers.html#module-rbackup.package_managers">Module contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rbackup.plugins.html">rbackup.plugins package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rbackup.plugins.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rbackup.plugins.html#module-rbackup.plugins.packagemanager">rbackup.plugins.packagemanager module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rbackup.plugins.html#module-rbackup.plugins.pacman">rbackup.plugins.pacman module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rbackup.plugins.html#module-rbackup.plugins">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="rbackup.struct.html">rbackup.struct package</a><ul>
@@ -84,26 +84,23 @@
 
 <dl class="function">
 <dt id="rbackup.config.load_list_from_option">
-<code class="descclassname">rbackup.config.</code><code class="descname">load_list_from_option</code><span class="sig-paren">(</span><em>parser</em>, <em>*</em>, <em>section=''</em>, <em>option=''</em><span class="sig-paren">)</span><a class="headerlink" href="#rbackup.config.load_list_from_option" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">rbackup.config.</code><code class="descname">load_list_from_option</code><span class="sig-paren">(</span><em>parser</em>, <em>*</em>, <em>section=''</em>, <em>option=''</em>, <em>fallback=None</em><span class="sig-paren">)</span><a class="headerlink" href="#rbackup.config.load_list_from_option" title="Permalink to this definition">¶</a></dt>
 <dd><p>Using a combination of <code class="docutils literal notranslate"><span class="pre">ConfigParser</span></code> and JSON, load a
 list from a configuration file option.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If the specified option has an empty value, then an empty list is returned.</p>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>parser</strong> (<code class="docutils literal notranslate"><span class="pre">ConfigParser</span></code> object) – the parsed config file</p></li>
 <li><p><strong>section</strong> (<em>str</em>) – the section of the config file to load</p></li>
 <li><p><strong>option</strong> (<em>str</em>) – the option value inside the specified section</p></li>
+<li><p><strong>fallback</strong> (<em>list</em>) – the fallback value to return if the option is empty</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>the list parsed by JSON</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list</p>
+<dd class="field-odd"><p>list or type of fallback value</p>
 </dd>
 </dl>
 </dd></dl>
@@ -220,7 +217,7 @@ a <code class="docutils literal notranslate"><span class="pre">configparser.Conf
 <li class="toctree-l2"><a class="reference internal" href="#module-rbackup">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="rbackup.package_managers.html">rbackup.package_managers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rbackup.plugins.html">rbackup.plugins package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rbackup.struct.html">rbackup.struct package</a></li>
 </ul>
 
@@ -229,7 +226,7 @@ a <code class="docutils literal notranslate"><span class="pre">configparser.Conf
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="index.html" title="previous chapter">Welcome to rbackup’s documentation!</a></li>
-      <li>Next: <a href="rbackup.package_managers.html" title="next chapter">rbackup.package_managers package</a></li>
+      <li>Next: <a href="rbackup.plugins.html" title="next chapter">rbackup.plugins package</a></li>
   </ul></li>
 </ul>
 </div>

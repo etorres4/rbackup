@@ -1,21 +1,21 @@
-rbackup.package\_managers package
-=================================
+rbackup.plugins package
+=======================
 
 Submodules
 ----------
 
-rbackup.package\_managers.packagemanager module
------------------------------------------------
+rbackup.plugins.packagemanager module
+-------------------------------------
 
-.. automodule:: rbackup.package_managers.packagemanager
+.. automodule:: rbackup.plugins.packagemanager
     :members:
     :undoc-members:
     :show-inheritance:
 
-rbackup.package\_managers.pacman module
----------------------------------------
+rbackup.plugins.pacman module
+-----------------------------
 
-.. automodule:: rbackup.package_managers.pacman
+.. automodule:: rbackup.plugins.pacman
     :members:
     :undoc-members:
     :show-inheritance:
@@ -24,7 +24,7 @@ rbackup.package\_managers.pacman module
 Module contents
 ---------------
 
-.. automodule:: rbackup.package_managers
+.. automodule:: rbackup.plugins
     :members:
     :undoc-members:
     :show-inheritance:

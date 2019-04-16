@@ -11,7 +11,7 @@ Welcome to rbackup's documentation!
    :caption: Contents:
 
    rbackup
-   rbackup.package_managers
+   rbackup.plugins
    rbackup.struct
 
 ----------------------

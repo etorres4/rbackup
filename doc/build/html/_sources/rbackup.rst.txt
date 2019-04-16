@@ -6,7 +6,7 @@ Subpackages
 
 .. toctree::
 
-    rbackup.package_managers
+    rbackup.plugins
     rbackup.struct
 
 Submodules
