@@ -154,8 +154,6 @@ if __name__ == "__main__":
             os.umask(old_umask)
             exit(E_FAILED_PROCESS)
 
-    repo.symlink_snapshot(curr_snapshot)
-
     if args.run_post_sync:
         syslog.info("Running sync operation")
         os.sync()

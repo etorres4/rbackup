@@ -238,7 +238,9 @@ class Repository(Hierarchy):
             raise ValueError(f"'{name}' is an invalid name")
         elif snapshot_name in self:
             syslog.warning("Snapshot already exists, data will be overwritten.")
-            return self._snapshots[self._snapshot_metadata.index(snapshot_name)]
+            existing_snapshot = self._snapshots[self._snapshot_metadata.index(snapshot_name)]
+            self.symlink_snapshot(existing_snapshot)
+            return existing_snapshot
         else:
             new_snapshot = Snapshot(self.snapshot_dir / snapshot_name)
             self._snapshot_metadata.append(snapshot_name)
@@ -249,6 +251,7 @@ class Repository(Hierarchy):
             syslog.debug("Snapshot created")
             syslog.debug(f"Snapshot name: {new_snapshot.name}")
 
+            self.symlink_snapshot(new_snapshot)
             return new_snapshot
 
     def gen_metadata(self):
