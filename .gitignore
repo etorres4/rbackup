@@ -1,5 +1,7 @@
 __pycache__
+doc
 pkg
+PKGBUILD
 src
 tags
 *.tar.gz
@@ -7,4 +9,3 @@ tags
 .coverage
 .hypothesis
 .idea
-PKGBUILD
