@@ -3,10 +3,11 @@
 
 Tests for the rbackup.config module.
 """
+import json
 import unittest
 from pathlib import Path
 from tempfile import NamedTemporaryFile
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import rbackup.config as config
 
@@ -36,11 +37,15 @@ class TestMergeFiles(unittest.TestCase):
 
 class TestParseConfig(unittest.TestCase):
     def setUp(self):
-        self.patched_config_file = patch(f"{TESTING_MODULE}.MAIN_CONFIG_FILE", spec_set=Path)
+        self.patched_config_file = patch(
+            f"{TESTING_MODULE}.MAIN_CONFIG_FILE", spec_set=Path
+        )
         self.patched_path = patch(f"{TESTING_MODULE}.Path", spec_set=Path)
+        self.patched_serialize = patch(f"{TESTING_MODULE}.json")
 
         self.mocked_config_file = self.patched_config_file.start()
         self.mocked_path = self.patched_path.start()
+        self.mocked_serialize = self.patched_serialize.start()
 
     def test_raises_file_not_found_error(self):
         self.mocked_config_file.is_file.return_value = False
@@ -51,3 +56,4 @@ class TestParseConfig(unittest.TestCase):
     def tearDown(self):
         self.patched_config_file.stop()
         self.patched_path.stop()
+        self.patched_serialize.stop()
