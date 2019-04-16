@@ -60,8 +60,11 @@ class TestPackageManagerMethods(unittest.TestCase):
 
         self.cachedir = "/var/cache/pacman/"
         self.db_path = "/var/lib/pacman"
+        self.lockfile = "/var/lib/pacman/db.lck"
         self.pkglist_cmd = ["pacman", "-Qqe"]
-        self.p = PackageManager(self.cachedir, self.db_path, self.pkglist_cmd)
+        self.p = PackageManager(
+            self.cachedir, self.db_path, self.lockfile, self.pkglist_cmd
+        )
 
     def test_pkglist(self):
         self.mocked_run.return_value.stdout = "packages"
