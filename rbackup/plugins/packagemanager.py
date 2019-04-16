@@ -88,6 +88,9 @@ class PackageManager:
         :rtype: path-like object
         :raises NotImplementedError: if package list generation command is not present
         """
+        if not self._pkglist_cmd:
+            raise NotImplementedError("Package list generation not implemented")
+
         syslog.info("Creating a package list")
 
         try:
@@ -114,7 +117,10 @@ class PackageManager:
         :raises ValueError: if compress is not in packagemanager.VALID_DB_COMPRESS_MODES
         :raises NotImplementedError: if database path is not present
         """
-        if compress is not None and compress not in VALID_DB_COMPRESS_MODES:
+        if not self._db_path:
+            raise NotImplementedError("Database archive generation not implemented")
+
+        if compress not in VALID_DB_COMPRESS_MODES:
             raise ValueError(f"{compress} is not a valid compress mode")
 
         syslog.info("Creating a database archive")
