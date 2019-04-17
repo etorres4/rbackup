@@ -152,6 +152,14 @@ class Repository(Hierarchy):
         return self.path / "data"
 
     @property
+    def snapshot_symlink(self):
+        """
+        :return: the path of the symlink pointing to the most recent snapshot
+        :rtype: path-like object
+        """
+        return self.path / "current"
+
+    @property
     def snapshots(self):
         """
         :returns: all snapshots stored in this repository
@@ -169,7 +177,7 @@ class Repository(Hierarchy):
         return not self.snapshots
 
     def cleanup(self, *, remove_snapshots=False, remove_repo_dir=False):
-        """Clean up any filesystem references to this repository.
+        """Remove this repository from the filesystem.
         By default, no snapshots are deleted.
 
         :param remove_snapshots: delete the data directory of this repository
@@ -188,6 +196,7 @@ class Repository(Hierarchy):
         syslog.debug("Cleaning repository data")
 
         self.metadata_path.unlink()
+        self.snapshot_symlink.unlink()
         syslog.info("Removing repository metadata")
         syslog.debug(f"Repository metadata removed: {self.metadata_path}")
 
@@ -269,13 +278,11 @@ class Repository(Hierarchy):
         :param snapshot: the snapshot to create the symlink to
         :type snapshot: Snapshot object
         """
-        snapshot_symlink = self.path / "current"
-
         try:
-            snapshot_symlink.unlink()
+            self.snapshot_symlink.unlink()
         except FileNotFoundError:
             pass
         except PermissionError as e:
             syslog.error(e)
 
-        snapshot_symlink.symlink_to(snapshot)
+        self.snapshot_symlink.symlink_to(snapshot)
