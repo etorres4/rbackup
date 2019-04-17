@@ -96,10 +96,15 @@ class Repository(Hierarchy):
     def __delitem__(self, index):
         """Delete a Snapshot in this Repository.
 
+        This method makes the assumption that snapshots
+        and snapshot metadata are in the same order, and that
+        the two lists are the same size.
+
         :param index: index of snapshot to delete
         :type index: int
         """
         del self._snapshots[index]
+        del self._snapshot_metadata[index]
 
     def __getitem__(self, idx):
         """Retrieve a Snapshot at a certain index."""
@@ -125,9 +130,7 @@ class Repository(Hierarchy):
         * Contain slashes
         * Are empty values
 
-        Valid names:
-
-        * Match the regex r'[\\w]+[^/]*'
+        Valid names match the regex ``[\\w]+[^/]*``
 
         :param name: name to validate
         :type name: str
