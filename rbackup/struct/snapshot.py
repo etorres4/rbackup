@@ -3,6 +3,7 @@
 .. module:: rbackup.struct.snapshot
     :synopsis: Class for creating the backup snapshot hierarchy.
 """
+import datetime
 import logging
 
 from rbackup.struct.hierarchy import Hierarchy
@@ -26,11 +27,29 @@ class Snapshot(Hierarchy):
         """Default constructor for the Snapshot class."""
         super().__init__(path)
 
+        self._gen_metadata()
+
         self._pkg_dir = self.path / "pkg"
 
     def __repr__(self):
         """Return a string representation of this Snapshot."""
         return f"{self.__class__.__name__}('{self.name}')"
+
+    def _gen_metadata(self):
+        """Generate this Snapshot's metadata."""
+        if self.metadata_path.exists():
+            self._ctime = self.read_metadata()
+        else:
+            self._ctime = datetime.datetime.utcnow().isoformat()
+            self.write_metadata(self._ctime)
+
+    @property
+    def ctime(self):
+        """
+        :returns: this Snapshot's creation time
+        :rtype: str
+        """
+        return self._ctime
 
     @property
     def pkg_dir(self):
@@ -39,6 +58,3 @@ class Snapshot(Hierarchy):
         :rtype: path-like object
         """
         return self._pkg_dir
-
-    def gen_metadata(self):
-        pass
