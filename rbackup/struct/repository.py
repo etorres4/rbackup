@@ -19,7 +19,7 @@ import logging
 import re
 import shutil
 
-from rbackup.struct.hierarchy import Hierarchy
+from rbackup.struct.hierarchy import DIRMODE, FILEMODE, Hierarchy
 from rbackup.struct.snapshot import Snapshot
 
 # ========== Logging Setup ===========
@@ -27,9 +27,6 @@ syslog = logging.getLogger(__name__)
 
 
 # ========== Constants ==========
-DIRMODE = 0o755
-FILEMODE = 0o644
-
 VALID_SNAPSHOT_NAME = r"[\w._+-]+[^/]*"
 
 
