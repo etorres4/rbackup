@@ -40,10 +40,7 @@ class TestCreatePackageManager(unittest.TestCase):
         PackageManager("nothing", "nothing", l)
 
     def tearDown(self):
-        self.patched_path.stop()
-        self.patched_subprocess.stop()
-        self.patched_tarfile.stop()
-        self.patched_tempfile.stop()
+        patch.stopall()
 
 
 class TestPackageManagerMethods(unittest.TestCase):
@@ -110,7 +107,4 @@ class TestPackageManagerMethods(unittest.TestCase):
             self.p.gen_db_archive(invalid_mode)
 
     def tearDown(self):
-        self.patched_path.stop()
-        self.patched_subprocess.stop()
-        self.patched_tarfile.stop()
-        self.patched_tempfile.stop()
+        patch.stopall()

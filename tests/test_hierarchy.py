@@ -43,7 +43,7 @@ class TestHierarchyPaths(unittest.TestCase):
             h._gen_metadata()
 
     def tearDown(self):
-        self.patched_path.stop()
+        patch.stopall()
 
 
 class TestHierarchyMetadata(unittest.TestCase):
@@ -123,6 +123,4 @@ class TestHierarchyCleanup(unittest.TestCase):
         self.mocked_shutil.rmtree.assert_called_once()
 
     def tearDown(self):
-        self.patched_metadata.stop()
-        self.patched_path.stop()
-        self.patched_shutil.stop()
+        patch.stopall()

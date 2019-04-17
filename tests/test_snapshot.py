@@ -34,5 +34,4 @@ class TestSnapshotProperties(unittest.TestCase):
         self.assertIsInstance(Snapshot("/tmp/backup/snapshot").ctime, str)
 
     def tearDown(self):
-        self.patched_path.stop()
-        self.patched_metadata.stop()
+        patch.stopall()

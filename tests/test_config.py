@@ -31,8 +31,7 @@ class TestMergeFiles(unittest.TestCase):
         self.assertIsInstance(config.merge_files([]), Path)
 
     def tearDown(self):
-        self.patched_path.stop()
-        self.patched_tempfile.stop()
+        patch.stopall()
 
 
 class TestParseConfig(unittest.TestCase):
@@ -54,6 +53,4 @@ class TestParseConfig(unittest.TestCase):
             config.parse_configfile()
 
     def tearDown(self):
-        self.patched_config_file.stop()
-        self.patched_path.stop()
-        self.patched_serialize.stop()
+        patch.stopall()

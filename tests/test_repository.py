@@ -100,9 +100,7 @@ class TestRepositoryPreCreate(unittest.TestCase):
         self.assertTrue(all(isinstance(p, Snapshot) for p in repo))
 
     def tearDown(self):
-        self.patched_path.stop()
-        self.patched_metadata.stop()
-        self.patched_snapshot.stop()
+        patch.stopall()
 
 
 class TestRepositoryPostCreate(unittest.TestCase):
@@ -181,9 +179,7 @@ class TestRepositoryPostCreate(unittest.TestCase):
         self.assertEqual(len(repo), 1)
 
     def tearDown(self):
-        self.patched_path.stop()
-        self.patched_metadata.stop()
-        self.patched_snapshot.stop()
+        patch.stopall()
 
 
 @unittest.skip("Fix call checks")
@@ -253,7 +249,4 @@ class TestRepositoryCleanup(unittest.TestCase):
         self.mocked_shutil.rmtree.assert_called_once()
 
     def tearDown(self):
-        self.patched_metadata.stop()
-        self.patched_path.stop()
-        self.patched_shutil.stop()
-        self.patched_snapshot.stop()
+        patch.stopall()
