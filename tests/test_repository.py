@@ -63,7 +63,7 @@ class TestRepositoryPreCreate(unittest.TestCase):
     @given(lists(from_regex(VALID_SNAPSHOT_NAME, fullmatch=True), unique=True))
     def test_empty(self, snapshots):
         self.mocked_r_metadata.return_value = snapshots.copy()
-        repo = Repository("backup")
+        repo = Repository("/tmp/backup")
 
         if not snapshots:
             self.assertTrue(repo.empty)
@@ -73,14 +73,14 @@ class TestRepositoryPreCreate(unittest.TestCase):
     @given(lists(from_regex(VALID_SNAPSHOT_NAME, fullmatch=True), unique=True))
     def test_dunder_len(self, snapshots):
         self.mocked_r_metadata.return_value = snapshots.copy()
-        repo = Repository("backup")
+        repo = Repository("/tmp/backup")
 
         self.assertEqual(len(repo.snapshots), len(snapshots))
 
     @given(text(min_size=1))
     def test_dunder_contains(self, name):
         self.mocked_r_metadata.return_value = []
-        repo = Repository("backup")
+        repo = Repository("/tmp/backup")
 
         self.assertFalse(name in repo)
 
@@ -94,7 +94,7 @@ class TestRepositoryPreCreate(unittest.TestCase):
             self.assertTrue(Repository.is_valid_snapshot_name(name))
 
     def test_snapshots_returns_empty_list(self):
-        repo = Repository("backup")
+        repo = Repository("/tmp/backup")
         self.assertListEqual(repo.snapshots, [])
 
     @given(
@@ -102,7 +102,7 @@ class TestRepositoryPreCreate(unittest.TestCase):
     )
     def snapshots_property_contains_snapshot_objects(self, snapshots):
         self.mocked_r_metadata.return_value = snapshots
-        repo = Repository("backup")
+        repo = Repository("/tmp/backup")
 
         self.assertTrue(all(isinstance(p, Snapshot) for p in repo))
 
@@ -153,7 +153,7 @@ class TestRepositoryPostCreate(unittest.TestCase):
     @given(lists(from_regex(VALID_SNAPSHOT_NAME, fullmatch=True), unique=True))
     def test_dunder_len(self, snapshots):
         self.mocked_r_metadata.return_value = snapshots.copy()
-        repo = Repository("backup")
+        repo = Repository("/tmp/backup")
 
         repo.create_snapshot()
 
@@ -163,14 +163,14 @@ class TestRepositoryPostCreate(unittest.TestCase):
     @given(from_regex(VALID_SNAPSHOT_NAME, fullmatch=True))
     def test_dunder_contains(self, name):
         self.mocked_path.return_value.exists.return_value = False
-        repo = Repository("backup")
+        repo = Repository("/tmp/backup")
 
         repo.create_snapshot(name)
         self.assertTrue(name in repo)
 
     def test_empty(self):
         self.mocked_r_metadata.return_value = []
-        repo = Repository("backup")
+        repo = Repository("/tmp/backup")
 
         repo.create_snapshot()
 
@@ -178,14 +178,14 @@ class TestRepositoryPostCreate(unittest.TestCase):
 
     def test_snapshot_returns_snapshot_object(self):
         self.mocked_r_metadata.return_value = []
-        repo = Repository("backup")
+        repo = Repository("/tmp/backup")
 
         self.assertIsInstance(repo.create_snapshot(), Snapshot)
 
     def test_create_duplicate_snapshot(self):
         # Test that if a snapshot is a duplicate, then return that duplicate snapshot
         self.mocked_r_metadata.return_value = []
-        repo = Repository("backup")
+        repo = Repository("/tmp/backup")
         name = "new-snapshot"
 
         first = repo.create_snapshot(name)
@@ -237,21 +237,21 @@ class TestRepositoryCleanup(unittest.TestCase):
         self.mocked_shutil.rmtree.assert_not_called()
 
     def test_removes_metadata_by_default(self):
-        repo = Repository("backup")
+        repo = Repository("/tmp/backup")
 
         repo.cleanup()
 
         self.mocked_path.return_value.unlink.assert_called_once()
 
     def test_removes_snapshots(self):
-        repo = Repository("backup")
+        repo = Repository("/tmp/backup")
 
         repo.cleanup(remove_snapshots=True)
 
         self.mocked_shutil.rmtree.assert_called_once()
 
     def test_removes_repo_dir(self):
-        repo = Repository("backup")
+        repo = Repository("/tmp/backup")
 
         repo.cleanup(remove_repo_dir=True)
 
