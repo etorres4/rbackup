@@ -3,11 +3,10 @@
 
 Tests for the rbackup.config module.
 """
-import json
 import unittest
 from pathlib import Path
 from tempfile import NamedTemporaryFile
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import rbackup.config as config
 

@@ -6,7 +6,7 @@ Tests for the rbackup.struct.repository module.
 import re
 import unittest
 from pathlib import Path
-from unittest.mock import DEFAULT, PropertyMock, patch
+from unittest.mock import DEFAULT, patch
 
 from hypothesis import given
 from hypothesis.strategies import from_regex, lists, text
