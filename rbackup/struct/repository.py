@@ -58,13 +58,22 @@ class Repository(Hierarchy):
         >>> 'test' in Repository('backup')
         True
 
-    Number of snapshots in a repository can be checked as well
+    Number of snapshots in a repository can be checked as well.
 
     ::
 
         >>> Repository('backup').create_snapshot()
         >>> len(Repository('backup'))
         1
+
+    Individual snapshots can be deleted from a repository by index.
+
+    ::
+
+        >>> r = Repository('backup')
+        >>> r.create_snapshot() # doctest: +ELLIPSIS
+        ...
+        >>> del r[0]
     """
 
     """Snapshots are serialized as their names relative to the repository
@@ -103,8 +112,15 @@ class Repository(Hierarchy):
         :param index: index of snapshot to delete
         :type index: int
         """
+        snapshot_to_delete = self._snapshots[index]
+
+        # TODO add logic for deleting snapshot pointed to by self.snapshot_symlink
+
+        snapshot_to_delete.cleanup()
+
         del self._snapshots[index]
         del self._snapshot_metadata[index]
+        self.write_metadata(self._snapshot_metadata)
 
     def __getitem__(self, idx):
         """Retrieve a Snapshot at a certain index."""
