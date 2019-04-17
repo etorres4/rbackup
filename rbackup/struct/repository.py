@@ -85,10 +85,6 @@ class Repository(Hierarchy):
 
         self._gen_metadata()
 
-        self._snapshots = [
-            Snapshot(self.snapshot_dir / s) for s in self._snapshot_metadata
-        ]
-
         self._snapshot_iterator = iter(self._snapshots)
 
     def __contains__(self, name):
@@ -153,6 +149,10 @@ class Repository(Hierarchy):
             self._snapshot_metadata = []
             self.metadata_path.touch(mode=FILEMODE)
             self.write_metadata(self._snapshot_metadata)
+
+        self._snapshots = [
+            Snapshot(self.snapshot_dir / s) for s in self._snapshot_metadata
+        ]
 
     @property
     def snapshot_dir(self):
