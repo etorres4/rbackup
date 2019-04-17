@@ -83,10 +83,7 @@ class Repository(Hierarchy):
         """Default constructor for the Repository class."""
         super().__init__(dest)
 
-        if self.metadata_path.exists():
-            self._snapshot_metadata = self.read_metadata()
-        else:
-            self.gen_metadata()
+        self._gen_metadata()
 
         self._snapshots = [
             Snapshot(self.snapshot_dir / s) for s in self._snapshot_metadata
@@ -141,6 +138,17 @@ class Repository(Hierarchy):
         :rtype: bool
         """
         return bool(re.match(VALID_SNAPSHOT_NAME, name))
+
+    def _gen_metadata(self):
+        """Generate metadata for this repository.
+            After this method is called, the data necessary for this repository has been created.
+        """
+        if self.metadata_path.exists():
+            self._snapshot_metadata = self.read_metadata()
+        else:
+            self._snapshot_metadata = []
+            self.metadata_path.touch(mode=FILEMODE)
+            self.write_metadata(self._snapshot_metadata)
 
     @property
     def snapshot_dir(self):
@@ -247,7 +255,9 @@ class Repository(Hierarchy):
             raise ValueError(f"'{name}' is an invalid name")
         elif snapshot_name in self:
             syslog.warning("Snapshot already exists, data will be overwritten.")
-            existing_snapshot = self._snapshots[self._snapshot_metadata.index(snapshot_name)]
+            existing_snapshot = self._snapshots[
+                self._snapshot_metadata.index(snapshot_name)
+            ]
             self.symlink_snapshot(existing_snapshot)
             return existing_snapshot
         else:
@@ -262,15 +272,6 @@ class Repository(Hierarchy):
 
             self.symlink_snapshot(new_snapshot)
             return new_snapshot
-
-    def gen_metadata(self):
-        """Generate metadata for this repository.
-            After this method is called, the data necessary for this repository has been created.
-        """
-        self._snapshot_metadata = []
-        self.metadata_path.parent.mkdir(mode=DIRMODE, exist_ok=True)
-        self.metadata_path.touch(mode=FILEMODE)
-        self.write_metadata(self._snapshot_metadata)
 
     def symlink_snapshot(self, snapshot):
         """Create a symbolic link in the Repository directory to a snapshot.

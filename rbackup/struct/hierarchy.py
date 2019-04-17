@@ -13,6 +13,9 @@ syslog = logging.getLogger(__name__)
 
 
 # ========== Constants ==========
+DIRMODE = 0o755
+FILEMODE = 0o644
+
 METADATA_READ = "r"
 METADATA_WRITE = "w"
 
@@ -53,6 +56,13 @@ class Hierarchy(PathLike):
         """Return a string representation of this Hierarchy."""
         return str(self._path)
 
+    def _gen_metadata(self):
+        """Generate metadata for this repository.
+
+            After this method is called, the data necessary for this hierarchy has been created.
+        """
+        raise NotImplementedError("This method must be called in a child class.")
+
     @property
     def path(self):
         """
@@ -77,12 +87,19 @@ class Hierarchy(PathLike):
         """
         return self._metadata_path
 
-    def gen_metadata(self):
-        """Generate metadata for this repository.
+    def cleanup(self, **kwargs):
+        """Clean up this Hierarchy's data from the filesystem."""
+        import shutil
 
-            After this method is called, the data necessary for this hierarchy has been created.
-        """
-        raise NotImplementedError("This method must be called in a child class.")
+        syslog.info(f"Performing cleanup on {self._path}")
+
+        # We don't want to risk symlink attacks
+        # noinspection PyUnresolvedReferences
+        if not shutil.rmtree.avoids_symlink_attacks:
+            syslog.error(
+                    "shutil cannot avoid symlink attacks on this platform. Ignoring."
+            )
+            return
 
     def read_metadata(self):
         """Read this repository's metadata from its file and
