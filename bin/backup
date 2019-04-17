@@ -42,6 +42,7 @@ EXTRA_RSYNC_OPTS = {
 # ----- Error Codes -----
 E_FAILED_PROCESS = 1
 E_INVALID_SNAPSHOT_NAME = 2
+E_PERMISSION = 13
 
 # ========== Logging Setup ==========
 console_formatter = logging.Formatter(LOGFORMAT)
@@ -117,7 +118,12 @@ def change_umask():
 if __name__ == "__main__":
     args = parse_cmdline_arguments()
     parsed_config = config.parse_configfile()
-    repo = Repository(args.repository)
+
+    try:
+        repo = Repository(args.repository)
+    except PermissionError as e:
+        syslog.critical(e)
+        exit(E_PERMISSION)
 
     rsync_opts = config.load_list_from_option(
         parsed_config,
