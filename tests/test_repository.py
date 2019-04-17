@@ -15,7 +15,7 @@ from rbackup.struct.snapshot import Snapshot
 
 # ========== Constants  ==========
 TESTING_PACKAGE = "rbackup.struct"
-REPO_MODULE = f"{TESTING_PACKAGE}.repository"
+TESTING_MODULE = f"{TESTING_PACKAGE}.repository"
 SS_MODULE = f"{TESTING_PACKAGE}.snapshot"
 
 VALID_SNAPSHOT_NAME = r"[\w._+-]+[^/]*"
@@ -215,31 +215,21 @@ class TestRepositoryCleanup(unittest.TestCase):
     """
 
     def setUp(self):
-        self.patched_path = patch.object(
-            Repository, "metadata_path", new_callable=PropertyMock
-        )
-        self.patched_r_metadata = patch.object(
-            Repository, "read_metadata", spec_set=list
-        )
-        self.patched_w_metadata = patch.object(
-            Repository, "write_metadata", spec_set=list
-        )
-        self.patched_shutil = patch(f"{TESTING_PACKAGE}.repository.shutil")
+        self.patched_path = patch(f"{TESTING_MODULE}.Path")
         self.patched_snapshot = patch(
             f"{TESTING_PACKAGE}.repository.Snapshot", spec_set=Snapshot
         )
 
         self.mocked_path = self.patched_path.start()
-        self.mocked_r_metadata = self.patched_r_metadata.start()
-        self.mocked_w_metadata = self.patched_w_metadata.start()
         self.mocked_shutil = self.patched_shutil.start()
         self.mocked_snapshot = self.patched_snapshot.start()
 
         self.mocked_shutil.rmtree.avoids_symlink_attacks = True
 
-    def test_stops_on_non_symlink_resistant(self):
-        self.mocked_shutil.rmtree.avoids_symlink_attacks = False
-        repo = Repository("backup")
+    @patch(f"{TESTING_PACKAGE}.repository.shutil")
+    def test_stops_on_non_symlink_resistant(self, mocked_shutil):
+        mocked_shutil.rmtree.avoids_symlink_attacks = False
+        repo = Repository("/tmp/backup")
 
         repo.cleanup(remove_snapshots=True)
 
@@ -269,7 +259,5 @@ class TestRepositoryCleanup(unittest.TestCase):
 
     def tearDown(self):
         self.patched_path.stop()
-        self.patched_r_metadata.stop()
-        self.patched_w_metadata.stop()
         self.patched_shutil.stop()
         self.patched_snapshot.stop()
