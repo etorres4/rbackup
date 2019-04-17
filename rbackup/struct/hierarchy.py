@@ -49,6 +49,10 @@ class Hierarchy(PathLike):
         """Return a string representation of this Hierarchy."""
         return f"{self.__class__.__name__}('{self._path}')"
 
+    def __str__(self):
+        """Return a string representation of this Hierarchy."""
+        return str(self._path)
+
     @property
     def path(self):
         """
