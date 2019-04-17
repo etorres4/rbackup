@@ -21,15 +21,12 @@ METADATA_WRITE = "w"
 class Hierarchy(PathLike):
     """A general class for organizing a hierarchy of data.
 
-    Hierarchy objects are non-intrusive in that they do not affect
-    the filesystem upon creation. It is up to the caller
-    to call either :func:`shutil.mkdir` or related method to create
-    the directory structure it emulates.
-
     **Implementation Details**
 
     * For consistency, ``Hierarchy`` objects always store and return absolute paths
     * Data for all ``Hierarchy`` objects and subclassed objects use JSON for serialization
+    * ``Hierarchy`` objects create their directories upon instantiation
+      * This may result in a ``PermissionError``
     """
 
     def __init__(self, dest):
@@ -37,10 +34,13 @@ class Hierarchy(PathLike):
 
         :param dest: the root directory of the backup hierarchy
         :type dest: str or path-like object
+        :raises PermissionError: if process does not have permission to write at dest
         """
         self._path = Path(dest).resolve()
         self._metadata_path = self._path / ".metadata"
         self._name = self._path.name
+
+        self.path.mkdir(DIRMODE, parents=True, exist_ok=True)
 
     def __fspath__(self):
         return str(self._path)
