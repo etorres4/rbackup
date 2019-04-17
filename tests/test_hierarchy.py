@@ -40,7 +40,7 @@ class TestHierarchyPaths(unittest.TestCase):
     def test_raises_notimplemented_error(self):
         h = Hierarchy("/tmp/backup")
         with self.assertRaises(NotImplementedError):
-            h.gen_metadata()
+            h._gen_metadata()
 
     def tearDown(self):
         self.patched_path.stop()
@@ -58,3 +58,71 @@ class TestHierarchyMetadata(unittest.TestCase):
         self.assertEqual(data, h.read_metadata())
 
         shutil.rmtree(h)
+
+
+@unittest.skip("Fix call checks")
+class TestHierarchyCleanup(unittest.TestCase):
+    """Test that hierarchy cleanup works properly.
+
+    Test cases
+    ----------
+    * Function stops if system is not symlink attack-resistant
+    * If symlink attack-resistant, then only delete metadata when all others false
+    * Function only deletes snapshots when told to
+    * Function only deletes repository directory when told to
+    """
+
+    def setUp(self):
+        self.patched_path = patch.multiple(
+                Path,
+                exists=DEFAULT,
+                mkdir=DEFAULT,
+                symlink_to=DEFAULT,
+                touch=DEFAULT,
+                unlink=DEFAULT,
+        )
+        self.patched_metadata = patch.multiple(
+                Hierarchy, read_metadata=DEFAULT, write_metadata=DEFAULT
+        )
+        self.patched_shutil = patch.multiple(f"{TESTING_MODULE}.shutil", rmtree=DEFAULT)
+
+        self.mocked_path = self.patched_path.start()
+        self.mocked_metadata = self.patched_metadata.start()
+        self.mocked_shutil = self.patched_shutil.start()
+
+        self.mocked_shutil["rmtree"].avoids_symlink_attacks = True
+
+    def test_stops_on_non_symlink_resistant(self):
+        self.mocked_shutil["rmtree"].avoids_symlink_attacks = True
+        h = Hierarchy("/tmp/backup")
+
+        h.cleanup(remove_snapshots=True)
+
+        self.mocked_path["unlink"].assert_not_called()
+        self.mocked_shutil["rmtree"].assert_not_called()
+
+    def test_removes_metadata_by_default(self):
+        h = Hierarchy("/tmp/backup")
+
+        h.cleanup()
+
+        self.mocked_path["unlink"].assert_called_once()
+
+    def test_removes_snapshots(self):
+        h = Hierarchy("/tmp/backup")
+
+        h.cleanup(remove_snapshots=True)
+
+        self.mocked_shutil.rmtree.assert_called_once()
+
+    def test_removes_repo_dir(self):
+        h = Hierarchy("/tmp/backup")
+
+        h.cleanup(remove_repo_dir=True)
+
+        self.mocked_shutil.rmtree.assert_called_once()
+
+    def tearDown(self):
+        self.patched_metadata.stop()
+        self.patched_path.stop()
+        self.patched_shutil.stop()
