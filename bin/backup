@@ -156,7 +156,7 @@ if __name__ == "__main__":
                 f"--exclude-from={exclude_file}",
                 *link_dests,
                 "/",
-                str(curr_snapshot.path),
+                str(curr_snapshot),
             )
         except ValueError as e:
             syslog.critical(e)
