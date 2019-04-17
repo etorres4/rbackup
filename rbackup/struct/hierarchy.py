@@ -5,6 +5,7 @@
 """
 import json
 import logging
+import shutil
 from os import PathLike
 from pathlib import Path
 
@@ -89,7 +90,6 @@ class Hierarchy(PathLike):
 
     def cleanup(self, **kwargs):
         """Clean up this Hierarchy's data from the filesystem."""
-        import shutil
 
         syslog.info(f"Performing cleanup on {self._path}")
 
@@ -100,6 +100,8 @@ class Hierarchy(PathLike):
                     "shutil cannot avoid symlink attacks on this platform. Ignoring."
             )
             return
+
+        shutil.rmtree(self)
 
     def read_metadata(self):
         """Read this repository's metadata from its file and
