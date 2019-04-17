@@ -100,9 +100,13 @@ class Repository(Hierarchy):
         """
         return name in self._snapshot_metadata
 
-    def __delitem__(self, s):
-        """Delete a Snapshot in this Repository."""
-        raise NotImplementedError
+    def __delitem__(self, index):
+        """Delete a Snapshot in this Repository.
+
+        :param index: index of snapshot to delete
+        :type index: int
+        """
+        del self._snapshots[index]
 
     def __getitem__(self, idx):
         """Retrieve a Snapshot at a certain index."""
