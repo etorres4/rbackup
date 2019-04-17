@@ -105,7 +105,6 @@ class TestRepositoryPreCreate(unittest.TestCase):
         self.patched_snapshot.stop()
 
 
-@unittest.skip("Fix call checks")
 class TestRepositoryPostCreate(unittest.TestCase):
     """Test properties of the Repository after running create_snapshot().
 
@@ -187,6 +186,7 @@ class TestRepositoryPostCreate(unittest.TestCase):
         self.patched_snapshot.stop()
 
 
+@unittest.skip("Fix call checks")
 class TestRepositoryCleanup(unittest.TestCase):
     """Test that repository cleanup works properly.
 
