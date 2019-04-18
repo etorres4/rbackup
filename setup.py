@@ -17,7 +17,7 @@ setuptools.setup(
     description="An rsync-based tool for creating backups",
     long_description=long_description,
     long_description_content_type="text/plain",
-    url="",
+    url="https://github.com/etorres4/rbackup",
     packages=PACKAGES,
     scripts=SCRIPTS,
     classifiers=[
