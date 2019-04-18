@@ -18,10 +18,10 @@ On each run of this script, a new snapshot is made and any unchanged
 files are hardlinked into the new snapshot.
 """
 import argparse
-from contextlib import contextmanager
 import logging
 import os
 import sys
+from contextlib import contextmanager
 from subprocess import CalledProcessError
 
 import rbackup.config as config
@@ -40,7 +40,6 @@ EXTRA_RSYNC_OPTS = {
 
 
 # ----- Error Codes -----
-E_FAILED_PROCESS = 1
 E_INVALID_SNAPSHOT_NAME = 2
 E_PERMISSION = 13
 
@@ -164,7 +163,7 @@ if __name__ == "__main__":
         except CalledProcessError as e:
             syslog.critical("Backup process failed")
             syslog.critical(f"Failing command: {e.cmd}")
-            exit(E_FAILED_PROCESS)
+            exit(e.returncode)
 
     if args.run_post_sync:
         syslog.info("Running sync operation")
