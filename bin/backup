@@ -7,12 +7,12 @@ Run a backup, creating a snapshot in the process.
 Command-Line Arguments
 ======================
 
-* -c, --use-checksums   use rsync's checksum feature to detect file changes
-* -d, --dry-run         make this backup a dry run
-* --debug               show debug messages
-* -n, --name            name to give to the backup snapshot
-* -s, --run-post-sync   run sync syscall after backup
-* -v, --verbose         show info messages
+-c, --use-checksums   use rsync's checksum feature to detect file changes
+-d, --dry-run         make this backup a dry run
+--debug               show debug messages
+-n, --name            name to give to the backup snapshot
+-s, --run-post-sync   run sync syscall after backup
+-v, --verbose         show info messages
 
 On each run of this script, a new snapshot is made and any unchanged
 files are hardlinked into the new snapshot.
