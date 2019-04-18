@@ -4,14 +4,23 @@
 rbackup - An rsync-based backup tool
 ====================================
 
-A tool that automates the use of rsync and extra features for package manager backups.
+Yet another rsync-based tool for automating backups and using plugins.
+
+Rationales
+----------
+
+* 'Keep It Simple Stupid'
+* Automate as much of the process as possible. This includes options, path selections, and managing snapshots
+* Store backups in a format that does not require a program or script; this means that backups can be browsed with a file manager
+* Deleted files are kept in old snapshots and rotated out using the rotation script
+* Subsequent backups do not touch each other, unless specified by the user. This reduces the risk of overwriting backups with corrupted files
 
 Features
 --------
 
 * Snapshot-based backup management
-* Backups of deleted and modified files
-* Creation of installed package lists and backup of package manager databases
+* Creation of installed package lists and archives of package manager databases
+* AppArmor profiles
 
 Advanced Features
 ^^^^^^^^^^^^^^^^^
@@ -28,67 +37,54 @@ Target Directories
 * /home
 * /root
 * /var
+
   * /var/lib
   * /var/log
-* Extras
+
+* Plugins
+
   * Installed packages
   * Package manager databases
 
 Backup Directory Hierarchy
 --------------------------
 
-basedir
+::
 
-├── current
+   Repository
+     current -> data/snapshot2
+     data
+       snapshot1
+         .metadata
+       snapshot2
+         .metadata
+     .metadata
 
-└── data
+Assuming snapshot2 was the most recent backup and snapshot1 was the backup before that:
 
-    ├── snapshot-one
-
-    │   ├── boot
-
-    │   ├── etc
-    
-    │   ├── home
-
-    │   ├── pkg
-
-    │   └── root
-
-    └── snapshot-two
-
-        ├── boot
-
-        ├── etc
-
-        ├── home
-
-        ├── pkg
-
-        └── root
-
-
-* Assuming snapshot2 was the previous backup and snapshot1 was the backup before that:
-  * current would link to snapshot2
+  * "current" would link to snapshot2
   * Unchanged files files from snapshot1 backed up to snapshot2 are hardlinked to snapshot1
 
 Implementation Notes
 --------------------
 
 * pathlib is used for path handling
-  * Only absolute paths are used internally for consistency
-* Use --link-dest=
+
+  * Absolute paths are used internally for consistency
+
 * When hardlinking, rbackup passes the entire path to avoid needing relative paths
-* The backup script changes the process umask to 0000 to determine the file modes for the files it writes i.e. snapshots
+* The backup script changes the process umask to 0000
 
 To-do
 -----
 
+* Add override for umask i.e. add the command-line options -u, --umask or an option in the config file
 * Add __enter__ and __exit__ for PackageManager lockfiles to prevent transactions during backup
 * Create snapshot manipulation script
 * Interactive cleanup script
+
   * Repository.__delitem__()
-  * Repository.delete_snapshot(name)
+  * Reconfiguring Repository.snapshot_symlink whenever a snapshot is deleted
 
 Dependencies
 ------------
@@ -96,7 +92,7 @@ Dependencies
 Runtime
 ^^^^^^^
 
-* python >=3.7
+* python>=3.7
 * rsync
 
 Build/Testing
