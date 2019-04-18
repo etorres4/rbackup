@@ -118,6 +118,8 @@ if __name__ == "__main__":
     args = parse_cmdline_arguments()
     parsed_config = config.parse_configfile()
 
+    repo = None
+
     try:
         repo = Repository(args.repository)
     except PermissionError as e:
