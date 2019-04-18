@@ -3,22 +3,26 @@
 
 rbackup - An rsync-based backup tool
 ====================================
+
 A tool that automates the use of rsync and extra features for package manager backups.
 
 Features
 --------
+
 * Snapshot-based backup management
 * Backups of deleted and modified files
 * Creation of installed package lists and backup of package manager databases
 
 Advanced Features
 ^^^^^^^^^^^^^^^^^
+
 * rbackup depends on the filesystem that stores the repository to provide features such as checksumming, deduplication, and data integrity verification
 * Encryption must be handled by an external program, this is out of scope for rbackup
 * xattrs and acl's are handled by rsync but must be a supported feature of the filesystem the repository is stored on
 
 Target Directories
 ------------------
+
 * /boot/loader
 * /etc
 * /home
@@ -32,6 +36,7 @@ Target Directories
 
 Backup Directory Hierarchy
 --------------------------
+
 basedir
 ├── current
 └── data
@@ -62,22 +67,25 @@ Implementation Notes
 
 To-do
 -----
+
 * Add __enter__ and __exit__ for PackageManager lockfiles to prevent transactions during backup
 * Create snapshot manipulation script
 * Interactive cleanup script
   * Repository.__delitem__()
   * Repository.delete_snapshot(name)
-* Test functions in config module
-  * load_list_from_option()
 
 Dependencies
 ------------
+
 Runtime
 ^^^^^^^
+
+* python >=3.7
 * rsync
 
 Build/Testing
 ^^^^^^^^^^^^^
+
 * pytest
 * setuptools
 * hypothesis
