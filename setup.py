@@ -11,7 +11,7 @@ with open("README", "r") as fh:
 # ========== Package Setup ==========
 setuptools.setup(
     name="rbackup",
-    version="0.5",
+    version="0.5.1",
     author="Eric Torres",
     author_email="erictorres4@protonmail.com",
     description="An rsync-based tool for creating backups",
