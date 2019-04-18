@@ -113,14 +113,16 @@ class Repository(Hierarchy):
         :type index: int
         """
         snapshot_to_delete = self._snapshots[index]
-
-        # TODO add logic for deleting snapshot pointed to by self.snapshot_symlink
-
         snapshot_to_delete.cleanup()
 
         del self._snapshots[index]
         del self._snapshot_metadata[index]
         self.write_metadata(self._snapshot_metadata)
+
+        if not self._snapshot_metadata:
+            self.snapshot_symlink.unlink()
+        else:
+            self.snapshot_symlink.symlink_to(self._snapshots[-1])
 
     def __getitem__(self, idx):
         """Retrieve a Snapshot at a certain index."""
