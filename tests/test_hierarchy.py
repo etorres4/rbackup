@@ -74,15 +74,15 @@ class TestHierarchyCleanup(unittest.TestCase):
 
     def setUp(self):
         self.patched_path = patch.multiple(
-                Path,
-                exists=DEFAULT,
-                mkdir=DEFAULT,
-                symlink_to=DEFAULT,
-                touch=DEFAULT,
-                unlink=DEFAULT,
+            Path,
+            exists=DEFAULT,
+            mkdir=DEFAULT,
+            symlink_to=DEFAULT,
+            touch=DEFAULT,
+            unlink=DEFAULT,
         )
         self.patched_metadata = patch.multiple(
-                Hierarchy, read_metadata=DEFAULT, write_metadata=DEFAULT
+            Hierarchy, read_metadata=DEFAULT, write_metadata=DEFAULT
         )
         self.patched_shutil = patch.multiple(f"{TESTING_MODULE}.shutil", rmtree=DEFAULT)
 

@@ -97,7 +97,7 @@ class Hierarchy(PathLike):
         # noinspection PyUnresolvedReferences
         if not shutil.rmtree.avoids_symlink_attacks:
             syslog.error(
-                    "shutil cannot avoid symlink attacks on this platform. Ignoring."
+                "shutil cannot avoid symlink attacks on this platform. Ignoring."
             )
             return
 
