@@ -95,9 +95,12 @@ def merge_include_files():
 
     :return: path-like object
     """
-    filelist = merge_files(get_files_by_suffix("-include.conf"))
-    yield filelist
-    filelist.unlink()
+    try:
+        # filelist is guaranteed to exist at this point
+        filelist = merge_files(get_files_by_suffix("-include.conf"))
+        yield filelist
+    finally:
+        filelist.unlink()
 
 
 @contextmanager
@@ -106,9 +109,12 @@ def merge_exclude_files():
 
     :return: path-like object
     """
-    filelist = merge_files(get_files_by_suffix("-exclude.conf"))
-    yield filelist
-    filelist.unlink()
+    try:
+        # filelist is guaranteed to exist at this point
+        filelist = merge_files(get_files_by_suffix("-exclude.conf"))
+        yield filelist
+    finally:
+        filelist.unlink()
 
 
 def parse_configfile():

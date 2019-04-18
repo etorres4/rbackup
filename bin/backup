@@ -108,9 +108,11 @@ def change_umask():
     """Creates a context manager in which the umask is changed. This is to ensure that
     the script's desired umask is not visible to the user.
     """
-    old_umask = os.umask(SCRIPT_UMASK)
-    yield
-    os.umask(old_umask)
+    try:
+        old_umask = os.umask(SCRIPT_UMASK)
+        yield
+    finally:
+        os.umask(old_umask)
 
 
 # ========== Main Script ==========
