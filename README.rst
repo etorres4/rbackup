@@ -38,20 +38,35 @@ Backup Directory Hierarchy
 --------------------------
 
 basedir
+
 ├── current
+
 └── data
+
     ├── snapshot-one
+
     │   ├── boot
+
     │   ├── etc
+    
     │   ├── home
+
     │   ├── pkg
+
     │   └── root
+
     └── snapshot-two
+
         ├── boot
+
         ├── etc
+
         ├── home
+
         ├── pkg
+
         └── root
+
 
 * Assuming snapshot2 was the previous backup and snapshot1 was the backup before that:
   * current would link to snapshot2
