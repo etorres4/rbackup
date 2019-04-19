@@ -19,7 +19,7 @@ TESTING_PACKAGE = "rbackup.struct"
 TESTING_MODULE = f"{TESTING_PACKAGE}.repository"
 SS_MODULE = f"{TESTING_PACKAGE}.snapshot"
 
-VALID_SNAPSHOT_NAME = r"[\w._@:+-]+[^/]*"
+VALID_SNAPSHOT_NAME = r"[\w._+-]+[^/]*"
 
 
 # ========== Integration Tests ==========

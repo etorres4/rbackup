@@ -148,7 +148,7 @@ class Repository(Hierarchy):
         * Contain slashes
         * Are empty values
 
-        Valid names match the regex ``[\\w]+[^/]*``
+        Valid names match the regex ``[\\w._+-]+[^/]*``
 
         :param name: name to validate
         :type name: str
