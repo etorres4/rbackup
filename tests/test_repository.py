@@ -6,7 +6,7 @@ Tests for the rbackup.struct.repository module.
 import re
 import unittest
 from pathlib import Path
-from unittest.mock import DEFAULT, patch
+from unittest.mock import DEFAULT, PropertyMock, patch
 
 from hypothesis import given
 from hypothesis.strategies import from_regex, lists, text
@@ -19,7 +19,7 @@ TESTING_PACKAGE = "rbackup.struct"
 TESTING_MODULE = f"{TESTING_PACKAGE}.repository"
 SS_MODULE = f"{TESTING_PACKAGE}.snapshot"
 
-VALID_SNAPSHOT_NAME = r"[\w._+-]+[^/]*"
+VALID_SNAPSHOT_NAME = r"[\w._@:+-]+[^/]*"
 
 
 # ========== Integration Tests ==========
@@ -182,7 +182,6 @@ class TestRepositoryPostCreate(unittest.TestCase):
         patch.stopall()
 
 
-@unittest.skip("Fix call checks")
 class TestRepositoryCleanup(unittest.TestCase):
     """Test that repository cleanup works properly.
 
@@ -219,7 +218,7 @@ class TestRepositoryCleanup(unittest.TestCase):
         self.mocked_shutil["rmtree"].avoids_symlink_attacks = True
 
     def test_stops_on_non_symlink_resistant(self):
-        self.mocked_shutil["rmtree"].avoids_symlink_attacks = True
+        self.mocked_shutil["rmtree"].avoids_symlink_attacks = False
         repo = Repository("/tmp/backup")
 
         repo.cleanup(remove_snapshots=True)
@@ -227,26 +226,31 @@ class TestRepositoryCleanup(unittest.TestCase):
         self.mocked_path["unlink"].assert_not_called()
         self.mocked_shutil["rmtree"].assert_not_called()
 
-    def test_removes_metadata_by_default(self):
+    @patch.object(Repository, "snapshot_symlink", new_callable=PropertyMock)
+    @patch.object(Repository, "metadata_path", new_callable=PropertyMock)
+    def test_removes_metadata_by_default(
+        self, mocked_metadata_path, mocked_snapshot_symlink
+    ):
         repo = Repository("/tmp/backup")
 
         repo.cleanup()
 
-        self.mocked_path["unlink"].assert_called_once()
+        mocked_metadata_path.return_value.unlink.assert_called_once()
+        mocked_snapshot_symlink.return_value.unlink.assert_called_once()
 
     def test_removes_snapshots(self):
         repo = Repository("/tmp/backup")
 
         repo.cleanup(remove_snapshots=True)
 
-        self.mocked_shutil.rmtree.assert_called_once()
+        self.mocked_shutil["rmtree"].assert_called_once()
 
     def test_removes_repo_dir(self):
         repo = Repository("/tmp/backup")
 
         repo.cleanup(remove_repo_dir=True)
 
-        self.mocked_shutil.rmtree.assert_called_once()
+        self.mocked_shutil["rmtree"].assert_called_once()
 
     def tearDown(self):
         patch.stopall()
