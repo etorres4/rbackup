@@ -270,6 +270,7 @@ class Repository(Hierarchy):
         snapshot_name = (
             name
             if name is not None
+            # we replace the ':'s, otherwise rsync recognizes this as a remote location
             else datetime.datetime.utcnow().isoformat().replace(":", "_")
         )
 
