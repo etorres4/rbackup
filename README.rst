@@ -101,3 +101,9 @@ Build/Testing
 * pytest
 * setuptools
 * hypothesis
+
+-------
+License
+-------
+
+This project is licensed under MIT. See LICENSE for more details.
