@@ -36,12 +36,12 @@ package() {
         --skip-build
 
     # Install config files
-    for config in rbackup/config/*.conf; do
+    for config in config_files/*.conf; do
         install -Dm644 "${config}" "${pkgdir}/etc/${pkgname}/${config##*/}"
     done
 
     # Install AppArmor profile
-    install -Dm644 rbackup/config/usr.bin.backup \
+    install -Dm644 config_files/usr.bin.backup \
         "${pkgdir}/etc/apparmor.d/usr.bin.backup"
 
     # Install documetation
