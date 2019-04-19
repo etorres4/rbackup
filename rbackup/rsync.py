@@ -28,7 +28,7 @@ syslog = logging.getLogger(__name__)
 def rsync(*args):
     """Run an rsync command.
 
-    :param args: all arguments to pass to rsync
+    :param args: all arguments to pass to rsync including source and destination
     :type args: str
     :raises subprocess.CalledProcessError: if rsync process failed
     """
@@ -37,12 +37,7 @@ def rsync(*args):
     syslog.debug(f"rsync command: {cmd}")
     syslog.info("Beginning rsync process")
 
-    try:
-        process = subprocess.run(cmd, capture_output=True, check=True, text=True)
-    except subprocess.CalledProcessError as e:
-        syslog.error(e.stderr)
-        syslog.debug(e.stdout)
-        raise e
+    process = subprocess.run(cmd, capture_output=True, check=True, text=True)
 
     syslog.debug(process.stdout)
     syslog.info("Process complete")

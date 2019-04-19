@@ -167,6 +167,7 @@ if __name__ == "__main__":
         except CalledProcessError as e:
             syslog.critical("Backup process failed")
             syslog.critical(f"Failing command: {e.cmd}")
+            syslog.critical(e.stderr)
             exit(e.returncode)
 
     if args.run_post_sync:
