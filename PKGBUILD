@@ -7,7 +7,7 @@ arch=('any')
 url="https://github.com/etorres4/rbackup"
 license=('MIT')
 depends=(python rsync)
-makedepends=(python-setuptools)
+makedepends=(python-sphinx python-setuptools)
 checkdepends=(python-hypothesis python-pytest)
 backup=(etc/$pkgname/backup.conf
         etc/$pkgname/etc-include.conf
@@ -19,6 +19,8 @@ sha512sums=('4d389c1669b54f8da3567420d786de065c81c732263068e3ac79f8dab539cf13a35
 build() {
 	cd "${srcdir}/${pkgname}-${pkgver}"
     python setup.py build
+
+    python setup.py sphinx_build
 }
 
 check() {

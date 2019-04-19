@@ -1,17 +1,20 @@
 import setuptools
+from sphinx.setup_command import BuildDoc
 
 # ========== Constants ==========
 PACKAGES = ["rbackup", "rbackup.plugins", "rbackup.struct"]
 SCRIPTS = ["bin/backup"]
+CMDCLASS = {'build_sphinx': BuildDoc}
 
 # ========== Functions ==========
-with open("README", "r") as fh:
+with open("README.rst", "r") as fh:
     long_description = fh.read()
 
 # ========== Package Setup ==========
 setuptools.setup(
     name="rbackup",
     version="0.5.2",
+    cmdclass=CMDCLASS,
     author="Eric Torres",
     author_email="erictorres4@protonmail.com",
     description="An rsync-based tool for creating backups",
