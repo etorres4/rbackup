@@ -53,12 +53,15 @@ def load_list_from_option(parser, *, section="", option="", fallback=None):
     :returns: the list parsed by JSON
     :param fallback: the fallback value to return if the option is empty
     :type fallback: list
-    :rtype: list or type of fallback value
+    :rtype: list
     """
     try:
         return json.loads(parser[section][option])
     except (json.decoder.JSONDecodeError, KeyError):
-        return fallback
+        if fallback is None:
+            return []
+        else:
+            return fallback
 
 
 def merge_files(files):
