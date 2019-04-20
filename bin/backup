@@ -24,7 +24,7 @@ import sys
 from contextlib import contextmanager
 from subprocess import CalledProcessError
 
-import rbackup.config as config
+import rbackup.config.config_files as config
 import rbackup.rsync
 from rbackup.struct.repository import Repository
 

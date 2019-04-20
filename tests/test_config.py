@@ -8,11 +8,11 @@ from pathlib import Path
 from tempfile import NamedTemporaryFile
 from unittest.mock import patch
 
-import rbackup.config as config
+import rbackup.config.config_files as config
 
 # ========== Constants ==========
-TESTING_PACKAGE = "rbackup"
-TESTING_MODULE = f"{TESTING_PACKAGE}.config"
+TESTING_PACKAGE = "rbackup.config"
+TESTING_MODULE = f"{TESTING_PACKAGE}.config_files"
 
 
 # ========== Tests ==========
