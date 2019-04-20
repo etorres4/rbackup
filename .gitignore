@@ -1,9 +1,10 @@
 __pycache__
-pkg
-src
-tags
 *.tar.gz
 *.tar.xz
 .coverage
 .hypothesis
 .idea
+build
+pkg
+src
+tags
