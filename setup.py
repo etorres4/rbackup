@@ -4,7 +4,7 @@ from sphinx.setup_command import BuildDoc
 # ========== Constants ==========
 PACKAGES = ["rbackup", "rbackup.plugins", "rbackup.struct"]
 SCRIPTS = ["bin/backup"]
-CMDCLASS = {'build_sphinx': BuildDoc}
+CMDCLASS = {"build_sphinx": BuildDoc}
 
 # ========== Functions ==========
 with open("README.rst", "r") as fh:
@@ -28,4 +28,12 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
+    command_options={
+        "build_sphinx": {
+            # "project": ("setup.py", name),
+            "version": ("setup.py", "version"),
+            "release": ("setup.py", "release"),
+            # "source_dir": ("setup.py", "doc"),
+        }
+    },
 )

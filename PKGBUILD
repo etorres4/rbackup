@@ -20,7 +20,7 @@ build() {
 	cd "${srcdir}/${pkgname}-${pkgver}"
     python setup.py build
 
-    python setup.py sphinx_build
+    python setup.py sphinx_build -b man
 }
 
 check() {
