@@ -109,6 +109,10 @@ class Repository(Hierarchy):
         and snapshot metadata are in the same order, and that
         the two lists are the same size.
 
+        When a snapshot is deleted, then the symlink of the repository
+        is pointed to the snapshot at the end of the list. If no
+        snapshots remain, then that symlink is deleted instead.
+
         :param index: index of snapshot to delete
         :type index: int
         """
