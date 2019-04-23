@@ -143,25 +143,6 @@ class Repository(Hierarchy):
         """Return the next Snapshot in this Repository."""
         return next(self._snapshot_iterator)
 
-    def __dir__(self):
-        return (
-            super().__dir__(),
-            "__contains__",
-            "__delitem__",
-            "__getitem__",
-            "__iter__",
-            "__len__",
-            "__next__",
-            "is_valid_snapshot_name",
-            "snapshot_dir",
-            "snapshot_symlink",
-            "snapshots",
-            "empty",
-            "cleanup",
-            "create_snapshot",
-            "symlink_snapshot",
-        )
-
     @staticmethod
     def is_valid_snapshot_name(name):
         """Check if the given name is a valid name.

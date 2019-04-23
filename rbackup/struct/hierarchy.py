@@ -66,23 +66,6 @@ class Hierarchy(PathLike):
         """Return a string representation of this Hierarchy."""
         return str(self._path)
 
-    def __dir__(self):
-        return (
-            "__dir__",
-            "__eq__",
-            "__fspath__",
-            "__hash__",
-            "__ne__",
-            "__repr__",
-            "__str__",
-            "path",
-            "name",
-            "metadata_path",
-            "cleanup",
-            "read_metadata",
-            "write_metadata",
-        )
-
     def _gen_metadata(self):
         """Generate metadata for this repository.
 
