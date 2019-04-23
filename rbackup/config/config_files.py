@@ -1,6 +1,6 @@
 """
 .. :author:: Eric Torres
-.. :module:: rbackup.config
+.. :module:: rbackup.config.config_files
     :synopsis: Functions for handling config files.
 """
 import configparser
