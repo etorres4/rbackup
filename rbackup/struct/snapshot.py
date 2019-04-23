@@ -32,11 +32,7 @@ class Snapshot(Hierarchy):
         self._pkg_dir = self.path / "pkg"
 
     def __dir__(self):
-<<<<<<< HEAD
-        return [super().__dir__(), "ctime", "pkg_dir"]
-=======
         return super().__dir__(), "ctime", "pkg_dir"
->>>>>>> 2aff6704bc8f14d9a3f73178c4c1709bfc7812b5
 
     def __repr__(self):
         """Return a string representation of this Snapshot."""
