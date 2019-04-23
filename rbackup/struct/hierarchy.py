@@ -46,8 +46,17 @@ class Hierarchy(PathLike):
 
         self.path.mkdir(DIRMODE, parents=True, exist_ok=True)
 
+    def __eq__(self, other):
+        return self._path == other.path
+
     def __fspath__(self):
         return str(self._path)
+
+    def __hash__(self):
+        return hash(self._path)
+
+    def __ne__(self, other):
+        return self._path != other.path
 
     def __repr__(self):
         """Return a string representation of this Hierarchy."""
