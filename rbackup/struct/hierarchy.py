@@ -67,11 +67,7 @@ class Hierarchy(PathLike):
         return str(self._path)
 
     def __dir__(self):
-<<<<<<< HEAD
         return [
-=======
-        return (
->>>>>>> 2aff6704bc8f14d9a3f73178c4c1709bfc7812b5
             "__dir__",
             "__eq__",
             "__fspath__",
@@ -85,11 +81,7 @@ class Hierarchy(PathLike):
             "cleanup",
             "read_metadata",
             "write_metadata",
-<<<<<<< HEAD
         ]
-=======
-        )
->>>>>>> 2aff6704bc8f14d9a3f73178c4c1709bfc7812b5
 
     def _gen_metadata(self):
         """Generate metadata for this repository.

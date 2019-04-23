@@ -144,11 +144,7 @@ class Repository(Hierarchy):
         return next(self._snapshot_iterator)
 
     def __dir__(self):
-<<<<<<< HEAD
         return [
-=======
-        return (
->>>>>>> 2aff6704bc8f14d9a3f73178c4c1709bfc7812b5
             super().__dir__(),
             "__contains__",
             "__delitem__",
@@ -164,11 +160,7 @@ class Repository(Hierarchy):
             "cleanup",
             "create_snapshot",
             "symlink_snapshot",
-<<<<<<< HEAD
         ]
-=======
-        )
->>>>>>> 2aff6704bc8f14d9a3f73178c4c1709bfc7812b5
 
     @staticmethod
     def is_valid_snapshot_name(name):
