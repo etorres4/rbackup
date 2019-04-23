@@ -13,7 +13,7 @@ with open("README.rst", "r") as fh:
 # ========== Package Setup ==========
 setuptools.setup(
     name="rbackup",
-    version="0.5.2",
+    version="0.5.3",
     cmdclass=CMDCLASS,
     author="Eric Torres",
     author_email="erictorres4@protonmail.com",
