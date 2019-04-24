@@ -2,9 +2,11 @@ import setuptools
 from sphinx.setup_command import BuildDoc
 
 # ========== Constants ==========
-PACKAGES = ["rbackup", "rbackup.plugins", "rbackup.struct"]
+EXCLUDED_PACKAGES = ["test", "tests"]
+PACKAGES = setuptools.find_packages(exclude=EXCLUDED_PACKAGES)
 SCRIPTS = ["bin/backup"]
 CMDCLASS = {"build_sphinx": BuildDoc}
+
 
 # ========== Functions ==========
 with open("README.rst", "r") as fh:
