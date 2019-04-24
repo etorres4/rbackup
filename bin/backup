@@ -12,6 +12,7 @@ Command-Line Arguments
 --debug               show debug messages
 -n, --name            name to give to the backup snapshot
 -p, --port            port that ssh on the destination is listening on
+-r, --remote-host     address/alias of remote machine to use
 -s, --run-post-sync   run sync syscall after backup
 -u, --umask           umask value to use while running backup process
 -v, --verbose         show info messages
@@ -94,6 +95,12 @@ def parse_cmdline_arguments(**kwargs):
         help="port that ssh on the destination is listening on",
     )
     parser.add_argument(
+        "-r",
+        "--remote-host",
+        default=None,
+        help="address/alias of remote machine to use",
+    )
+    parser.add_argument(
         "-s",
         "--run-post-sync",
         action="store_true",
@@ -118,9 +125,15 @@ def parse_cmdline_arguments(**kwargs):
 if __name__ == "__main__":
     args = parse_cmdline_arguments()
 
+    dest = (
+        args.repository
+        if args.remote_host is None
+        else f"{args.remote_host}@{os.getlogin()}:{args.port}{args.repository}"
+    )
+
     try:
         parsed_config = config.parse_configfile()
-        repo = Repository(args.repository)
+        repo = Repository(dest)
     except PermissionError as e:
         syslog.critical(e)
         exit(E_PERMISSION)
