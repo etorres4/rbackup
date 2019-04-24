@@ -11,6 +11,7 @@ Command-Line Arguments
 -d, --dry-run         make this backup a dry run
 --debug               show debug messages
 -n, --name            name to give to the backup snapshot
+-p, --port            port that ssh on the destination is listening on
 -s, --run-post-sync   run sync syscall after backup
 -v, --verbose         show info messages
 
@@ -88,6 +89,9 @@ def parse_cmdline_arguments(**kwargs):
     parser.add_argument("--debug", action="store_true", help="log debug messages")
     parser.add_argument(
         "-n", "--name", default=None, help="name to give to the snapshot"
+    )
+    parser.add_argument(
+        "-p", "--port", default=22, help="port that ssh on the destination is listening on"
     )
     parser.add_argument(
         "-s",
