@@ -88,7 +88,10 @@ def parse_cmdline_arguments(**kwargs):
         "-n", "--name", default=None, help="name to give to the snapshot"
     )
     parser.add_argument(
-        "-p", "--port", default=22, help="port that ssh on the destination is listening on"
+        "-p",
+        "--port",
+        default=22,
+        help="port that ssh on the destination is listening on",
     )
     parser.add_argument(
         "-s",
@@ -96,8 +99,12 @@ def parse_cmdline_arguments(**kwargs):
         action="store_true",
         help="run sync operation after backup is complete",
     )
-    parser.add_arguemnt(
-        "-u", "--umask", type=int, default=None, help="umask value to use while running backup process"
+    parser.add_argument(
+        "-u",
+        "--umask",
+        type=int,
+        default=None,
+        help="umask value to use while running backup process",
     )
     parser.add_argument(
         "-v", "--verbose", action="store_true", help="log info messages"
