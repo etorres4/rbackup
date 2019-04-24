@@ -13,6 +13,7 @@ Command-Line Arguments
 -n, --name            name to give to the backup snapshot
 -p, --port            port that ssh on the destination is listening on
 -s, --run-post-sync   run sync syscall after backup
+-u, --umask           umask value to use while running backup process
 -v, --verbose         show info messages
 
 On each run of this script, a new snapshot is made and any unchanged
@@ -99,6 +100,9 @@ def parse_cmdline_arguments(**kwargs):
         action="store_true",
         help="run sync operation after backup is complete",
     )
+    parser.add_arguemnt(
+        "-u", "--umask", type=int, default=None, help="umask value to use while running backup process"
+    )
     parser.add_argument(
         "-v", "--verbose", action="store_true", help="log info messages"
     )
@@ -108,12 +112,19 @@ def parse_cmdline_arguments(**kwargs):
 
 
 @contextmanager
-def change_umask():
-    """Creates a context manager in which the umask is changed. This is to ensure that
-    the script's desired umask is not visible to the user.
+def change_umask(override=None):
+    """Creates a context manager in which the umask is changed.
+    This is to ensure that the script's desired umask is not
+    visible to the user.
+
+    :param override: non-script-default umask value to use
+    :type override: int
     """
     try:
-        old_umask = os.umask(SCRIPT_UMASK)
+        if override is not None:
+            old_umask = os.umask(override)
+        else:
+            old_umask = os.umask(SCRIPT_UMASK)
         yield
     finally:
         os.umask(old_umask)
@@ -154,7 +165,7 @@ if __name__ == "__main__":
 
     curr_snapshot = None
 
-    with change_umask(), config.merge_include_files() as include_file, config.merge_exclude_files() as exclude_file:
+    with change_umask(args.umask), config.merge_include_files() as include_file, config.merge_exclude_files() as exclude_file:
         try:
             curr_snapshot = repo.create_snapshot(args.name)
             rbackup.rsync.rsync(
