@@ -10,14 +10,14 @@ Version 0.5.3
 
 * rbackup.config.config_files
 
-  * .. function:: load_list_from_option()
+  * ``load_list_from_option()``
 
     * Use non-mutable default argument
     * Ensure that list is returned if fallback is unset
 
 * rbackup.struct.repository.Repository
 
-  * Implement .. function:: __eq__(), .. function:: __ne__(), and .. function:: __hash__()
+  * Implement ``__eq__()``, ``__ne__()``, and ``__hash__()``
   * Update docstrings explaining what happens to snapshot_symlink when snapshot is deleted
 
 * Building
@@ -56,17 +56,17 @@ Version 0.5
 
 * rbackup.struct.hierarchy.Hierarchy
 
-  * Move .. function:: Repository.gen_metadata to Hierarchy._gen_metadata()
+  * Move ``Repository.gen_metadata()`` to ``Hierarchy._gen_metadata()``
 
 * rbackup.struct.repository.Repository
 
   * Add basic logic for updating symlink after snapshot removal
-  * Implement snapshot deletion using .. function:: __delitem__()
+  * Implement snapshot deletion using ``__delitem__()``
   * Add basic logic for symlinking after snapshot removal
 
 * rbackup.struct.repository.Snapshot
 
-  * Add attribute code to .. function:: _gen_metadata()
+  * Add attribute code to ``_gen_metadata()``
   * Add ``ctime`` attribute
 
 * Project structure
@@ -94,7 +94,7 @@ Version 0.4
 
 * rbackup.config.config_files
 
-  * Add .. function:: load_list_from_option()
+  * Add ``load_list_from_option()``
 
 Version 0.3
 -----------
@@ -109,8 +109,8 @@ Version 0.3
 
 * rbackup.struct.repository.Repository
 
-  * Add .. function:: gen_metadata()
-  * Add .. function:: symlink_snapshot()
+  * Add ``gen_metadata()``
+  * Add ``symlink_snapshot()``
   * Ignore ``PermissionError`` when creating snapshot symlink
 
 * config_files
@@ -138,23 +138,23 @@ Version 0.2
 * rbackup.package_managers.packagemanager.PackageManager
 
   * Remove type and value checking
-  * Add .. function:: gen_db_archive()
-  * Check for valid compression mode before proceeding with .. function:: gen_db_archive()
+  * Add ``gen_db_archive()``
+  * Check for valid compression mode before proceeding with ``gen_db_archive()``
 
 * rbackup.struct.hierarchy.Hierarchy
 
   * Add ``metadata_path``
   * Subclass ``os.PathLike``
-  * Make .. function:: write_metadata() an atomic operation
+  * Make write_metadata() an atomic operation
   * Log metadata read/write operations
 
 * rbackup.struct.repository.Repository
 
-  * Add .. function:: cleanup()
-  * Add .. function:: is_valid_snapshot_name()
-  * Add .. function:: gen_snapshot_path()
+  * Add ``cleanup()``
+  * Add ``is_valid_snapshot_name()``
+  * Add ``gen_snapshot_path()``
   * Remove current_snapshot attribute
-  * Implement .. function:: __repr__()
+  * Implement ``__repr__()``
   * Use regex to parse user snapshot name input
   * Split snapshot metadata lists
   * Change serialization backend from pickle to JSON
