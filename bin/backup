@@ -141,7 +141,7 @@ if __name__ == "__main__":
     dest = (
         args.repository
         if args.remote_host is None
-        else f"{args.remote_host}@{os.getlogin()}:{args.port}{args.repository}"
+        else f"{args.remote_host}@{os.getlogin()}:{args.port}/{args.repository}"
     )
 
     syslog.debug(f"Repository destination: {dest}")
