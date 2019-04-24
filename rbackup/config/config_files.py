@@ -34,7 +34,7 @@ def get_files_by_suffix(suffix):
 
     :param suffix: the suffix to search for
     :type suffix: str
-    :returns: paths pointing to include files
+    :return: paths pointing to include files
     :rtype: generator of path-like objects
     """
     yield from CONFIG_DIR.glob(f"*{suffix}")
@@ -50,7 +50,7 @@ def load_list_from_option(parser, *, section="", option="", fallback=None):
     :type section: str
     :param option: the option value inside the specified section
     :type option: str
-    :returns: the list parsed by JSON
+    :return: the list parsed by JSON
     :param fallback: the fallback value to return if the option is empty
     :type fallback: list
     :rtype: list
@@ -73,7 +73,7 @@ def merge_files(files):
 
     :param files: files including paths to read from
     :type files: iterable of path-like objects
-    :returns: path to file that lists include paths
+    :return: path to file that lists include paths
     :rtype: path-like object
     """
     include_lines = []
@@ -124,7 +124,7 @@ def parse_configfile():
     """Parse the main backup config file and return
     a ``configparser.ConfigParser`` object.
 
-    :returns: object used to parse config file
+    :return: object used to parse config file
     :rtype: ConfigParser object
     :raises FileNotFoundError: if path does not exist
     """

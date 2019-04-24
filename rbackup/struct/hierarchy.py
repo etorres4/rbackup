@@ -76,7 +76,7 @@ class Hierarchy(PathLike):
     @property
     def path(self):
         """
-        :returns: the base directory of this hierarchy
+        :return: the base directory of this hierarchy
         :rtype: path-like object
         """
         return self._path
@@ -84,7 +84,7 @@ class Hierarchy(PathLike):
     @property
     def name(self):
         """
-        :returns: the name of this hierarchy.
+        :return: the name of this hierarchy.
         :rtype: str
         """
         return self._name
@@ -92,7 +92,7 @@ class Hierarchy(PathLike):
     @property
     def metadata_path(self):
         """
-        :returns: the path of this hierarchy's metadata file.
+        :return: the path of this hierarchy's metadata file.
         :rtype: path-like object
         """
         return self._metadata_path

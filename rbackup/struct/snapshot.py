@@ -46,7 +46,7 @@ class Snapshot(Hierarchy):
     @property
     def ctime(self):
         """
-        :returns: this Snapshot's creation time
+        :return: this Snapshot's creation time
         :rtype: str
         """
         return self._ctime
@@ -54,7 +54,7 @@ class Snapshot(Hierarchy):
     @property
     def pkg_dir(self):
         """
-        :returns: the package manager backup directory of this snapshot.
+        :return: the package manager backup directory of this snapshot.
         :rtype: path-like object
         """
         return self._pkg_dir

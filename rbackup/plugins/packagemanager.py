@@ -67,7 +67,7 @@ class PackageManager:
 
         This method only creates the lockfile if it was configured.
 
-        :returns: self
+        :return: self
         :rtype: ``PackageManager`` object
         :raises FileExistsError: if lockfile exists when this method is called
         """
@@ -90,7 +90,7 @@ class PackageManager:
             it is to be assumed that no file was created, therefore there
             is no file to cleanup.
 
-        :returns: path to temporary file
+        :return: path to temporary file
         :rtype: path-like object
         :raises NotImplementedError: if package list generation command is not present
         """
@@ -115,7 +115,7 @@ class PackageManager:
 
         :param compress: compression mode
         :type compress: str
-        :returns: the path to the created file
+        :return: the path to the created file
         :rtype: path-like object
         :raises ValueError: if compress is not in packagemanager.VALID_DB_COMPRESS_MODES
         :raises NotImplementedError: if database path is not present
@@ -144,7 +144,7 @@ class PackageManager:
     @property
     def cache_directory(self):
         """
-        :returns: the cache directory of this package manager
+        :return: the cache directory of this package manager
         :rtype: path-like object or None
         """
         return self._cachedir
@@ -152,7 +152,7 @@ class PackageManager:
     @property
     def database_path(self):
         """
-        :returns: the database path of this package manager
+        :return: the database path of this package manager
         :rtype: path-like object or None
         """
         return self._db_path
@@ -160,7 +160,7 @@ class PackageManager:
     @property
     def lockfile(self):
         """
-        :returns: the lockfile path of this package manager
+        :return: the lockfile path of this package manager
         :rtype: path-like object or None
         """
         return self._lockfile
@@ -168,7 +168,7 @@ class PackageManager:
     @property
     def pkglist_cmd(self):
         """
-        :returns: the package listing command of this package manager
+        :return: the package listing command of this package manager
         :rtype: iterable, str or None
         """
         return self._pkglist_cmd

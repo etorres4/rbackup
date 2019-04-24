@@ -96,7 +96,7 @@ class Repository(Hierarchy):
     def __contains__(self, name):
         """Check membership of a Snapshot in this Repository by name.
 
-        :returns: True if name is the name of a Snapshot in this Repository
+        :return: True if name is the name of a Snapshot in this Repository
         :type name: str
         :rtype: bool
         """
@@ -156,7 +156,7 @@ class Repository(Hierarchy):
 
         :param name: name to validate
         :type name: str
-        :returns: true if this name is deemed valid, otherwise False
+        :return: true if this name is deemed valid, otherwise False
         :rtype: bool
         """
         return bool(re.match(VALID_SNAPSHOT_NAME, name))
@@ -179,7 +179,7 @@ class Repository(Hierarchy):
     @property
     def snapshot_dir(self):
         """
-        :returns: the directory in this Repository in which snapshots
+        :return: the directory in this Repository in which snapshots
             are stored.
         :rtype: path-like object
         """
@@ -196,7 +196,7 @@ class Repository(Hierarchy):
     @property
     def snapshots(self):
         """
-        :returns: all snapshots stored in this repository
+        :return: all snapshots stored in this repository
         :rtype: list of Snapshot objects
         """
         return self._snapshots
@@ -204,7 +204,7 @@ class Repository(Hierarchy):
     @property
     def empty(self):
         """
-        :returns: True if there are no Snapshots in this Repository,
+        :return: True if there are no Snapshots in this Repository,
             False otherwise
         :rtype: bool
         """
@@ -266,7 +266,7 @@ class Repository(Hierarchy):
 
         :param name: the name of the snapshot
         :type name: str
-        :returns: Snapshot object
+        :return: Snapshot object
         :raises ValueError: if name is an invalid value
         """
         syslog.debug("Creating snapshot")
