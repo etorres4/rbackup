@@ -1,0 +1,59 @@
+#!/usr/bin/python3
+"""
+.. moduleauthor:: Eric Torres
+
+Command-Line Arguments
+======================
+
+A daemon that waits to run backup jobs and manages a
+Repository on the local system.
+
+backupd listens on a specified port for a backup job sent
+by the backup script and 
+
+TODO inspect python-daemon for use with this script
+"""
+
+import daemon
+import logging
+
+from rbackup.struct.repository import Repository
+
+# ========== Constants ==========
+
+
+# ========== Functions ==========
+def parse_cmdline_arguments(**kwargs):
+    """Parse command line arguments passed to the script.
+        All kwargs are passed to ArgumentParser.parse_args().
+
+    :rtype: argparse.Namespace object
+    """
+    parser = argparse.ArgumentParser()
+    parser.add_argument("repository", help="repository to back up to", metavar="repo")
+
+    return parser.parse_args(**kwargs)
+
+
+# ========== Logging Setup ==========
+console_formatter = logging.Formatter(LOGFORMAT)
+syslog = logging.getLogger("rbackup")
+syslog.setLevel(logging.DEBUG)
+
+stdout_handler = logging.StreamHandler(sys.stdout)
+stdout_handler.setLevel(logging.INFO)
+stdout_handler.setFormatter(console_formatter)
+stdout_handler.addFilter(lambda record: record.levelno <= logging.INFO)
+
+stderr_handler = logging.StreamHandler(sys.stderr)
+stderr_handler.setLevel(logging.WARNING)
+stderr_handler.setFormatter(console_formatter)
+
+syslog.addHandler(stdout_handler)
+syslog.addHandler(stderr_handler)
+
+
+# ========== Main Program ==========
+if __name__ == "__main__":
+    with daemon.DaemonContext():
+        pass
