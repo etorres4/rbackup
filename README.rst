@@ -78,6 +78,7 @@ Implementation Notes
 To-do
 -----
 
+* Make Repositories network-aware. This means we might need to split ``rbackup.struct.repository.Repository`` into a server and client
 * Add override for umask i.e. add the command-line options -u, --umask or an option in the config file
 * Add __enter__ and __exit__ for PackageManager lockfiles to prevent transactions during backup
 * Create snapshot manipulation script
@@ -85,6 +86,13 @@ To-do
 
   * Repository.__delitem__()
   * Reconfiguring Repository.snapshot_symlink whenever a snapshot is deleted
+
+* Plugin API
+  * Plugin.run() and Plugin.communicate() abstract methods
+
+    * Plugin.run() is passed a set of specific arguments
+
+      * snapshot?
 
 Dependencies
 ------------
