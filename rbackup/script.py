@@ -22,7 +22,7 @@ syslog = logging.getLogger(__name__)
 
 
 # ========== Functions ==========
-def do_backup(repository, parsed_config, args):
+def do_backup(repository, parsed_config, args, extra_rsync_opts=None):
     """Run a backup operation.
 
     It is up to the caller to decide on how to instantiate the Repository object.
@@ -33,6 +33,8 @@ def do_backup(repository, parsed_config, args):
     :type parsed_config: ``configparser.ConfigParser`` object
     :param args: arguments relevant to the backup operation
     :type args: ``argparse.Namespace`` object
+    :param extra_rsync_opts: more options to pass to rsync
+    :type extra_rsync_opts: iterable
     """
     rsync_opts = config.load_list_from_option(
         parsed_config,
@@ -43,6 +45,9 @@ def do_backup(repository, parsed_config, args):
 
     if args.extra_rsync_opts is not None:
         rsync_opts.extend(args.extra_rsync_opts)
+
+    if extra_rsync_opts is not None:
+        rsync_opts.extend(rsync_opts)
 
     # We want to iterate through the repository and create the --link-dest
     # options before creating the new snapshot
@@ -69,3 +74,4 @@ def do_backup(repository, parsed_config, args):
             syslog.critical(f"Failing command: {e.cmd}")
             syslog.critical(e.stderr)
             exit(e.returncode)
+
