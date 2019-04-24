@@ -1,5 +1,36 @@
-rbackup Changelog
-=================
+Changelog for rbackup
+=====================
+
+Version 0.6
+-----------
+
+* backup script
+
+  * Add --port option for ssh
+  * Add --umask option for changing umask of backup process
+
+* backupd
+
+  * Add backupd script
+  * Add config file
+
+* rbackup.network
+
+  * Add rbackup.network module
+
+* rbackup.system
+
+  * Add associated tests
+
+* Building
+
+  * Fix incorrect parameters on setup.py sphinx section
+
+* Project Structure
+
+  * Add ``rbackup.network``, ``rbackup.system``, and ``rbackup.system``
+  * Split main backup script into separate library modules for easier maintainability
+  
 
 Version 0.5.3
 -------------
