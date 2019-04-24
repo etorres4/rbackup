@@ -2,8 +2,6 @@
 """
 .. moduleauthor:: Eric Torres
 
-Run a backup, creating a snapshot in the process.
-
 Command-Line Arguments
 ======================
 
@@ -17,8 +15,17 @@ Command-Line Arguments
 -u, --umask           umask value to use while running backup process
 -v, --verbose         show info messages
 
+Run a backup, creating a snapshot in the process.
+
 On each run of this script, a new snapshot is made and any unchanged
 files are hardlinked into the new snapshot.
+
+A remote host can be specified by passing the -r option, and its port can be
+specified by passing the -p option.
+
+TODO serialize relevant data in an object i.e. args and config, send that over the network encrypted
+to prepare the repository
+and
 """
 import argparse
 import logging
