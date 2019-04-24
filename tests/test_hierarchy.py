@@ -30,13 +30,6 @@ class TestHierarchyPaths(unittest.TestCase):
     def test_retrieves_correct_metadata_filename(self):
         self.assertEqual(Hierarchy("/tmp/backup").metadata_path.name, ".metadata")
 
-    @given(from_regex(r"[\w/._-]+", fullmatch=True))
-    def test_returns_absolute_path(self, dest):
-        try:
-            self.assertTrue(Hierarchy(dest).path.is_absolute())
-        except PermissionError:
-            pass
-
     def test_raises_notimplemented_error(self):
         h = Hierarchy("/tmp/backup")
         with self.assertRaises(NotImplementedError):

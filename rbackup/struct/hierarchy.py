@@ -40,7 +40,7 @@ class Hierarchy(PathLike):
         :type dest: str or path-like object
         :raises PermissionError: if process does not have permission to write at dest
         """
-        self._path = Path(dest).resolve()
+        self._path = Path(dest)
         self._metadata_path = self._path / ".metadata"
         self._name = self._path.name
 

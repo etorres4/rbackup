@@ -69,9 +69,6 @@ Implementation Notes
 --------------------
 
 * pathlib is used for path handling
-
-  * Absolute paths are used internally for consistency
-
 * When hardlinking, rbackup passes the entire path to avoid needing relative paths
 * The backup script changes the process umask to 0000
 
