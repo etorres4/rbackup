@@ -13,7 +13,6 @@ Command-Line Arguments
 -r, --remote-host     address/alias of remote machine to use
 -s, --run-post-sync   run sync syscall after backup
 -u, --umask           umask value to use while running backup process
--v, --verbose         show info messages
 
 Run a backup, creating a snapshot in the process.
 
@@ -30,14 +29,13 @@ and
 import argparse
 import logging
 import os
-import sys
 
 import rbackup.config.config_files as config
+import rbackup.logging
 import rbackup.script as script
 from rbackup.struct.repository import Repository
 
 # ========== Constants ==========
-LOGFORMAT = "==> %(levelname)s %(message)s"
 EXTRA_RSYNC_OPTS = {
     "dry_run": "--dry-run",
     "delete": "--delete-after",
@@ -50,21 +48,8 @@ E_PERMISSION = 13
 
 
 # ========== Logging Setup ==========
-console_formatter = logging.Formatter(LOGFORMAT)
 syslog = logging.getLogger("rbackup")
 syslog.setLevel(logging.DEBUG)
-
-stdout_handler = logging.StreamHandler(sys.stdout)
-stdout_handler.setLevel(logging.INFO)
-stdout_handler.setFormatter(console_formatter)
-stdout_handler.addFilter(lambda record: record.levelno <= logging.INFO)
-
-stderr_handler = logging.StreamHandler(sys.stderr)
-stderr_handler.setLevel(logging.WARNING)
-stderr_handler.setFormatter(console_formatter)
-
-syslog.addHandler(stdout_handler)
-syslog.addHandler(stderr_handler)
 
 
 # ========== Functions ==========
@@ -132,11 +117,11 @@ def parse_cmdline_arguments(**kwargs):
 if __name__ == "__main__":
     args = parse_cmdline_arguments()
 
-    if args.verbose:
-        stdout_handler.setLevel(logging.INFO)
-
-    if args.debug:
-        stdout_handler.setLevel(logging.DEBUG)
+    stdout_handler, stderr_handler = rbackup.logging.retrieve_console_handlers(
+        debug=args.debug
+    )
+    syslog.addHandler(stdout_handler)
+    syslog.addHandler(stderr_handler)
 
     dest = (
         args.repository
