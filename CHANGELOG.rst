@@ -1,6 +1,13 @@
 Changelog for rbackup
 =====================
 
+Version 0.7.1
+-------------
+
+* Bug fixes
+
+  * rbackup.logging: fix incorrect passing of non-formatter object
+
 Version 0.7
 -----------
 
