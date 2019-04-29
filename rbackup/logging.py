@@ -17,7 +17,7 @@ CONSOLE_FORMATTER = logging.Formatter(_CONSOLE_FORMAT)
 def retrieve_console_handlers(*, debug=False):
     """Retrieve a pair of logging handlers configured for console output.
 
-    :param debug: should logging.DEBUG level messages be recorded?
+    :param debug: should logging.DEBUG level messages be recorded? (default: ``False``)
     :type debug: bool
     :return: tuple of ``logging.StreamHandler``s for stdout and stderr
     """
