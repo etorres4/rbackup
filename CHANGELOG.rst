@@ -28,7 +28,7 @@ Version 0.6
 
 * Project Structure
 
-  * Add ``rbackup.network``, ``rbackup.system``, and ``rbackup.system``
+  * Add ``rbackup.network``, ``rbackup.script``, and ``rbackup.system``
   * Split main backup script into separate library modules for easier maintainability
   
 
