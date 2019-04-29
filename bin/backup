@@ -34,6 +34,8 @@ EXTRA_RSYNC_OPTS = {
     "update": "--update",
 }
 
+DESCRIPTION = "Run a backup on a repository within a local path"
+
 # ----- Error Codes -----
 E_PERMISSION = 13
 
@@ -50,7 +52,7 @@ def parse_cmdline_arguments(**kwargs):
 
     :rtype: argparse.Namespace object
     """
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description=DESCRIPTION)
     parser.add_argument(
         "-c",
         "--use-checksums",
