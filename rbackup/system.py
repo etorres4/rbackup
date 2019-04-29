@@ -23,7 +23,7 @@ def change_umask(override=None):
     This is to ensure that the script's desired umask is not
     visible to the user.
 
-    :param override: non-script-default umask value to use
+    :param override: non-script-default umask value to use (default: ``0000``)
     :type override: int
     """
     try:
