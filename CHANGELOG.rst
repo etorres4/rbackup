@@ -1,6 +1,31 @@
 Changelog for rbackup
 =====================
 
+Version 0.7
+-----------
+
+* backup script
+
+  * Make ``backup`` strictly for backups to a local repository
+  * Add description for script in help message
+
+* Bug fixes
+
+  * backup script
+
+    * Fix incorrect log message handling
+    * Add slash between port and hostname
+    * Remove -v, --verbose flag
+
+* Documentation
+
+  * Change all instances of ``:returns:`` in docstrings to ``:return:``
+  * Make mention of default kwargs values for all modules
+
+* Project Structure
+
+  * Split common logging operations into rbackup.logging module
+
 Version 0.6
 -----------
 
