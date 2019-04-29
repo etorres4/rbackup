@@ -9,22 +9,13 @@ Command-Line Arguments
 -d, --dry-run         make this backup a dry run
 --debug               show debug messages
 -n, --name            name to give to the backup snapshot
--p, --port            port that ssh on the destination is listening on
--r, --remote-host     address/alias of remote machine to use
 -s, --run-post-sync   run sync syscall after backup
 -u, --umask           umask value to use while running backup process
 
-Run a backup, creating a snapshot in the process.
+Run a local backup, creating a snapshot in the process.
 
 On each run of this script, a new snapshot is made and any unchanged
 files are hardlinked into the new snapshot.
-
-A remote host can be specified by passing the -r option, and its port can be
-specified by passing the -p option.
-
-TODO serialize relevant data in an object i.e. args and config, send that over the network encrypted
-to prepare the repository
-and
 """
 import argparse
 import logging
@@ -81,18 +72,6 @@ def parse_cmdline_arguments(**kwargs):
         "-n", "--name", default=None, help="name to give to the snapshot"
     )
     parser.add_argument(
-        "-p",
-        "--port",
-        default=22,
-        help="port that ssh on the destination is listening on",
-    )
-    parser.add_argument(
-        "-r",
-        "--remote-host",
-        default=None,
-        help="address/alias of remote machine to use",
-    )
-    parser.add_argument(
         "-s",
         "--run-post-sync",
         action="store_true",
@@ -123,11 +102,7 @@ if __name__ == "__main__":
     syslog.addHandler(stdout_handler)
     syslog.addHandler(stderr_handler)
 
-    dest = (
-        args.repository
-        if args.remote_host is None
-        else f"{args.remote_host}@{os.getlogin()}:{args.port}/{args.repository}"
-    )
+    dest = args.repository
 
     syslog.debug(f"Repository destination: {dest}")
 
