@@ -22,7 +22,7 @@ def retrieve_console_handlers(*, debug=False):
     :return: tuple of ``logging.StreamHandler``s for stdout and stderr
     """
     stdout_handler = logging.StreamHandler(sys.stdout)
-    stdout_handler.setFormatter(_CONSOLE_FORMAT)
+    stdout_handler.setFormatter(CONSOLE_FORMATTER)
     stdout_handler.addFilter(lambda record: record.levelno <= logging.INFO)
 
     if debug:
@@ -32,6 +32,6 @@ def retrieve_console_handlers(*, debug=False):
 
     stderr_handler = logging.StreamHandler(sys.stderr)
     stderr_handler.setLevel(logging.WARNING)
-    stderr_handler.setFormatter(_CONSOLE_FORMAT)
+    stderr_handler.setFormatter(CONSOLE_FORMATTER)
 
     return stdout_handler, stderr_handler
