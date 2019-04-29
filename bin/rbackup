@@ -1,0 +1,131 @@
+#!/usr/bin/python3
+"""
+.. moduleauthor:: Eric Torres
+    :synopsis: Remote backup
+
+Command-Line Arguments
+======================
+
+-c, --use-checksums   use rsync's checksum feature to detect file changes
+-d, --dry-run         make this backup a dry run
+--debug               show debug messages
+-n, --name            name to give to the backup snapshot
+-p, --port            port that ssh on the destination is listening on
+-r, --remote-host     address/alias of remote machine to use
+-s, --run-post-sync   run sync syscall after backup
+-u, --umask           umask value to use while running backup process
+
+Run a network backup, creating a snapshot in the process.
+
+On each run of this script, a new snapshot is made and any unchanged
+files are hardlinked into the new snapshot.
+
+A remote host can be specified by passing the -r option, and its port can be
+specified by passing the -p option.
+"""
+import argparse
+import logging
+import os
+import sys
+
+import rbackup.config.config_files as config
+import rbackup.logging
+import rbackup.script as script
+from rbackup.struct.repository import Repository
+
+# ========== Constants ==========
+LOGFORMAT = "==> %(levelname)s %(message)s"
+EXTRA_RSYNC_OPTS = {
+    "dry_run": "--dry-run",
+    "delete": "--delete-after",
+    "checksum": "--checksum",
+    "update": "--update",
+}
+
+DESCRIPTION = "Run a backup on a remote path"
+
+# ----- Error Codes -----
+E_PERMISSION = 13
+
+
+# ========== Logging Setup ==========
+syslog = logging.getLogger("rbackup")
+syslog.setLevel(logging.DEBUG)
+
+
+# ========== Functions ==========
+def parse_cmdline_arguments(**kwargs):
+    """Parse command line arguments passed to the script.
+        All kwargs are passed to ArgumentParser.parse_args().
+
+    :rtype: argparse.Namespace object
+    """
+    parser = argparse.ArgumentParser(description=DESCRIPTION)
+    parser.add_argument(
+        "-c",
+        "--use-checksums",
+        action="store_const",
+        dest="extra_rsync_opts",
+        const=EXTRA_RSYNC_OPTS["checksum"],
+        help="use rsync's checksumming feature to look for changed files",
+    )
+    parser.add_argument(
+        "-d",
+        "--dry-run",
+        action="append_const",
+        dest="extra_rsync_opts",
+        const=EXTRA_RSYNC_OPTS["dry_run"],
+        help="pass --dry-run to rsync",
+    )
+    parser.add_argument("--debug", action="store_true", help="log debug messages")
+    parser.add_argument(
+        "-n", "--name", default=None, help="name to give to the snapshot"
+    )
+    parser.add_argument(
+        "-p",
+        "--port",
+        default=22,
+        help="port that ssh on the destination is listening on",
+    )
+    parser.add_argument(
+        "-r",
+        "--remote-host",
+        default=None,
+        help="address/alias of remote machine to use",
+    )
+    parser.add_argument(
+        "-s",
+        "--run-post-sync",
+        action="store_true",
+        help="run sync operation after backup is complete",
+    )
+    parser.add_argument(
+        "-u",
+        "--umask",
+        type=int,
+        default=None,
+        help="umask value to use while running backup process",
+    )
+    parser.add_argument(
+        "-v", "--verbose", action="store_true", help="log info messages"
+    )
+    parser.add_argument("repository", help="repository to back up to", metavar="repo")
+
+    return parser.parse_args(**kwargs)
+
+
+# ========== Main Script ==========
+if __name__ == "__main__":
+    args = parse_cmdline_arguments()
+
+    stdout_handler, stderr_handler = rbackup.logging.retrieve_console_handlers(
+        debug=args.debug
+    )
+    syslog.addHandler(stdout_handler)
+    syslog.addHandler(stderr_handler)
+
+    # TODO make repository and run backup
+
+    if args.run_post_sync:
+        syslog.info("Running sync operation")
+        os.sync()
