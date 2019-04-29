@@ -214,9 +214,9 @@ class Repository(Hierarchy):
         """Remove this repository from the filesystem.
         By default, no snapshots are deleted.
 
-        :param remove_snapshots: delete the data directory of this repository
+        :param remove_snapshots: delete the data directory of this repository (default: ``False``)
         :type remove_snapshots: bool
-        :param remove_repo_dir: remove the top-level directory of this repository
+        :param remove_repo_dir: remove the top-level directory of this repository (default: ``False``)
         :type remove_repo_dir: bool
         """
         # We don't want to risk symlink attacks
@@ -264,7 +264,7 @@ class Repository(Hierarchy):
         If name is given and it is the name of a snapshot already
         on the repository, that snapshot is overwritten instead.
 
-        :param name: the name of the snapshot
+        :param name: the name of the snapshot (default: current date and time)
         :type name: str
         :return: Snapshot object
         :raises ValueError: if name is an invalid value
