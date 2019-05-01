@@ -5,8 +5,8 @@
 """
 import json
 import logging
+import os
 import shutil
-from os import PathLike
 from pathlib import Path
 
 # ========== Logging Setup ===========
@@ -22,7 +22,7 @@ METADATA_WRITE = "w"
 
 
 # ========== Classes ==========
-class Hierarchy(PathLike):
+class Hierarchy(os.PathLike):
     """A general class for organizing a hierarchy of data.
 
     **Implementation Details**
