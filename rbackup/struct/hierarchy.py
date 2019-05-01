@@ -1,7 +1,7 @@
 """
 .. moduleauthor:: Eric Torres
 .. module:: rbackup.struct.hierarchy
-    :synopsis: Classes for creating the backup hierarchy.
+    :synopsis: Related functionality for creating the backup hierarchy.
 """
 import json
 import logging
@@ -27,14 +27,14 @@ class Hierarchy(PathLike):
 
     **Implementation Details**
 
-    * For consistency, ``Hierarchy`` objects always store and return absolute paths
-    * Data for all ``Hierarchy`` objects and subclassed objects use JSON for serialization
+    * Data for all ``Hierarchy`` objects and subclassed objects use ``JSON`` for serialization
     * ``Hierarchy`` objects create their directories upon instantiation
-      * This may result in a ``PermissionError``
+
+      * Reading metadata without the proper permissions may result in a ``PermissionError``
     """
 
     def __init__(self, dest):
-        """Default constructor for the Hierarchy class.
+        """Default constructor for the ``Hierarchy`` class.
 
         :param dest: the root directory of the backup hierarchy
         :type dest: str or path-like object
@@ -53,6 +53,7 @@ class Hierarchy(PathLike):
         return str(self._path)
 
     def __hash__(self):
+        # We want to use this Hierarchy's path because it never changes
         return hash(self._path)
 
     def __ne__(self, other):
@@ -125,7 +126,7 @@ class Hierarchy(PathLike):
     def write_metadata(self, attr):
         """Write this repository's metadata to its metadata file.
 
-        .. note:: This write operation is atomic to the caller.
+        .. note:: This write operation is atomic from the perspective of the caller
 
         :param attr: class data to write to file
         :type attr: any type
