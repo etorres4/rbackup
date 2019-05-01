@@ -100,7 +100,7 @@ class TestHierarchyCleanup(unittest.TestCase):
         self.mocked_shutil["rmtree"].avoids_symlink_attacks = False
         h = Hierarchy("/tmp/backup")
 
-        h.cleanup(remove_snapshots=True)
+        h.cleanup()
 
         self.mocked_shutil["rmtree"].assert_not_called()
 
