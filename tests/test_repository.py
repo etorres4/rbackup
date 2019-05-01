@@ -23,7 +23,63 @@ VALID_SNAPSHOT_NAME = r"[\w._+-]+[^/]*"
 
 
 # ========== Integration Tests ==========
-class TestRepositoryPreCreate(unittest.TestCase):
+class TestDunderMethods(unittest.TestCase):
+    """Test dunder methods of the Repository.
+
+    Mocked Modules/Classes
+    ----------------------
+    rbackup.struct.repository.Snapshot
+
+    Mocked Attributes
+    -----------------
+    * Repository.read_metadata
+    * Repository.write_metadata
+    """
+
+    def setUp(self):
+        self.patched_path = patch.multiple(
+            Path, exists=DEFAULT, mkdir=DEFAULT, symlink_to=DEFAULT, touch=DEFAULT
+        )
+        self.patched_metadata = patch.multiple(
+            Repository, read_metadata=DEFAULT, write_metadata=DEFAULT
+        )
+        self.patched_snapshot = patch(
+            f"{TESTING_PACKAGE}.repository.Snapshot", spec_set=Snapshot
+        )
+
+        self.mocked_path = self.patched_path.start()
+        self.mocked_metadata = self.patched_metadata.start()
+        self.mocked_snapshot = self.patched_snapshot.start()
+
+        self.mocked_path["exists"].return_value = True
+
+    @given(lists(from_regex(VALID_SNAPSHOT_NAME, fullmatch=True), unique=True))
+    def test_dunder_len(self, snapshots):
+        self.mocked_metadata["read_metadata"].return_value = snapshots.copy()
+        repo = Repository("/tmp/backup")
+
+        self.assertEqual(len(repo), len(snapshots))
+        self.assertEqual(len(repo.snapshots), len(snapshots))
+
+        repo.create_snapshot()
+
+        self.assertEqual(len(repo), len(snapshots) + 1)
+        self.assertEqual(len(repo.snapshots), len(snapshots) + 1)
+
+    @given(from_regex(VALID_SNAPSHOT_NAME, fullmatch=True))
+    def test_dunder_contains(self, name):
+        self.mocked_metadata["read_metadata"].return_value = []
+        repo = Repository("/tmp/backup")
+
+        self.assertFalse(name in repo)
+        repo.create_snapshot(name)
+        self.assertTrue(name in repo)
+
+    def tearDown(self):
+        patch.stopall()
+
+
+class TestProperties(unittest.TestCase):
     """Test properties of the Repository before running create_snapshot().
 
     Mocked Modules/Classes
@@ -63,20 +119,6 @@ class TestRepositoryPreCreate(unittest.TestCase):
         else:
             self.assertFalse(repo.empty)
 
-    @given(lists(from_regex(VALID_SNAPSHOT_NAME, fullmatch=True), unique=True))
-    def test_dunder_len(self, snapshots):
-        self.mocked_metadata["read_metadata"].return_value = snapshots.copy()
-        repo = Repository("/tmp/backup")
-
-        self.assertEqual(len(repo.snapshots), len(snapshots))
-
-    @given(text(min_size=1))
-    def test_dunder_contains(self, name):
-        self.mocked_metadata["read_metadata"].return_value = []
-        repo = Repository("/tmp/backup")
-
-        self.assertFalse(name in repo)
-
     @given(text())
     def test_valid_name(self, name):
         self.mocked_metadata["read_metadata"].return_value = []
@@ -103,7 +145,47 @@ class TestRepositoryPreCreate(unittest.TestCase):
         patch.stopall()
 
 
-class TestRepositoryPostCreate(unittest.TestCase):
+class TestRepositoryCreateSnapshotNormalCases(unittest.TestCase):
+    """Test properties of the Repository after running create_snapshot().
+
+    Mocked Modules/Classes
+    ----------------------
+    rbackup.struct.repository.Snapshot
+
+    Mocked Attributes
+    -----------------
+    * Repository.read_metadata
+    * Repository.write_metadata
+    """
+
+    def setUp(self):
+        self.patched_path = patch.multiple(
+                Path, exists=DEFAULT, mkdir=DEFAULT, symlink_to=DEFAULT, touch=DEFAULT
+        )
+        self.patched_metadata = patch.multiple(
+                Repository, read_metadata=DEFAULT, write_metadata=DEFAULT
+        )
+        self.patched_snapshot = patch(
+                f"{TESTING_PACKAGE}.repository.Snapshot", spec_set=Snapshot
+        )
+
+        self.mocked_path = self.patched_path.start()
+        self.mocked_metadata = self.patched_metadata.start()
+        self.mocked_snapshot = self.patched_snapshot.start()
+
+        self.mocked_path["exists"].return_value = True
+
+    def test_returns_snapshot_object(self):
+        self.mocked_metadata["read_metadata"].return_value = []
+        repo = Repository("/tmp/backup")
+
+        self.assertIsInstance(repo.create_snapshot(), Snapshot)
+
+    def tearDown(self):
+        patch.stopall()
+
+
+class TestRepositoryCreateSnapshotSpecialCases(unittest.TestCase):
     """Test properties of the Repository after running create_snapshot().
 
     Mocked Modules/Classes
@@ -132,38 +214,6 @@ class TestRepositoryPostCreate(unittest.TestCase):
         self.mocked_snapshot = self.patched_snapshot.start()
 
         self.mocked_path["exists"].return_value = True
-
-    @given(lists(from_regex(VALID_SNAPSHOT_NAME, fullmatch=True), unique=True))
-    def test_dunder_len(self, snapshots):
-        self.mocked_metadata["read_metadata"].return_value = snapshots.copy()
-        repo = Repository("/tmp/backup")
-
-        repo.create_snapshot()
-
-        self.assertEqual(len(repo), len(snapshots) + 1)
-        self.assertEqual(len(repo.snapshots), len(snapshots) + 1)
-
-    @given(from_regex(VALID_SNAPSHOT_NAME, fullmatch=True))
-    def test_dunder_contains(self, name):
-        self.mocked_path["exists"].return_value = False
-        repo = Repository("/tmp/backup")
-
-        repo.create_snapshot(name)
-        self.assertTrue(name in repo)
-
-    def test_empty(self):
-        self.mocked_metadata["read_metadata"].return_value = []
-        repo = Repository("/tmp/backup")
-
-        repo.create_snapshot()
-
-        self.assertFalse(repo.empty)
-
-    def test_snapshot_returns_snapshot_object(self):
-        self.mocked_metadata["read_metadata"].return_value = []
-        repo = Repository("/tmp/backup")
-
-        self.assertIsInstance(repo.create_snapshot(), Snapshot)
 
     def test_create_duplicate_snapshot(self):
         # Test that if a snapshot is a duplicate, then return that duplicate snapshot
