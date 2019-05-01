@@ -76,14 +76,13 @@ class Repository(Hierarchy):
         >>> del r[0]
     """
 
-    """Snapshots are serialized as their names relative to the repository
-    data directory, but have their full paths during runtime.
+    # Snapshots are serialized as their names relative to the repository
+    # data directory, but have their full paths during runtime.
 
-    Private Attributes
-    * _snapshots - list of Snapshot objects created and accessed at runtime
-    * _snapshot_metadata - list of Snapshot names serialized and deserialized
-        when this Repository is first created
-    """
+    # Private Attributes
+    # * _snapshots - list of Snapshot objects created and accessed at runtime
+    # * _snapshot_metadata - list of Snapshot names serialized and deserialized
+    #     when this Repository is first created
 
     def __init__(self, dest):
         """Default constructor for the Repository class."""
@@ -216,7 +215,8 @@ class Repository(Hierarchy):
 
         :param remove_snapshots: delete the data directory of this repository (default: ``False``)
         :type remove_snapshots: bool
-        :param remove_repo_dir: remove the top-level directory of this repository (default: ``False``)
+        :param remove_repo_dir: remove the top-level directory of
+            this repository (default: ``False``)
         :type remove_repo_dir: bool
         """
         # We don't want to risk symlink attacks
