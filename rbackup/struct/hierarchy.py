@@ -98,7 +98,7 @@ class Hierarchy(os.PathLike):
         """
         return self._metadata_path
 
-    def cleanup(self, **kwargs):
+    def cleanup(self):
         """Clean up this Hierarchy's data from the filesystem."""
 
         syslog.info("Performing cleanup on %s", self._path)
