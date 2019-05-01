@@ -75,6 +75,6 @@ def do_backup(repository, parsed_config, args, extra_rsync_opts=None):
             exit(E_INVALID_SNAPSHOT_NAME)
         except CalledProcessError as e:
             syslog.critical("Backup process failed")
-            syslog.critical(f"Failing command: {e.cmd}")
+            syslog.critical("Failing command: %s", e.cmd)
             syslog.critical(e.stderr)
             exit(e.returncode)

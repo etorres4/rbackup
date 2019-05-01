@@ -101,7 +101,7 @@ class Hierarchy(os.PathLike):
     def cleanup(self, **kwargs):
         """Clean up this Hierarchy's data from the filesystem."""
 
-        syslog.info(f"Performing cleanup on {self._path}")
+        syslog.info("Performing cleanup on %s", self._path)
 
         # We don't want to risk symlink attacks
         # noinspection PyUnresolvedReferences
@@ -119,7 +119,7 @@ class Hierarchy(os.PathLike):
 
         :rtype: type that the data is serialized as
         """
-        syslog.debug(f"Reading metadata from {self.metadata_path}")
+        syslog.debug("Reading metadata from %s", self.metadata_path)
         with self.metadata_path.open(mode=METADATA_READ) as mfile:
             return json.load(mfile)
 
@@ -131,7 +131,7 @@ class Hierarchy(os.PathLike):
         :param attr: class data to write to file
         :type attr: any type
         """
-        syslog.debug(f"Writing metadata to {self.metadata_path}")
+        syslog.debug("Writing metadata to %s", self.metadata_path)
 
         tmpfile = self.metadata_path.with_suffix(".tmp")
 

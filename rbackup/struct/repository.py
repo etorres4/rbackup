@@ -232,7 +232,7 @@ class Repository(Hierarchy):
         self.metadata_path.unlink()
         self.snapshot_symlink.unlink()
         syslog.info("Removing repository metadata")
-        syslog.debug(f"Repository metadata removed: {self.metadata_path}")
+        syslog.debug("Repository metadata removed: %s", self.metadata_path)
 
         if remove_snapshots:
             try:
@@ -248,7 +248,7 @@ class Repository(Hierarchy):
             except PermissionError as e:
                 syslog.error(e)
             else:
-                syslog.info(f"Removed repository directory: {self.path}")
+                syslog.info("Removed repository directory: %s", self.path)
 
     def create_snapshot(self, name=None):
         """Create a new snapshot in this repository.
@@ -295,7 +295,7 @@ class Repository(Hierarchy):
             self.write_metadata(self._snapshot_metadata)
 
             syslog.debug("Snapshot created")
-            syslog.debug(f"Snapshot name: {new_snapshot.name}")
+            syslog.debug("Snapshot name: %s", new_snapshot.name)
 
             self.symlink_snapshot(new_snapshot)
             return new_snapshot

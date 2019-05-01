@@ -34,7 +34,7 @@ def rsync(*args):
     """
     cmd = [_RSYNC_BIN, *args]
 
-    syslog.debug(f"rsync command: {cmd}")
+    syslog.debug("rsync command: %s", cmd)
     syslog.info("Beginning rsync process")
 
     process = subprocess.run(cmd, capture_output=True, check=True, text=True)
