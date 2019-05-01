@@ -58,10 +58,7 @@ def load_list_from_option(parser, *, section="", option="", fallback=None):
     try:
         return json.loads(parser[section][option])
     except (json.decoder.JSONDecodeError, KeyError):
-        if fallback is None:
-            return []
-        else:
-            return fallback
+        return [] if fallback is None else fallback
 
 
 def merge_files(files):
