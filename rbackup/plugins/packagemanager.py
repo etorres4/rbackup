@@ -75,7 +75,7 @@ class PackageManager:
             self._lockfile.touch(mode=0o000, exist_ok=False)
         yield self
 
-    def __exit__(self):
+    def __exit__(self, exc_type, exc_value, traceback):
         """Remove the package manager's lockfile. After this lockfile is closed,
         the package manager this class abstracts can perform transactions once again.
         """
