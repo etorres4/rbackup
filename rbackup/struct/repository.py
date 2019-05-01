@@ -222,7 +222,7 @@ class Repository(Hierarchy):
         # We don't want to risk symlink attacks
         # noinspection PyUnresolvedReferences
         if not shutil.rmtree.avoids_symlink_attacks:
-            syslog.error(
+            syslog.warning(
                 "shutil cannot avoid symlink attacks on this platform. Ignoring."
             )
             return
