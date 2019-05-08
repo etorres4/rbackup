@@ -1,6 +1,47 @@
 Changelog for rbackup
 =====================
 
+Version 0.7.2
+-------------
+
+* backup script
+
+  * Do not log user-provided destination argument
+
+* rbackup.config.config_files
+
+  * Use ternary statement for return condition
+
+* rbackup.plugins
+
+  * Add exception info parameters for PackageManager.__exit__()
+
+* rbackup.struct.hierarchy
+
+  * Rewrite docstrings to explain things more clearly
+  * Don't import os.PathLike directly into module-level namespace
+  * Log shutil.rmtree.avoids_symlink_attacks as a warning, not an error
+
+* rbackup.struct.repository
+
+  * Docstring and comment cleanup
+  * Log shutil.rmtree.avoids_symlink_attacks as a warning, not an error
+
+* tests.test_hierarchy
+
+  * Split tests into specifically named cases
+  * Do not pass kwarg in Hierarchy.cleanup() test
+
+* tests.test_repository
+
+  * Split normal and special cases for Repository.create_snapshot()
+  * Split properties and dunder methods of Repository
+
+* Project Structure
+
+  * Add remote backup script "rbackup"
+  * Use % formatting in all log messages over f-strings
+
 Version 0.7.1
 -------------
 
