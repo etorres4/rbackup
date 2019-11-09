@@ -75,10 +75,16 @@ Implementation Notes
 To-do
 -----
 
-* Make Repositories network-aware. This means we might need to split ``rbackup.struct.repository.Repository`` into a server and client
-* Add override for umask i.e. add the command-line options -u, --umask or an option in the config file
+* Create a separate backup and network backup script
+
+  * Think about using ``python-daemon`` for ``backupd``
+
+  * rbackup.script: add ``do_remote_backup`` function
+
 * Add __enter__ and __exit__ for PackageManager lockfiles to prevent transactions during backup
+
 * Create snapshot manipulation script
+
 * Interactive cleanup script
 
   * Repository.__delitem__()
@@ -90,6 +96,8 @@ To-do
     * Plugin.run() is passed a set of specific arguments
 
       * snapshot?
+
+* --dry-run touches the repository, change to make sure it doesn't
 
 Dependencies
 ------------
