@@ -7,7 +7,6 @@ Command-Line Arguments
 ======================
 
 -c, --use-checksums   use rsync's checksum feature to detect file changes
--d, --dry-run         make this backup a dry run
 --debug               show debug messages
 -n, --name            name to give to the backup snapshot
 -p, --port            port that ssh on the destination is listening on
@@ -36,7 +35,6 @@ from rbackup.struct.repository import Repository
 # ========== Constants ==========
 LOGFORMAT = "==> %(levelname)s %(message)s"
 EXTRA_RSYNC_OPTS = {
-    "dry_run": "--dry-run",
     "delete": "--delete-after",
     "checksum": "--checksum",
     "update": "--update",
@@ -68,14 +66,6 @@ def parse_cmdline_arguments(**kwargs):
         dest="extra_rsync_opts",
         const=EXTRA_RSYNC_OPTS["checksum"],
         help="use rsync's checksumming feature to look for changed files",
-    )
-    parser.add_argument(
-        "-d",
-        "--dry-run",
-        action="append_const",
-        dest="extra_rsync_opts",
-        const=EXTRA_RSYNC_OPTS["dry_run"],
-        help="pass --dry-run to rsync",
     )
     parser.add_argument("--debug", action="store_true", help="log debug messages")
     parser.add_argument(
