@@ -1,7 +1,7 @@
 # Maintainer: Eric Torres <erictorres4@protonmail.com>
 pkgname=rbackup
 pkgver=0.7.2
-pkgrel=1
+pkgrel=2
 pkgdesc="An rsync-based tool for backing up files"
 arch=('any')
 url="https://github.com/etorres4/rbackup"
