@@ -43,7 +43,7 @@ syslog.setLevel(logging.DEBUG)
 
 
 # ========== Main Program ==========
-if __name__ == "__main__":
+def main():
     args = parse_cmdline_arguments()
 
     stdout_handler, stderr_handler = rbackup.logging.retrieve_console_handlers(
@@ -52,5 +52,7 @@ if __name__ == "__main__":
     syslog.addHandler(stdout_handler)
     syslog.addHandler(stderr_handler)
 
+
+if __name__ == "__main__":
     with daemon.DaemonContext():
-        pass
+        main()
