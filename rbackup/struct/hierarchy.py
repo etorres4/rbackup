@@ -70,7 +70,7 @@ class Hierarchy(os.PathLike):
     def _gen_metadata(self):
         """Generate metadata for this repository.
 
-            After this method is called, the data necessary for this hierarchy has been created.
+        After this method is called, the data necessary for this hierarchy has been created.
         """
         raise NotImplementedError("This method must be called in a child class.")
 

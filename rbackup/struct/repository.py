@@ -162,7 +162,7 @@ class Repository(Hierarchy):
 
     def _gen_metadata(self):
         """Generate metadata for this repository.
-            After this method is called, the data necessary for this repository has been created.
+        After this method is called, the data necessary for this repository has been created.
         """
         if self.metadata_path.exists():
             self._snapshot_metadata = self.read_metadata()

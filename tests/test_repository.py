@@ -160,13 +160,13 @@ class TestRepositoryCreateSnapshotNormalCases(unittest.TestCase):
 
     def setUp(self):
         self.patched_path = patch.multiple(
-                Path, exists=DEFAULT, mkdir=DEFAULT, symlink_to=DEFAULT, touch=DEFAULT
+            Path, exists=DEFAULT, mkdir=DEFAULT, symlink_to=DEFAULT, touch=DEFAULT
         )
         self.patched_metadata = patch.multiple(
-                Repository, read_metadata=DEFAULT, write_metadata=DEFAULT
+            Repository, read_metadata=DEFAULT, write_metadata=DEFAULT
         )
         self.patched_snapshot = patch(
-                f"{TESTING_PACKAGE}.repository.Snapshot", spec_set=Snapshot
+            f"{TESTING_PACKAGE}.repository.Snapshot", spec_set=Snapshot
         )
 
         self.mocked_path = self.patched_path.start()
