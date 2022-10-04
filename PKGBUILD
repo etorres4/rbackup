@@ -24,19 +24,10 @@ build() {
     #python setup.py build_sphinx -b man
 }
 
-check() {
-    cd "${srcdir}/${pkgname}-${pkgver}"
-    pytest
-}
-
 package() {
 	cd "${srcdir}/${pkgname}-${pkgver}"
 
-    python setup.py install \
-        --prefix='/usr' \
-        --root="${pkgdir}" \
-        --optimize=1 \
-        --skip-build
+    python setup.py install --root="$pkgdir" --optimize=1 --skip-build
 
     # Install config files
     for config in config_files/*.conf; do
@@ -50,4 +41,9 @@ package() {
     # Install documetation
     install -Dm644 README.rst \
         "${pkgdir}/usr/share/doc/${pkgname}/README.rst"
+}
+
+check() {
+    cd "${srcdir}/${pkgname}-${pkgver}"
+    pytest
 }
