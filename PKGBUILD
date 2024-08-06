@@ -1,4 +1,4 @@
-# Maintainer: Eric Torres <erictorres4@protonmail.com>
+# Maintainer: Eric Torres <eric.torres@its-et.me>
 pkgname=rbackup
 pkgver=0.7.2
 pkgrel=2
